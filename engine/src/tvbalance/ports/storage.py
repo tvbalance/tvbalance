@@ -44,6 +44,34 @@ class StoredEvent:
     payload: dict[str, Any]
 
 
+@dataclass(frozen=True, slots=True)
+class AdminRecord:
+    password_hash: str = field(repr=False)
+    pin_hash: str | None = field(repr=False)
+    pin_failures: int
+    updated_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class SessionRecord:
+    id: str
+    kind: str  # "admin" or "pin"
+    created_at: datetime
+    last_seen_at: datetime
+    expires_at: datetime
+    user_agent: str
+
+
+@dataclass(frozen=True, slots=True)
+class ApiTokenRecord:
+    id: str
+    name: str
+    scopes: frozenset[str]
+    created_at: datetime
+    last_used_at: datetime | None
+    revoked_at: datetime | None
+
+
 class TvStore(Protocol):
     async def add(
         self,
@@ -127,6 +155,66 @@ class EnforcementStateStore(Protocol):
     async def save(self, tv_id: str, state: EnforcementState) -> None: ...
 
 
+class AuthStore(Protocol):
+    """The admin account, its sessions and API tokens. Only hashes of secrets are stored."""
+
+    async def get_admin(self) -> AdminRecord | None: ...
+
+    async def create_admin(self, password_hash: str) -> bool:
+        """False when an admin already exists."""
+        ...
+
+    async def set_password_hash(self, password_hash: str) -> None: ...
+
+    async def set_pin_hash(self, pin_hash: str | None) -> None:
+        """Setting or removing the PIN also clears the failure counter."""
+        ...
+
+    async def record_pin_failure(self) -> int:
+        """Returns the number of consecutive failures including this one."""
+        ...
+
+    async def reset_pin_failures(self) -> None: ...
+
+    async def add_session(
+        self, token_hash: str, kind: str, expires_at: datetime, user_agent: str
+    ) -> SessionRecord: ...
+
+    async def get_session(self, token_hash: str) -> SessionRecord | None:
+        """Expiry is not checked here: the caller compares ``expires_at`` with its clock."""
+        ...
+
+    async def touch_session(
+        self, session_id: str, last_seen_at: datetime, expires_at: datetime
+    ) -> None: ...
+
+    async def list_sessions(self) -> list[SessionRecord]:
+        """Oldest first."""
+        ...
+
+    async def revoke_session(self, session_id: str) -> bool: ...
+
+    async def revoke_all_sessions(self, except_id: str | None = None) -> int: ...
+
+    async def purge_expired_sessions(self, now: datetime) -> int: ...
+
+    async def add_token(
+        self, name: str, token_hash: str, scopes: frozenset[str]
+    ) -> ApiTokenRecord: ...
+
+    async def get_token(self, token_hash: str) -> ApiTokenRecord | None:
+        """A revoked token is not found."""
+        ...
+
+    async def touch_token(self, token_id: str, used_at: datetime) -> None: ...
+
+    async def list_tokens(self) -> list[ApiTokenRecord]:
+        """Oldest first, revoked tokens included."""
+        ...
+
+    async def revoke_token(self, token_id: str) -> bool: ...
+
+
 class Storage(Protocol):
     """The stores are read-only attributes, so implementations may narrow their types."""
 
@@ -150,5 +238,8 @@ class Storage(Protocol):
 
     @property
     def enforcement(self) -> EnforcementStateStore: ...
+
+    @property
+    def auth(self) -> AuthStore: ...
 
     async def close(self) -> None: ...

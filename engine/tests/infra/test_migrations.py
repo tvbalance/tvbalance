@@ -12,7 +12,18 @@ from tvbalance.infra.db.engine import create_engine
 from tvbalance.infra.db.migrate import alembic_config, upgrade_to_head
 from tvbalance.infra.db.tables import metadata
 
-TABLES = {"policies", "tvs", "usage", "overrides", "events", "settings", "enforcement_state"}
+TABLES = {
+    "policies",
+    "tvs",
+    "usage",
+    "overrides",
+    "events",
+    "settings",
+    "enforcement_state",
+    "admin",
+    "sessions",
+    "api_tokens",
+}
 
 
 @pytest.fixture
@@ -41,7 +52,7 @@ async def test_upgrade_on_an_empty_database_creates_the_schema(engine: AsyncEngi
     async with engine.connect() as conn:
         assert await conn.run_sync(_table_names) == TABLES
         version = (await conn.execute(text("SELECT version_num FROM alembic_version"))).scalar()
-    assert version == "0002"
+    assert version == "0003"
 
 
 async def test_the_migrations_and_the_table_definitions_agree(engine: AsyncEngine) -> None:

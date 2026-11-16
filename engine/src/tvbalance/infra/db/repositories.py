@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from datetime import date, datetime
 from typing import Any
 
-from sqlalchemy import Row, delete, select, update
+from sqlalchemy import ColumnClause, Row, delete, literal_column, select, update
 from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -25,7 +25,15 @@ from tvbalance.infra.db.policy_codec import VERSION, decode_policy, encode_polic
 from tvbalance.infra.db.state_codec import StateDecodeError, decode_state, encode_state
 from tvbalance.infra.secrets import SecretBox, SecretError
 from tvbalance.ports.services import Clock
-from tvbalance.ports.storage import NotFoundError, PolicyRecord, StoredEvent, TvRecord
+from tvbalance.ports.storage import (
+    AdminRecord,
+    ApiTokenRecord,
+    NotFoundError,
+    PolicyRecord,
+    SessionRecord,
+    StoredEvent,
+    TvRecord,
+)
 
 log = logging.getLogger(__name__)
 
@@ -317,6 +325,180 @@ class SqliteEnforcementStateStore:
                 await conn.execute(stmt)
 
 
+ADMIN_ID = 1
+_INSERTION_ORDER: ColumnClause[Any] = literal_column(
+    "rowid"
+)  # ties on created_at keep the order of insertion
+
+
+class SqliteAuthStore:
+    def __init__(self, engine: AsyncEngine, clock: Clock) -> None:
+        self._engine, self._clock = engine, clock
+
+    async def get_admin(self) -> AdminRecord | None:
+        async with self._engine.connect() as conn:
+            row = (await conn.execute(select(tables.admin))).first()
+        if row is None:
+            return None
+        return AdminRecord(row.password_hash, row.pin_hash, row.pin_failures, row.updated_at)
+
+    async def create_admin(self, password_hash: str) -> bool:
+        try:
+            async with self._engine.begin() as conn:
+                await conn.execute(
+                    tables.admin.insert().values(
+                        id=ADMIN_ID,
+                        password_hash=password_hash,
+                        pin_hash=None,
+                        pin_failures=0,
+                        updated_at=self._clock.now(),
+                    )
+                )
+        except IntegrityError:
+            return False
+        return True
+
+    async def set_password_hash(self, password_hash: str) -> None:
+        await self._update_admin(password_hash=password_hash)
+
+    async def set_pin_hash(self, pin_hash: str | None) -> None:
+        await self._update_admin(pin_hash=pin_hash, pin_failures=0)
+
+    async def record_pin_failure(self) -> int:
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                update(tables.admin).values(pin_failures=tables.admin.c.pin_failures + 1)
+            )
+            failures = (await conn.execute(select(tables.admin.c.pin_failures))).scalar()
+        return failures or 0
+
+    async def reset_pin_failures(self) -> None:
+        await self._update_admin(pin_failures=0)
+
+    async def _update_admin(self, **values: Any) -> None:
+        async with self._engine.begin() as conn:
+            await conn.execute(update(tables.admin).values(updated_at=self._clock.now(), **values))
+
+    async def add_session(
+        self, token_hash: str, kind: str, expires_at: datetime, user_agent: str
+    ) -> SessionRecord:
+        now = self._clock.now()
+        record = SessionRecord(uuid.uuid4().hex, kind, now, now, expires_at, user_agent)
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                tables.sessions.insert().values(
+                    id=record.id,
+                    token_hash=token_hash,
+                    kind=kind,
+                    created_at=now,
+                    last_seen_at=now,
+                    expires_at=expires_at,
+                    user_agent=user_agent,
+                )
+            )
+        return record
+
+    async def get_session(self, token_hash: str) -> SessionRecord | None:
+        query = select(tables.sessions).where(tables.sessions.c.token_hash == token_hash)
+        async with self._engine.connect() as conn:
+            row = (await conn.execute(query)).first()
+        return None if row is None else _session_record(row)
+
+    async def touch_session(
+        self, session_id: str, last_seen_at: datetime, expires_at: datetime
+    ) -> None:
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                update(tables.sessions)
+                .where(tables.sessions.c.id == session_id)
+                .values(last_seen_at=last_seen_at, expires_at=expires_at)
+            )
+
+    async def list_sessions(self) -> list[SessionRecord]:
+        query = select(tables.sessions).order_by(tables.sessions.c.created_at, _INSERTION_ORDER)
+        async with self._engine.connect() as conn:
+            return [_session_record(r) for r in await conn.execute(query)]
+
+    async def revoke_session(self, session_id: str) -> bool:
+        async with self._engine.begin() as conn:
+            result = await conn.execute(
+                delete(tables.sessions).where(tables.sessions.c.id == session_id)
+            )
+        return result.rowcount > 0
+
+    async def revoke_all_sessions(self, except_id: str | None = None) -> int:
+        stmt = delete(tables.sessions)
+        if except_id is not None:
+            stmt = stmt.where(tables.sessions.c.id != except_id)
+        async with self._engine.begin() as conn:
+            return (await conn.execute(stmt)).rowcount
+
+    async def purge_expired_sessions(self, now: datetime) -> int:
+        async with self._engine.begin() as conn:
+            result = await conn.execute(
+                delete(tables.sessions).where(tables.sessions.c.expires_at <= now)
+            )
+        return result.rowcount
+
+    async def add_token(self, name: str, token_hash: str, scopes: frozenset[str]) -> ApiTokenRecord:
+        now = self._clock.now()
+        record = ApiTokenRecord(uuid.uuid4().hex, name, scopes, now, None, None)
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                tables.api_tokens.insert().values(
+                    id=record.id,
+                    name=name,
+                    token_hash=token_hash,
+                    scopes=sorted(scopes),
+                    created_at=now,
+                )
+            )
+        return record
+
+    async def get_token(self, token_hash: str) -> ApiTokenRecord | None:
+        query = select(tables.api_tokens).where(
+            tables.api_tokens.c.token_hash == token_hash,
+            tables.api_tokens.c.revoked_at.is_(None),
+        )
+        async with self._engine.connect() as conn:
+            row = (await conn.execute(query)).first()
+        return None if row is None else _token_record(row)
+
+    async def touch_token(self, token_id: str, used_at: datetime) -> None:
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                update(tables.api_tokens)
+                .where(tables.api_tokens.c.id == token_id)
+                .values(last_used_at=used_at)
+            )
+
+    async def list_tokens(self) -> list[ApiTokenRecord]:
+        query = select(tables.api_tokens).order_by(tables.api_tokens.c.created_at, _INSERTION_ORDER)
+        async with self._engine.connect() as conn:
+            return [_token_record(r) for r in await conn.execute(query)]
+
+    async def revoke_token(self, token_id: str) -> bool:
+        async with self._engine.begin() as conn:
+            result = await conn.execute(
+                update(tables.api_tokens)
+                .where(tables.api_tokens.c.id == token_id, tables.api_tokens.c.revoked_at.is_(None))
+                .values(revoked_at=self._clock.now())
+            )
+        return result.rowcount > 0
+
+
+def _session_record(row: Row[Any]) -> SessionRecord:
+    return SessionRecord(
+        row.id, row.kind, row.created_at, row.last_seen_at, row.expires_at, row.user_agent
+    )
+
+
+def _token_record(row: Row[Any]) -> ApiTokenRecord:
+    return ApiTokenRecord(
+        row.id, row.name, frozenset(row.scopes), row.created_at, row.last_used_at, row.revoked_at
+    )
+
+
 class SqliteStorage:
     def __init__(self, engine: AsyncEngine, box: SecretBox, clock: Clock) -> None:
         self._engine = engine
@@ -327,6 +509,7 @@ class SqliteStorage:
         self.events = SqliteEventLog(engine)
         self.settings = SqliteSettingsStore(engine)
         self.enforcement = SqliteEnforcementStateStore(engine, clock)
+        self.auth = SqliteAuthStore(engine, clock)
 
     async def close(self) -> None:
         await self._engine.dispose()

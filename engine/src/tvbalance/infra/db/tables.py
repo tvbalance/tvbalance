@@ -97,3 +97,38 @@ enforcement_state = Table(
     Column("state", JSON, nullable=False),
     Column("updated_at", UtcDateTime, nullable=False),
 )
+
+# One row, always id 1: the household has a single admin account.
+admin = Table(
+    "admin",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=False),
+    Column("password_hash", String, nullable=False),
+    Column("pin_hash", String, nullable=True),
+    Column("pin_failures", Integer, nullable=False),
+    Column("updated_at", UtcDateTime, nullable=False),
+)
+
+sessions = Table(
+    "sessions",
+    metadata,
+    Column("id", String(32), primary_key=True),
+    Column("token_hash", String(64), nullable=False, unique=True),
+    Column("kind", String, nullable=False),
+    Column("created_at", UtcDateTime, nullable=False),
+    Column("last_seen_at", UtcDateTime, nullable=False),
+    Column("expires_at", UtcDateTime, nullable=False),
+    Column("user_agent", String, nullable=False),
+)
+
+api_tokens = Table(
+    "api_tokens",
+    metadata,
+    Column("id", String(32), primary_key=True),
+    Column("name", String, nullable=False),
+    Column("token_hash", String(64), nullable=False, unique=True),
+    Column("scopes", JSON, nullable=False),
+    Column("created_at", UtcDateTime, nullable=False),
+    Column("last_used_at", UtcDateTime, nullable=True),
+    Column("revoked_at", UtcDateTime, nullable=True),
+)
