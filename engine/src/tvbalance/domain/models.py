@@ -174,6 +174,9 @@ class ShowMessage:
 
     kind: MessageKind
     minutes_left: int | None = None
+    text: str | None = (
+        None  # localized text from the supervisor; adapters fall back to default_text
+    )
 
 
 @dataclass(frozen=True, slots=True)

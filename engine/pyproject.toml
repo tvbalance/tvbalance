@@ -17,6 +17,9 @@ tvbalance = "tvbalance.__main__:main"
 [project.entry-points."tvbalance.adapters"]
 fake = "tvbalance.sdk.fake:PLUGIN"
 
+[project.entry-points."tvbalance.adapter_harnesses"]
+fake = "tvbalance.sdk.fake:_harness"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

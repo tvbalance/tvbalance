@@ -4,10 +4,23 @@ Adapters listed in IMPLEMENTED must pass the behavioral tests. The others are de
 their behavioral tests are xfail(strict), so finishing an adapter forces it into IMPLEMENTED.
 """
 
+from contextlib import AbstractAsyncContextManager
+
 import pytest
 
-from tvbalance.domain.models import Observation
-from tvbalance.sdk.errors import TVError
+from tvbalance.domain.models import (
+    GoHome,
+    LaunchApp,
+    MessageKind,
+    Observation,
+    Power,
+    PowerOff,
+    SetChannel,
+    SetInput,
+    ShowMessage,
+)
+from tvbalance.sdk.errors import TVError, UnsupportedCapabilityError
+from tvbalance.sdk.harness import SimulatedTV, load_harnesses
 from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.registry import load_plugins
 from tvbalance.sdk.types import AdapterConfig, AppInfo, Capability, Maturity, PairingState
@@ -15,7 +28,14 @@ from tvbalance.sdk.types import AdapterConfig, AppInfo, Capability, Maturity, Pa
 IMPLEMENTED = {"fake"}
 
 PLUGINS = load_plugins()
+HARNESSES = load_harnesses()
 CONFIG = AdapterConfig(host="127.0.0.1", credentials={})
+
+
+def _simulated(plugin_id: str) -> AbstractAsyncContextManager[SimulatedTV]:
+    if plugin_id not in HARNESSES:
+        raise NotImplementedError(f"{plugin_id} has no simulated TV yet")
+    return HARNESSES[plugin_id]()
 
 
 def _behavioral(plugin_id: str) -> pytest.ParameterSet:
@@ -94,3 +114,60 @@ async def test_observe_without_connection_raises_typed_error(plugin_id: str) -> 
     adapter = _plugin(plugin_id).factory(CONFIG)
     with pytest.raises(TVError):
         await adapter.observe()
+
+
+ACTIONS = {
+    Capability.ON_SCREEN_MESSAGE: ShowMessage(MessageKind.TIME_UP),
+    Capability.GO_HOME: GoHome(),
+    Capability.LAUNCH_APP: LaunchApp("video"),
+    Capability.SET_INPUT: SetInput("hdmi1"),
+    Capability.SET_CHANNEL: SetChannel("c1"),
+    Capability.POWER_OFF: PowerOff(),
+}
+
+
+@pytest.mark.parametrize("plugin_id", BEHAVIORAL)
+async def test_every_declared_action_is_executable(plugin_id: str) -> None:
+    plugin = _plugin(plugin_id)
+    async with _simulated(plugin_id) as tv:
+        adapter = plugin.factory(tv.config)
+        await adapter.connect()
+        for capability, action in ACTIONS.items():
+            if capability in plugin.info.capabilities:
+                await adapter.execute(action)
+        await adapter.close()
+
+
+@pytest.mark.parametrize("plugin_id", BEHAVIORAL)
+async def test_undeclared_action_is_rejected(plugin_id: str) -> None:
+    plugin = _plugin(plugin_id)
+    missing = [a for c, a in ACTIONS.items() if c not in plugin.info.capabilities]
+    if not missing:
+        pytest.skip("adapter declares every action")
+    async with _simulated(plugin_id) as tv:
+        adapter = plugin.factory(tv.config)
+        await adapter.connect()
+        with pytest.raises(UnsupportedCapabilityError):
+            await adapter.execute(missing[0])
+        await adapter.close()
+
+
+@pytest.mark.parametrize("plugin_id", BEHAVIORAL)
+async def test_standby_tv_is_observed_as_standby(plugin_id: str) -> None:
+    async with _simulated(plugin_id) as tv:
+        adapter = _plugin(plugin_id).factory(tv.config)
+        await adapter.connect()
+        await tv.set_power(Power.STANDBY)
+        assert (await adapter.observe()).power is Power.STANDBY
+        await adapter.close()
+
+
+@pytest.mark.parametrize("plugin_id", BEHAVIORAL)
+async def test_lost_connection_raises_typed_error(plugin_id: str) -> None:
+    async with _simulated(plugin_id) as tv:
+        adapter = _plugin(plugin_id).factory(tv.config)
+        await adapter.connect()
+        await tv.drop_connection()
+        with pytest.raises(TVError):
+            await adapter.observe()
+        await adapter.close()

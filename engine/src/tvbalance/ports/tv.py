@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Protocol
 
 from tvbalance.domain.models import Action, Observation
@@ -38,3 +39,11 @@ class TVAdapter(Protocol):
     async def list_channels(self) -> list[ChannelInfo]: ...
 
     def pairing(self) -> PairingFlow: ...
+
+
+class SupportsPush(Protocol):
+    """Optional: adapters declaring Capability.PUSH_UPDATES notify when the TV state changes."""
+
+    def on_change(self, callback: Callable[[], None]) -> Callable[[], None]:
+        """Register ``callback``; returns a function that unregisters it."""
+        ...

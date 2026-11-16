@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
@@ -87,8 +89,35 @@ class FakeTV:
         return FakePairing()
 
 
+_SIMULATED: dict[str, FakeTV] = {}
+
+
 def _factory(config: AdapterConfig) -> TVAdapter:
-    return FakeTV(host=config.host)
+    return _SIMULATED.get(config.host) or FakeTV(host=config.host)
+
+
+class FakeHarness:
+    """Contract-suite harness: the TV the factory returns for ``config.host``."""
+
+    def __init__(self) -> None:
+        self.tv = FakeTV(host="harness.fake")
+        self.config = AdapterConfig(host=self.tv.host, credentials={})
+
+    async def set_power(self, power: Power) -> None:
+        self.tv.observation = Observation(observed_at=datetime.now(UTC), power=power)
+
+    async def drop_connection(self) -> None:
+        self.tv.connected = False
+
+
+@asynccontextmanager
+async def _harness() -> AsyncIterator[FakeHarness]:
+    harness = FakeHarness()
+    _SIMULATED[harness.tv.host] = harness.tv
+    try:
+        yield harness
+    finally:
+        _SIMULATED.pop(harness.tv.host, None)
 
 
 async def _discover() -> list[DiscoveredDevice]:
