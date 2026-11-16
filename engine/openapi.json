@@ -1,0 +1,157 @@
+{
+  "components": {
+    "schemas": {
+      "AdapterOut": {
+        "properties": {
+          "brand": {
+            "title": "Brand",
+            "type": "string"
+          },
+          "capabilities": {
+            "items": {
+              "$ref": "#/components/schemas/Capability"
+            },
+            "title": "Capabilities",
+            "type": "array"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "maturity": {
+            "$ref": "#/components/schemas/Maturity"
+          }
+        },
+        "required": [
+          "id",
+          "brand",
+          "display_name",
+          "maturity",
+          "capabilities"
+        ],
+        "title": "AdapterOut",
+        "type": "object"
+      },
+      "Capability": {
+        "enum": [
+          "foreground_app",
+          "list_apps",
+          "launch_app",
+          "go_home",
+          "current_input",
+          "set_input",
+          "live_channel",
+          "set_channel",
+          "program_info",
+          "on_screen_message",
+          "power_off",
+          "wake",
+          "push_updates"
+        ],
+        "title": "Capability",
+        "type": "string"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "InfoResponse": {
+        "properties": {
+          "adapters": {
+            "items": {
+              "$ref": "#/components/schemas/AdapterOut"
+            },
+            "title": "Adapters",
+            "type": "array"
+          },
+          "api_version": {
+            "title": "Api Version",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "api_version",
+          "adapters"
+        ],
+        "title": "InfoResponse",
+        "type": "object"
+      },
+      "Maturity": {
+        "enum": [
+          "stable",
+          "beta",
+          "experimental"
+        ],
+        "title": "Maturity",
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "title": "TVBalance Engine",
+    "version": "0.0.1"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "system"
+        ]
+      }
+    },
+    "/api/v1/info": {
+      "get": {
+        "operationId": "info_api_v1_info_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Info",
+        "tags": [
+          "system"
+        ]
+      }
+    }
+  }
+}

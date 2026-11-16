@@ -1,0 +1,24 @@
+[project]
+name = "tvbalance"
+version = "0.0.1"
+description = "TVBalance Engine: local-first parental control for smart TVs"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi>=0.115",
+  "pydantic>=2.9",
+  "uvicorn>=0.32",
+]
+
+[project.scripts]
+tvbalance = "tvbalance.__main__:main"
+
+[project.entry-points."tvbalance.adapters"]
+fake = "tvbalance.sdk.fake:PLUGIN"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tvbalance"]
