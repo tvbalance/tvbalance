@@ -22,6 +22,16 @@ def test_values_come_from_the_environment() -> None:
     assert config == EngineConfig("127.0.0.1", 9000, Path("/app/web"), Path("/data"))
 
 
+def test_ingress_is_not_trusted_unless_configured() -> None:
+    assert EngineConfig.from_env({}).ingress_trusted == frozenset()
+    assert EngineConfig.from_env({"TVBALANCE_INGRESS_TRUSTED": ""}).ingress_trusted == frozenset()
+
+
+def test_trusted_ingress_peers_are_a_comma_separated_list() -> None:
+    config = EngineConfig.from_env({"TVBALANCE_INGRESS_TRUSTED": "172.30.32.2, 10.0.0.5 ,,"})
+    assert config.ingress_trusted == frozenset({"172.30.32.2", "10.0.0.5"})
+
+
 @pytest.mark.parametrize("port", ["abc", "", "0", "65536", "-1", "80.5"])
 def test_invalid_port_is_rejected_with_a_clear_message(port: str) -> None:
     with pytest.raises(ConfigError, match="TVBALANCE_PORT"):

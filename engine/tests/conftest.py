@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+from support import sign_in_as_admin
 
 from tvbalance.api.app import create_app
 from tvbalance.config import EngineConfig
@@ -35,3 +36,10 @@ def app_client(engine_config: EngineConfig) -> Iterator[TestClient]:
     app = create_app(plugins={}, config=engine_config)
     with TestClient(app) as client:
         yield client
+
+
+@pytest.fixture
+def admin_client(app_client: TestClient) -> TestClient:
+    """The same running app, with the admin set up and signed in (cookies and CSRF header set)."""
+    sign_in_as_admin(app_client)
+    return app_client

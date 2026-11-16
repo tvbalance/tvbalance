@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime, time, timedelta
 from typing import Any
 
+from fastapi.testclient import TestClient
+
 from tvbalance.app.events import BusEvent
 from tvbalance.app.session import SessionTimeouts
 from tvbalance.app.status import SupervisorSettings
@@ -41,6 +43,17 @@ class FakeClock:
 
     def advance(self, **kwargs: float) -> None:
         self.current += timedelta(**kwargs)
+
+
+ADMIN_PASSWORD = "correct horse battery"
+CSRF_HEADER = "X-TVBalance-CSRF"
+
+
+def sign_in_as_admin(client: TestClient, password: str = ADMIN_PASSWORD) -> None:
+    """Create the admin account on a fresh engine; the client keeps the cookies and CSRF header."""
+    response = client.post("/api/v1/auth/setup", json={"password": password})
+    assert response.status_code == 201, response.text
+    client.headers[CSRF_HEADER] = response.json()["csrf_token"]
 
 
 def watching(app: str | None = "video") -> Observation:

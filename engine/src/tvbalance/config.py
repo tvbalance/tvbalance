@@ -21,6 +21,8 @@ class EngineConfig:
     port: int = DEFAULT_PORT
     web_dir: Path | None = None
     data_dir: Path = DEFAULT_DATA_DIR
+    # Peers (the Supervisor, under Home Assistant) whose Ingress user headers are believed.
+    ingress_trusted: frozenset[str] = frozenset()
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str]) -> EngineConfig:
@@ -29,6 +31,11 @@ class EngineConfig:
             port=_port(environ.get("TVBALANCE_PORT")),
             web_dir=_path(environ.get("TVBALANCE_WEB_DIR")),
             data_dir=_path(environ.get("TVBALANCE_DATA_DIR")) or DEFAULT_DATA_DIR,
+            ingress_trusted=frozenset(
+                peer.strip()
+                for peer in (environ.get("TVBALANCE_INGRESS_TRUSTED") or "").split(",")
+                if peer.strip()
+            ),
         )
 
 

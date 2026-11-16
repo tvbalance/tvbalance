@@ -1,4 +1,4 @@
-"""Public API schemas (source of the generated OpenAPI document)."""
+"""System schemas: liveness, version and the adapters the engine can drive."""
 
 from __future__ import annotations
 
@@ -22,4 +22,3 @@ class AdapterOut(BaseModel):
 class InfoResponse(BaseModel):
     version: str
     api_version: str
-    adapters: list[AdapterOut]

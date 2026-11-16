@@ -99,6 +99,11 @@ def hash_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
+def csrf_token_for(session_token: str) -> str:
+    """The value a cookie-authenticated write must echo: unguessable without the session token."""
+    return hashlib.sha256(b"csrf:" + session_token.encode()).hexdigest()[:32]
+
+
 class AuthService:
     def __init__(self, store: AuthStore, clock: Clock) -> None:
         self._store = store
