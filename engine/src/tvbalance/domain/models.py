@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, time
+from datetime import date, datetime, time, timedelta
 from enum import StrEnum
 
 
@@ -27,7 +27,11 @@ class Observation:
 
 @dataclass(frozen=True, slots=True)
 class TimeWindow:
-    """An allowed viewing window within a single day (start inclusive, end exclusive)."""
+    """An allowed viewing window (start inclusive, end exclusive).
+
+    ``start > end`` crosses midnight and belongs to the day it starts on;
+    ``start == end`` covers 24 hours.
+    """
 
     start: time
     end: time
@@ -35,9 +39,49 @@ class TimeWindow:
 
 @dataclass(frozen=True, slots=True)
 class Schedule:
-    """Allowed windows per weekday (0 = Monday). A day without windows is fully blocked."""
+    """Allowed windows per weekday (0 = Monday) with per-date exceptions.
+
+    A day without windows is fully blocked. ``special_days`` replaces the weekday rule for a date;
+    an empty tuple blocks that date.
+    """
 
     windows: dict[int, tuple[TimeWindow, ...]] = field(default_factory=dict)
+    special_days: dict[date, tuple[TimeWindow, ...]] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
+class AppTarget:
+    app_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class InputTarget:
+    input_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class ChannelTarget:
+    channel_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class HomeTarget:
+    pass
+
+
+type Target = AppTarget | InputTarget | ChannelTarget | HomeTarget
+
+
+@dataclass(frozen=True, slots=True)
+class EscalationSettings:
+    """Timings and safeguards of the enforcement ladder."""
+
+    debounce: timedelta = timedelta(seconds=3)
+    grace: timedelta = timedelta(seconds=15)
+    power_off_cap: int = 3
+    cap_window: timedelta = timedelta(minutes=5)
+    cap_pause: timedelta = timedelta(minutes=10)
+    message_repeat: timedelta = timedelta(seconds=60)
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,23 +92,36 @@ class Policy:
     blocked_inputs: frozenset[str] = frozenset()
     blocked_channels: frozenset[str] = frozenset()
     allow_list_apps: frozenset[str] | None = None
+    always_allowed_apps: frozenset[str] = frozenset()
+    always_allowed_inputs: frozenset[str] = frozenset()
+    always_allowed_channels: frozenset[str] = frozenset()
+    fallback: Target | None = None
     warn_at_minutes: tuple[int, ...] = (10, 5)
+    escalation: EscalationSettings = field(default_factory=EscalationSettings)
 
 
 @dataclass(frozen=True, slots=True)
 class Usage:
-    """Viewing time consumed so far in the current day."""
+    """Viewing time consumed so far on one local calendar day."""
 
-    minutes_today: int = 0
+    day: date
+    watched_seconds: int = 0
     bonus_minutes: int = 0
 
 
 @dataclass(frozen=True, slots=True)
 class Override:
-    """A parent's temporary decision."""
+    """A parent's temporary decision: ``allow`` lifts time limits, else everything is blocked."""
 
     allow: bool
     until: datetime
+    created_at: datetime
+
+
+class LimitKind(StrEnum):
+    WINDOW = "window"
+    BUDGET = "budget"
+    OVERRIDE = "override"
 
 
 class BlockReason(StrEnum):
@@ -75,6 +132,10 @@ class BlockReason(StrEnum):
     CHANNEL_BLOCKED = "channel_blocked"
     OVERRIDE = "override"
 
+    @property
+    def is_time_limit(self) -> bool:
+        return self in (BlockReason.OUTSIDE_WINDOW, BlockReason.BUDGET_EXHAUSTED)
+
 
 @dataclass(frozen=True, slots=True)
 class Allow:
@@ -84,6 +145,7 @@ class Allow:
 @dataclass(frozen=True, slots=True)
 class Warn:
     minutes_left: int
+    limit: LimitKind
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,9 +156,19 @@ class Block:
 type Decision = Allow | Warn | Block
 
 
+class MessageKind(StrEnum):
+    TIME_WARNING = "time_warning"
+    TIME_UP = "time_up"
+    CONTENT_BLOCKED = "content_blocked"
+    POWERING_OFF = "powering_off"
+
+
 @dataclass(frozen=True, slots=True)
 class ShowMessage:
-    text: str
+    """An on-screen notice. The domain names the message; localized text is rendered elsewhere."""
+
+    kind: MessageKind
+    minutes_left: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
