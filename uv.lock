@@ -162,6 +162,18 @@ wheels = [
 ]
 
 [[package]]
+name = "aiowebostv"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/39/4a/1c2cfca0ebcad738404c99c84ec04f54817044ae95a7c000f14eb919f451/aiowebostv-1.1.0.tar.gz", hash = "sha256:1ff4ea1f0a99ab441edd62ef2f491fd326cd0971aeec2518e9031a987b7b909a", size = 29931, upload-time = "2026-11-11T21:33:56.143Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0e/da/5a90a982153dd920ac4abcded4c2ba4571d75a8e61dc17e6fb9113e0ef42/aiowebostv-1.1.0-py3-none-any.whl", hash = "sha256:a3218edd36986a6178a33b8f2f422f35e29992e598769855bd9fb8101bf6622f", size = 20928, upload-time = "2026-11-11T21:33:54.705Z" },
+]
+
+[[package]]
 name = "annotated-doc"
 version = "0.0.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1256,11 +1268,17 @@ name = "tvbalance-adapter-webos"
 version = "0.0.1"
 source = { editable = "adapters/webos" }
 dependencies = [
+    { name = "aiohttp" },
+    { name = "aiowebostv" },
     { name = "tvbalance" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tvbalance", editable = "engine" }]
+requires-dist = [
+    { name = "aiohttp", specifier = ">=3.9" },
+    { name = "aiowebostv", specifier = ">=1.1,<1.2" },
+    { name = "tvbalance", editable = "engine" },
+]
 
 [[package]]
 name = "tvbalance-client"

@@ -4,10 +4,13 @@ version = "0.0.1"
 description = "TVBalance adapter for LG webOS"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
-dependencies = ["tvbalance"]
+dependencies = ["tvbalance", "aiohttp>=3.9", "aiowebostv>=1.1,<1.2"]
 
 [project.entry-points."tvbalance.adapters"]
 webos = "tvbalance_adapter_webos:PLUGIN"
+
+[project.entry-points."tvbalance.adapter_harnesses"]
+webos = "tvbalance_adapter_webos.testing:harness"
 
 [build-system]
 requires = ["hatchling"]

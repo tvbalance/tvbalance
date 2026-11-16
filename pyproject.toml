@@ -44,7 +44,7 @@ target-version = "py313"
 select = ["E", "F", "I", "B", "UP", "ASYNC", "RUF"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["tvbalance", "tvbalance_client"]
+known-first-party = ["tvbalance", "tvbalance_client", "tvbalance_adapter_webos"]
 
 [tool.mypy]
 strict = true
@@ -56,4 +56,8 @@ explicit_package_bases = true
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["engine/tests", "client/tests", "adapters"]
-addopts = "-q --basetemp=.tmp/pytest"
+addopts = "-q --basetemp=.tmp/pytest -m \"not hardware and not hardware_actions\""
+markers = [
+  "hardware: read-only checks against a real TV (needs TVBALANCE_WEBOS_HOST and TVBALANCE_WEBOS_KEY)",
+  "hardware_actions: commands that change the real TV; run only in a supervised manual session",
+]
