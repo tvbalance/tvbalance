@@ -1,4 +1,4 @@
-"""Shared helpers for the supervisor tests: a controllable clock, scripted TVs and a harness."""
+"""Shared helpers for the engine tests: a controllable clock, scripted TVs and a harness."""
 
 from __future__ import annotations
 

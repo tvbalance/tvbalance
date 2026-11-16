@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi.testclient import TestClient
+from support import FAST, ScriptedTV, eventually, plugin_for, watching
 
 from tvbalance.api.app import create_app
 from tvbalance.config import EngineConfig
@@ -37,11 +38,6 @@ def test_without_a_config_no_storage_is_opened(tmp_path: Path) -> None:
 
 
 def test_the_supervisor_watches_paired_tvs_while_the_app_runs(tmp_path: Path) -> None:
-    import sys
-
-    sys.path.insert(0, str(Path(__file__).parents[1] / "supervision"))
-    from support import FAST, ScriptedTV, eventually, plugin_for, watching
-
     config = EngineConfig(data_dir=tmp_path / "data")
     tv = ScriptedTV(observation=watching())
     app = create_app(plugins={"fake": plugin_for(tv)}, config=config, supervisor_settings=FAST)
