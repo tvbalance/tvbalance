@@ -37,5 +37,12 @@ one verifiable on real hardware. A simulator makes it testable in CI without a T
 - Hardware tests are excluded by default. `hardware` is read-only; `hardware_actions` runs only in a manual
   session. Host and key come from `TVBALANCE_WEBOS_HOST` / `TVBALANCE_WEBOS_KEY`, never from the repo.
 
+## Hardware verification (2026-11-16)
+Run against a real LG webOS TV: pairing, the `hardware` read-only tests and every `hardware_actions` command
+(message, home, channel change, power off) behaved as expected, confirmed by eye.
+- `SetChannel` works with `openChannel` alone, both from the Home screen and from live TV; no need to launch
+  live TV first.
+- SSDP discovery found no TV on the test machine (network or firewall); pairing by address works.
+
 ## Commit sequence
 Plan; sdk changes; simulator; mapping; adapter; pairing; discovery; contract + hardware markers; user guide.

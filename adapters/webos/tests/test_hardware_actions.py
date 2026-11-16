@@ -2,7 +2,7 @@
 
     TVBALANCE_WEBOS_HOST=... TVBALANCE_WEBOS_KEY=... uv run pytest -m hardware_actions -s
 
-Each step waits for the person in front of the TV, who confirms what they saw.
+Run one test at a time (``-k``) and check on the TV what happened; ``test_power_off`` goes last.
 """
 
 import asyncio

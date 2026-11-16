@@ -18,7 +18,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M1 | Domain: schedules, budget, `evaluate`, `plan_actions` (done, see M1-domain.md) | skeleton |
 | M2 | Persistence, configuration, migrations (SQLite, Alembic) | skeleton |
 | M3 | Supervisor, enforcement loop, event bus | M1, M2 |
-| M4 | LG webOS adapter (done, see M4-webos.md; hardware smoke test pending) | skeleton |
+| M4 | LG webOS adapter (done and verified on hardware, see M4-webos.md) | skeleton |
 | M5 | API v1, authentication, WebSocket events | M2, M3 |
 | M6 | Web UI: onboarding, rules, dashboard, settings | M5 |
 | M7 | Discovery and guided pairing wizard | M4, M5 |
