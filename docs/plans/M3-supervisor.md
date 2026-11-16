@@ -31,8 +31,9 @@ five locales have the same keys and placeholders.
 
 ## Enforcement state persistence
 - Migration `0002_enforcement_state`: `enforcement_state(tv_id PK, FK to tvs with cascade, state JSON, updated_at)`.
-- `infra/db/state_codec.py`: versioned `encode_state` / `decode_state`. An unreadable document yields a default
-  `EnforcementState` and a log entry.
+- `infra/db/state_codec.py`: versioned `encode_state` / `decode_state`. The codec raises `StateDecodeError` on an
+  unreadable document; `SqliteEnforcementStateStore.load` turns that into a default `EnforcementState`
+  and a log entry.
 - Port `EnforcementStateStore` (`load` returns the default when absent, `save` upserts), exposed as
   `Storage.enforcement`. The worker saves only when the state changed.
 

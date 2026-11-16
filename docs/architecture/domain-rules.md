@@ -40,3 +40,21 @@ once a household has configured rules.
 Messages are named (`MessageKind`), never rendered here; localized text is added by the supervisor/API layers.
 `validate_policy` reports configuration problems (blocked fallback, conflicting lists, bad thresholds,
 overlapping windows) without rejecting the configuration.
+
+## Supervision (`tvbalance.app`)
+
+One `TvWorker` per enabled TV whose adapter is installed, started by the `Supervisor` with the app.
+
+- Tick (every 2 s, or at once on a push from the adapter): observe, bill the time since the last tick
+  (`accrue`, capped at 120 s), `evaluate`, `step`, persist the enforcement state, then run the actions with
+  localized texts and publish the events. A TV without a policy is only observed.
+- Time while the TV is unreachable is never billed. Failed commands are logged and do not stop the others;
+  an `execute` timeout drops the session.
+- Connection errors back off from 2 s to 60 s. A refused key (`TVPairingError`) or unreadable stored
+  credentials report `pairing_lost` and park the worker until `Supervisor.refresh`, so a rejected key never
+  makes the TV show a pairing prompt in a loop.
+- Events (stored in the event log and fanned out by `EventBus` to bounded queues): `time_warning`, `blocked`,
+  `redirected`, `powered_off`, `enforcement_paused`, `enforcement_unavailable`, plus `tv_unreachable` (once per
+  outage, only if the TV was on), `tv_reachable` and `pairing_lost`.
+- Texts live in `locales/{en,it,de,fr,es}.json`; the `language` setting picks one (English as fallback) and the
+  `timezone` setting defines the household day (the system zone when unset or invalid).
