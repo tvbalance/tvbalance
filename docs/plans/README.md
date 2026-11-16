@@ -1,0 +1,46 @@
+# Implementation plans
+
+Each module below gets its own plan file in this folder (`M<n>-<slug>.md`) before any code is written.
+A plan lists the goal, the files touched, the tests to write first, and a verification checklist.
+Modules are implemented one at a time, test first, with small commits.
+
+## Definition of done (every module)
+
+- Tests written first and passing; `ruff`, `mypy` and the web linters clean.
+- Public behavior documented (user guide or developer docs) and translated strings present in all five locales.
+- `engine/openapi.json` and the generated web API types regenerated when the API changes.
+- CI green.
+
+## Modules
+
+| # | Module | Depends on |
+|---|---|---|
+| M1 | Domain: schedules, budget, `evaluate`, `plan_actions` | skeleton |
+| M2 | Persistence, configuration, migrations (SQLite, Alembic) | skeleton |
+| M3 | Supervisor, enforcement loop, event bus | M1, M2 |
+| M4 | LG webOS adapter (port the lessons in `docs/discovery/poc-lessons.md`) | skeleton |
+| M5 | API v1, authentication, WebSocket events | M2, M3 |
+| M6 | Web UI: onboarding, rules, dashboard, settings | M5 |
+| M7 | Discovery and guided pairing wizard | M4, M5 |
+| M8 | Full Home Assistant integration: entities, admin-only services, events, blueprints | M5 |
+| M9 | Add-on release, Supervisor discovery, ghcr publishing | M5 |
+| M10 | Web Push notifications | M5, M6 |
+| M11 | Licensing and entitlements, checkout | M2 |
+| M12 | Roku adapter (feasibility spike first) | skeleton |
+| M13 | Google/Android TV adapter (feasibility spike first) | skeleton |
+| M14 | Samsung Tizen adapter (feasibility spike first) | skeleton |
+| M15 | EPG catalog and channel matching (Pro, private repository) | M11 |
+| M16 | Profiles and calendar, advanced budgets, reports (Pro) | M1, M11 |
+| M17 | Documentation site and user guide in five languages | any |
+
+## Decisions that deviate from the first skeleton plan
+
+- The shared image uses `python:3.13-slim` instead of the Home Assistant base images, so the same image serves
+  the Add-on and standalone Docker, for amd64 and arm64.
+- The Add-on does not declare Supervisor `discovery` yet; it needs a matching integration flow (M8/M9).
+- shadcn/ui components are added per need during M6; the skeleton only ships Tailwind and a class-name helper.
+- TypeScript is pinned to 5.9 because `openapi-typescript` does not support 6 or 7 yet.
+- Home Assistant tests need a C toolchain on Windows, so locally they run in a Linux container
+  (`python:3.13` and `python:3.14`); CI runs them natively.
+- The Home Assistant integration lives in `ha/custom_components/tvbalance`; HACS needs it at the root of a
+  dedicated repository, so releases mirror it (see M9).

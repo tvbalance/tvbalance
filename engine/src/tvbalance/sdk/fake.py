@@ -102,6 +102,7 @@ PLUGIN = AdapterPlugin(
         display_name="Fake TV (testing)",
         maturity=Maturity.EXPERIMENTAL,
         capabilities=frozenset(Capability),
+        testing_only=True,
     ),
     factory=_factory,
     discover=_discover,

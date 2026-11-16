@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.fixture
 def client() -> TestClient:
-    return TestClient(create_app(plugins={"fake": PLUGIN}))
+    return TestClient(create_app(plugins={"fake": PLUGIN}, include_testing=True))
 
 
 def test_health(client: TestClient) -> None:
@@ -58,3 +58,8 @@ def test_web_ui_is_served_after_the_api_routes(tmp_path: Path) -> None:
 def test_missing_web_dir_leaves_only_the_api(tmp_path: Path) -> None:
     client = TestClient(create_app(plugins={}, web_dir=tmp_path / "absent"))
     assert client.get("/").status_code == 404
+
+
+def test_testing_only_adapters_are_hidden_by_default() -> None:
+    client = TestClient(create_app(plugins={"fake": PLUGIN}))
+    assert client.get("/api/v1/info").json()["adapters"] == []

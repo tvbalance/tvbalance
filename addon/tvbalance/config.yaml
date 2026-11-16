@@ -1,0 +1,19 @@
+name: TVBalance
+version: "0.0.1"
+slug: tvbalance
+description: Healthy screen-time rules for your family's smart TV
+url: https://github.com/tvbalance/tvbalance
+arch:
+  - amd64
+  - aarch64
+image: ghcr.io/tvbalance/tvbalance-addon-{arch}
+init: false
+# TV discovery (SSDP/mDNS/DIAL) and Wake-on-LAN need the host network.
+host_network: true
+ingress: true
+ingress_port: 8765
+panel_icon: mdi:television-play
+panel_title: TVBalance
+watchdog: http://[HOST]:[PORT:8765]/api/v1/health
+startup: application
+boot: auto

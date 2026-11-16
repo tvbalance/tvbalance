@@ -35,6 +35,7 @@ class AdapterInfo:
     display_name: str
     maturity: Maturity
     capabilities: frozenset[Capability]
+    testing_only: bool = False  # hidden from end users (reference/fake adapters)
 
 
 @dataclass(frozen=True, slots=True)

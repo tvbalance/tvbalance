@@ -1,0 +1,14 @@
+name: Docs
+
+# Skeleton: the MkDocs Material site (5 languages) arrives with module M17.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "docs site not implemented yet"

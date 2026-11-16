@@ -16,12 +16,15 @@ API_VERSION = "1"
 
 
 def create_app(
-    plugins: dict[str, AdapterPlugin] | None = None, web_dir: Path | None = None
+    plugins: dict[str, AdapterPlugin] | None = None,
+    web_dir: Path | None = None,
+    include_testing: bool = False,
 ) -> FastAPI:
     """Build the app.
 
     Pass `plugins` to inject adapters (tests); the default loads entry points.
     `web_dir` is the built web UI, served at `/` after the API routes.
+    Testing-only adapters (the fake TV) are listed only when `include_testing` is set.
     """
     app = FastAPI(title="TVBalance Engine", version=__version__)
     registered = load_plugins() if plugins is None else plugins
@@ -44,6 +47,7 @@ def create_app(
                     capabilities=sorted(p.info.capabilities),
                 )
                 for p in sorted(registered.values(), key=lambda p: p.info.id)
+                if include_testing or not p.info.testing_only
             ],
         )
 
