@@ -143,7 +143,7 @@ def plan_actions(
             return [ShowMessage(MessageKind.TIME_WARNING, decision.minutes_left)]
         return []
 
-    time_limit = decision.reason.is_time_limit or decision.reason is BlockReason.OVERRIDE
+    time_limit = decision.reason.is_time_based
     if level is EnforcementLevel.NOTIFY:
         kind = MessageKind.TIME_UP if time_limit else MessageKind.CONTENT_BLOCKED
         return [ShowMessage(kind)] if can_message else []

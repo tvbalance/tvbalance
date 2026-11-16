@@ -136,6 +136,11 @@ class BlockReason(StrEnum):
     def is_time_limit(self) -> bool:
         return self in (BlockReason.OUTSIDE_WINDOW, BlockReason.BUDGET_EXHAUSTED)
 
+    @property
+    def is_time_based(self) -> bool:
+        """Blocks about *when* the TV may be used (limits and parent overrides), not *what*."""
+        return self.is_time_limit or self is BlockReason.OVERRIDE
+
 
 @dataclass(frozen=True, slots=True)
 class Allow:
@@ -205,3 +210,43 @@ class EnforcementLevel(StrEnum):
     NOTIFY = "notify"
     REDIRECT = "redirect"
     POWER_OFF = "power_off"
+
+
+@dataclass(frozen=True, slots=True)
+class TimeWarning:
+    minutes_left: int
+    limit: LimitKind
+
+
+@dataclass(frozen=True, slots=True)
+class Blocked:
+    reason: BlockReason
+
+
+@dataclass(frozen=True, slots=True)
+class Redirected:
+    action: Action
+
+
+@dataclass(frozen=True, slots=True)
+class PoweredOff:
+    pass
+
+
+@dataclass(frozen=True, slots=True)
+class EnforcementPaused:
+    """Power-off cap reached: enforcement stands down until ``until``."""
+
+    until: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class EnforcementUnavailable:
+    """The TV cannot perform any rung that would stop the viewing."""
+
+    reason: BlockReason
+
+
+type DomainEvent = (
+    TimeWarning | Blocked | Redirected | PoweredOff | EnforcementPaused | (EnforcementUnavailable)
+)
