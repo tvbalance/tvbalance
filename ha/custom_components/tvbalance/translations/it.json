@@ -1,0 +1,18 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Collega TVBalance",
+        "description": "Inserisci l'indirizzo del tuo TVBalance Engine, ad esempio http://homeassistant.local:8765.",
+        "data": { "url": "URL dell'Engine", "token": "Token API (facoltativo)" }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile raggiungere TVBalance Engine.",
+      "invalid_response": "Il server ha risposto, ma non sembra un TVBalance Engine."
+    },
+    "abort": {
+      "already_configured": "Questo Engine è già configurato."
+    }
+  }
+}

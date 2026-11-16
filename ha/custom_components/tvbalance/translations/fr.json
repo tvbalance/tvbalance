@@ -1,0 +1,18 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connecter TVBalance",
+        "description": "Saisissez l'adresse de votre TVBalance Engine, par exemple http://homeassistant.local:8765.",
+        "data": { "url": "URL de l'Engine", "token": "Jeton API (facultatif)" }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre le TVBalance Engine.",
+      "invalid_response": "Le serveur répond, mais ne semble pas être un TVBalance Engine."
+    },
+    "abort": {
+      "already_configured": "Cet Engine est déjà configuré."
+    }
+  }
+}
