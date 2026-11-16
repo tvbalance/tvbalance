@@ -26,7 +26,7 @@ jobs:
       - run: uv run ruff format --check .
       - run: uv run mypy engine/src client/src adapters/webos/src adapters/roku/src adapters/androidtv/src adapters/samsung/src
       # Includes the OpenAPI drift test: engine/openapi.json must match the app.
-      - run: uv run pytest --cov=tvbalance.domain --cov-branch --cov-fail-under=95
+      - run: uv run pytest --cov=tvbalance.domain --cov=tvbalance.infra --cov-branch --cov-fail-under=95
 
   web:
     name: Web UI

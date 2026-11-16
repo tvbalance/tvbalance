@@ -15,6 +15,9 @@ directory, SQLAlchemy 2 async, Alembic migrations at startup, pairing keys encry
 `EngineConfig` (frozen dataclass: `host`, `port`, `web_dir`, `data_dir`) built by `EngineConfig.from_env`, with clear
 errors for invalid values. `data_dir` defaults to `./data` (`TVBALANCE_DATA_DIR`, `/data` in the Add-on).
 
+`create_app(config=...)` opens the storage in the FastAPI lifespan (so it shares uvicorn's event loop), runs the
+migrations, exposes it as `app.state.storage` and closes it at shutdown.
+
 ## Ports (`ports/storage.py`)
 `TvStore`, `PolicyStore`, `UsageStore` (atomic upserts, safe under concurrent calls), `OverrideStore`, `EventLog`,
 `SettingsStore`, grouped by `Storage`. `EventLog.append` has the same shape as `EventPublisher.publish`.
@@ -29,7 +32,9 @@ errors for invalid values. `data_dir` defaults to `./data` (`TVBALANCE_DATA_DIR`
   `db/migrate.py` running Alembic programmatically, without an `alembic.ini`.
 - `db/repositories.py`: SQLite implementations and `open_storage(config)`.
 - `secrets.py`: `SecretBox` (AES-GCM) with a locally generated key in `data_dir/secret.key`; adapter credentials
-  are stored encrypted and never appear in `repr` or logs.
+  are stored encrypted and never appear in `repr` or logs. If the key is lost, TVs are still listed with
+  `needs_pairing=True` and empty credentials instead of failing the whole listing; a damaged key file stops the
+  startup and is never overwritten.
 
 ## Out of scope
 Authentication (M5), enforcement-state persistence (M3 decides), data pruning, migration from the prototype.

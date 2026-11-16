@@ -17,7 +17,10 @@ def main() -> None:
     except ConfigError as ex:
         sys.exit(f"tvbalance: {ex}")
     uvicorn.run(
-        create_app(web_dir=config.web_dir), host=config.host, port=config.port, log_level="info"
+        create_app(web_dir=config.web_dir, config=config),
+        host=config.host,
+        port=config.port,
+        log_level="info",
     )
 
 

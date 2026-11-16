@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -9,6 +11,8 @@ from fastapi.staticfiles import StaticFiles
 
 from tvbalance import __version__
 from tvbalance.api.schemas import AdapterOut, HealthResponse, InfoResponse
+from tvbalance.config import EngineConfig
+from tvbalance.infra.db.repositories import open_storage
 from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.registry import load_plugins
 
@@ -19,14 +23,29 @@ def create_app(
     plugins: dict[str, AdapterPlugin] | None = None,
     web_dir: Path | None = None,
     include_testing: bool = False,
+    config: EngineConfig | None = None,
 ) -> FastAPI:
     """Build the app.
 
     Pass `plugins` to inject adapters (tests); the default loads entry points.
     `web_dir` is the built web UI, served at `/` after the API routes.
     Testing-only adapters (the fake TV) are listed only when `include_testing` is set.
+    With a `config` the storage is opened at startup (running the migrations) and closed at
+    shutdown; it is available as `app.state.storage`.
     """
-    app = FastAPI(title="TVBalance Engine", version=__version__)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        if config is None:
+            yield
+            return
+        app.state.storage = await open_storage(config)
+        try:
+            yield
+        finally:
+            await app.state.storage.close()
+
+    app = FastAPI(title="TVBalance Engine", version=__version__, lifespan=lifespan)
     registered = load_plugins() if plugins is None else plugins
 
     @app.get("/api/v1/health", response_model=HealthResponse, tags=["system"])

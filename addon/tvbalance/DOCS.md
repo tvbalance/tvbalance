@@ -18,7 +18,11 @@ The Engine listens on port 8765 (also used by Ingress).
 
 ## Data
 
-All data lives in the Add-on's `/data` folder and is included in Home Assistant backups.
+All data lives in the Add-on's `/data` folder and is included in Home Assistant backups:
+
+- `tvbalance.db`: your TVs, rules, usage history and events.
+- `secret.key`: the key that protects the stored TV credentials. Keep it together with the database: if
+  it is lost, the data stays but every TV has to be paired again.
 
 ## Support
 

@@ -52,6 +52,10 @@ python_version = "3.13"
 mypy_path = ["engine/src", "client/src", "adapters/webos/src", "adapters/roku/src", "adapters/androidtv/src", "adapters/samsung/src"]
 explicit_package_bases = true
 
+[tool.coverage.run]
+# SQLAlchemy's async layer runs its sync callbacks in greenlets.
+concurrency = ["greenlet", "thread"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"

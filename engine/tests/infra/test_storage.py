@@ -8,6 +8,7 @@ import pytest
 from tvbalance.config import EngineConfig
 from tvbalance.domain.models import AppTarget, Override, Policy, Usage
 from tvbalance.infra.db.repositories import open_storage
+from tvbalance.infra.secrets import SecretError
 from tvbalance.ports.storage import NotFoundError, Storage
 
 T0 = datetime(2026, 11, 16, 20, 0, tzinfo=UTC)
@@ -53,6 +54,14 @@ async def test_open_storage_creates_the_data_directory_and_files(config: EngineC
     await store.close()
     assert (config.data_dir / "tvbalance.db").is_file()
     assert (config.data_dir / "secret.key").is_file()
+
+
+async def test_a_damaged_key_file_stops_the_startup(config: EngineConfig) -> None:
+    config.data_dir.mkdir(parents=True)
+    (config.data_dir / "secret.key").write_bytes(b"damaged")
+    with pytest.raises(SecretError):
+        await open_storage(config)
+    assert (config.data_dir / "secret.key").read_bytes() == b"damaged"
 
 
 async def test_data_survives_closing_and_reopening(config: EngineConfig, clock: FixedClock) -> None:
