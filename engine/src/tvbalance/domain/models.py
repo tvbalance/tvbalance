@@ -197,3 +197,11 @@ class PowerOff:
 
 
 type Action = ShowMessage | GoHome | LaunchApp | SetInput | SetChannel | PowerOff
+
+
+class EnforcementLevel(StrEnum):
+    """Rungs of the escalation ladder, mildest first."""
+
+    NOTIFY = "notify"
+    REDIRECT = "redirect"
+    POWER_OFF = "power_off"
