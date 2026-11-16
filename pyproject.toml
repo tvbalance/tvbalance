@@ -54,4 +54,4 @@ explicit_package_bases = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["engine/tests", "client/tests", "adapters"]
-addopts = "-q"
+addopts = "-q --basetemp=.tmp/pytest"

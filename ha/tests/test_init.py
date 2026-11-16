@@ -1,4 +1,5 @@
 import aiohttp
+from custom_components.tvbalance.const import CONF_TOKEN, CONF_URL, DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -7,15 +8,11 @@ from pytest_homeassistant_custom_component.components.diagnostics import (
 )
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 
-from custom_components.tvbalance.const import CONF_TOKEN, CONF_URL, DOMAIN
-
 from .test_config_flow import INFO, URL
 
 
 def _entry() -> MockConfigEntry:
-    return MockConfigEntry(
-        domain=DOMAIN, unique_id=URL, data={CONF_URL: URL, CONF_TOKEN: "secret"}
-    )
+    return MockConfigEntry(domain=DOMAIN, unique_id=URL, data={CONF_URL: URL, CONF_TOKEN: "secret"})
 
 
 async def test_setup_and_unload(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:

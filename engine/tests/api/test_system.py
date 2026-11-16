@@ -46,3 +46,15 @@ def test_openapi_document_is_up_to_date() -> None:
     assert json.loads(committed) == json.loads(module.render()), (
         "openapi.json is stale: run `uv run python engine/scripts/export_openapi.py`"
     )
+
+
+def test_web_ui_is_served_after_the_api_routes(tmp_path: Path) -> None:
+    (tmp_path / "index.html").write_text("<h1>ui</h1>", encoding="utf-8")
+    client = TestClient(create_app(plugins={}, web_dir=tmp_path))
+    assert client.get("/").text == "<h1>ui</h1>"
+    assert client.get("/api/v1/health").json() == {"status": "ok"}
+
+
+def test_missing_web_dir_leaves_only_the_api(tmp_path: Path) -> None:
+    client = TestClient(create_app(plugins={}, web_dir=tmp_path / "absent"))
+    assert client.get("/").status_code == 404

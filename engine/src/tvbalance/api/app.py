@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from tvbalance import __version__
 from tvbalance.api.schemas import AdapterOut, HealthResponse, InfoResponse
@@ -12,8 +15,14 @@ from tvbalance.sdk.registry import load_plugins
 API_VERSION = "1"
 
 
-def create_app(plugins: dict[str, AdapterPlugin] | None = None) -> FastAPI:
-    """Build the app. Pass `plugins` to inject adapters (tests); default loads entry points."""
+def create_app(
+    plugins: dict[str, AdapterPlugin] | None = None, web_dir: Path | None = None
+) -> FastAPI:
+    """Build the app.
+
+    Pass `plugins` to inject adapters (tests); the default loads entry points.
+    `web_dir` is the built web UI, served at `/` after the API routes.
+    """
     app = FastAPI(title="TVBalance Engine", version=__version__)
     registered = load_plugins() if plugins is None else plugins
 
@@ -37,5 +46,8 @@ def create_app(plugins: dict[str, AdapterPlugin] | None = None) -> FastAPI:
                 for p in sorted(registered.values(), key=lambda p: p.info.id)
             ],
         )
+
+    if web_dir is not None and web_dir.is_dir():
+        app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")
 
     return app

@@ -1,11 +1,10 @@
 import aiohttp
+from custom_components.tvbalance.const import CONF_TOKEN, CONF_URL, DOMAIN
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
-
-from custom_components.tvbalance.const import CONF_TOKEN, CONF_URL, DOMAIN
 
 URL = "http://engine.local:8765"
 INFO = {
