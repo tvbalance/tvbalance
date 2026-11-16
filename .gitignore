@@ -35,3 +35,4 @@ Thumbs.db
 # Lockfile must be tracked (a global rule may ignore *.lock)
 !uv.lock
 .tmp/
+!package-lock.json

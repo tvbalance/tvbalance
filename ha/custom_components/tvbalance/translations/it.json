@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Collega TVBalance",
-        "description": "Inserisci l'indirizzo del tuo TVBalance Engine, ad esempio http://homeassistant.local:8765.",
+        "description": "Inserisci l'indirizzo del tuo TVBalance Engine (porta predefinita 8765).",
         "data": { "url": "URL dell'Engine", "token": "Token API (facoltativo)" }
       }
     },

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect to TVBalance",
-        "description": "Enter the address of your TVBalance Engine, for example http://homeassistant.local:8765.",
+        "description": "Enter the address of your TVBalance Engine (default port 8765).",
         "data": { "url": "Engine URL", "token": "API token (optional)" }
       }
     },
