@@ -15,7 +15,7 @@ Modules are implemented one at a time, test first, with small commits.
 
 | # | Module | Depends on |
 |---|---|---|
-| M1 | Domain: schedules, budget, `evaluate`, `plan_actions` | skeleton |
+| M1 | Domain: schedules, budget, `evaluate`, `plan_actions` (done, see M1-domain.md) | skeleton |
 | M2 | Persistence, configuration, migrations (SQLite, Alembic) | skeleton |
 | M3 | Supervisor, enforcement loop, event bus | M1, M2 |
 | M4 | LG webOS adapter (port the lessons in `docs/discovery/poc-lessons.md`) | skeleton |
@@ -44,3 +44,4 @@ Modules are implemented one at a time, test first, with small commits.
   (`python:3.13` and `python:3.14`); CI runs them natively.
 - The Home Assistant integration lives in `ha/custom_components/tvbalance`; HACS needs it at the root of a
   dedicated repository, so releases mirror it (see M9).
+- On-screen texts are named by `MessageKind` in the domain; localized rendering is part of M3/M5.

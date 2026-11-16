@@ -44,13 +44,19 @@ users without Home Assistant.
   number or name where the brand exposes it, and an allow-list mode.
 - Semantics proven in the proof of concept: a day without windows is fully blocked; windows crossing midnight
   belong to their starting day; debounce; no ping-pong between fallback targets.
+- Always-allowed apps, inputs and channels (for example the parents' news channel): never subject to windows or
+  budget and they do not consume the daily budget.
 
 ### F3. Time (Free basic / Pro advanced)
-- Free: one daily budget per TV, pre-expiry warnings (for example 10 and 5 minutes), manual bonuses.
+- Free: one daily budget per TV (all time the TV is on, reset at local midnight, except always-allowed content),
+  pre-expiry warnings (for example 10 and 5 minutes), manual bonuses.
 - Pro: per-app or per-category budgets, per-weekday budgets, rollover of unused minutes, per-profile budgets.
 
 ### F4. Enforcement (Free)
 - Configurable escalation: on-screen warning, redirect (home, allowed app or channel), power off.
+  When time is up the TV is redirected to a configured always-allowed fallback (so parents can keep watching),
+  otherwise powered off; blocked content is redirected immediately to the fallback or home.
+- Parent overrides: "allow for N minutes" lifts time limits only; a block override ("dinner pause") stops everything.
 - Protections: cooldowns, cap on repeated power-offs, no loops.
 - Circumvention coverage in v1:
   - input/app switching with the remote and powering on outside the window are detected and corrected;
