@@ -89,6 +89,9 @@ class SqliteTvStore:
     async def assign_policy(self, tv_id: str, policy_id: int | None) -> None:
         await self._update(tv_id, policy_id=policy_id)
 
+    async def set_enabled(self, tv_id: str, enabled: bool) -> None:
+        await self._update(tv_id, enabled=enabled)
+
     async def remove(self, tv_id: str) -> bool:
         async with self._engine.begin() as conn:
             result = await conn.execute(delete(tables.tvs).where(tables.tvs.c.id == tv_id))

@@ -11,8 +11,13 @@ from fastapi.staticfiles import StaticFiles
 
 from tvbalance import __version__
 from tvbalance.api.schemas import AdapterOut, HealthResponse, InfoResponse
+from tvbalance.app.events import EventBus
+from tvbalance.app.status import SupervisorSettings
+from tvbalance.app.supervisor import Supervisor
 from tvbalance.config import EngineConfig
+from tvbalance.infra.clock import SystemClock
 from tvbalance.infra.db.repositories import open_storage
+from tvbalance.ports.services import Clock
 from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.registry import load_plugins
 
@@ -24,6 +29,8 @@ def create_app(
     web_dir: Path | None = None,
     include_testing: bool = False,
     config: EngineConfig | None = None,
+    clock: Clock | None = None,
+    supervisor_settings: SupervisorSettings | None = None,
 ) -> FastAPI:
     """Build the app.
 
@@ -31,7 +38,9 @@ def create_app(
     `web_dir` is the built web UI, served at `/` after the API routes.
     Testing-only adapters (the fake TV) are listed only when `include_testing` is set.
     With a `config` the storage is opened at startup (running the migrations) and closed at
-    shutdown; it is available as `app.state.storage`.
+    shutdown; it is available as `app.state.storage`, next to the event bus (`app.state.events`)
+    and the supervisor that watches every paired TV (`app.state.supervisor`). `clock` and
+    `supervisor_settings` let tests control time and pacing.
     """
 
     @asynccontextmanager
@@ -39,14 +48,22 @@ def create_app(
         if config is None:
             yield
             return
-        app.state.storage = await open_storage(config)
+        clock_ = clock or SystemClock()
+        storage = await open_storage(config, clock_)
+        app.state.storage = storage
+        app.state.events = EventBus(storage.events)
+        app.state.supervisor = Supervisor(
+            storage, registered, app.state.events, clock_, supervisor_settings
+        )
         try:
+            await app.state.supervisor.start()
             yield
         finally:
-            await app.state.storage.close()
+            await app.state.supervisor.stop()
+            await storage.close()
 
-    app = FastAPI(title="TVBalance Engine", version=__version__, lifespan=lifespan)
     registered = load_plugins() if plugins is None else plugins
+    app = FastAPI(title="TVBalance Engine", version=__version__, lifespan=lifespan)
 
     @app.get("/api/v1/health", response_model=HealthResponse, tags=["system"])
     async def health() -> HealthResponse:

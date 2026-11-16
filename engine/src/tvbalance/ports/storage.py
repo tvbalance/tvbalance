@@ -62,6 +62,8 @@ class TvStore(Protocol):
 
     async def assign_policy(self, tv_id: str, policy_id: int | None) -> None: ...
 
+    async def set_enabled(self, tv_id: str, enabled: bool) -> None: ...
+
     async def remove(self, tv_id: str) -> bool:
         """Delete the TV with its usage and overrides; events are kept without the link."""
         ...
@@ -126,12 +128,27 @@ class EnforcementStateStore(Protocol):
 
 
 class Storage(Protocol):
-    tvs: TvStore
-    policies: PolicyStore
-    usage: UsageStore
-    overrides: OverrideStore
-    events: EventLog
-    settings: SettingsStore
-    enforcement: EnforcementStateStore
+    """The stores are read-only attributes, so implementations may narrow their types."""
+
+    @property
+    def tvs(self) -> TvStore: ...
+
+    @property
+    def policies(self) -> PolicyStore: ...
+
+    @property
+    def usage(self) -> UsageStore: ...
+
+    @property
+    def overrides(self) -> OverrideStore: ...
+
+    @property
+    def events(self) -> EventLog: ...
+
+    @property
+    def settings(self) -> SettingsStore: ...
+
+    @property
+    def enforcement(self) -> EnforcementStateStore: ...
 
     async def close(self) -> None: ...
