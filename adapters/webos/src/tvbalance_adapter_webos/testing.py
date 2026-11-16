@@ -39,7 +39,7 @@ APPS = [
 
 _ACTION_URIS = {
     "system.notifications/createToast",
-    "com.webos.applicationManager/launch",
+    "system.launcher/launch",
     "tv/switchInput",
     "tv/openChannel",
     "system/turnOff",
@@ -76,7 +76,7 @@ class SimulatedWebOsTV:
     _runner: web.AppRunner | None = field(default=None, repr=False)
     _sockets: set[web.WebSocketResponse] = field(default_factory=set, repr=False)
     _subs: list[_Subscription] = field(default_factory=list, repr=False)
-    _answer: asyncio.Future[bool] | None = field(default=None, repr=False)
+    _prompts: list[asyncio.Future[bool]] = field(default_factory=list, repr=False)
 
     async def start(self) -> None:
         app = web.Application()
@@ -91,6 +91,7 @@ class SimulatedWebOsTV:
 
     async def stop(self) -> None:
         _client.SIMULATED_PORTS.pop(self.host, None)
+        self.answer_prompt(False)  # a held prompt would otherwise block the server shutdown
         await self.drop()
         if self._runner is not None:
             await self._runner.cleanup()
@@ -104,9 +105,11 @@ class SimulatedWebOsTV:
         self._subs.clear()
 
     def answer_prompt(self, accept: bool) -> None:
-        """Resolve a pairing prompt held with ``pairing_prompt = "hold"``."""
-        if self._answer is not None and not self._answer.done():
-            self._answer.set_result(accept)
+        """Answer held prompts, and any prompt shown from now on."""
+        self.pairing_prompt = "accept" if accept else "reject"
+        for prompt in self._prompts:
+            if not prompt.done():
+                prompt.set_result(accept)
 
     async def set_power(self, power: Power) -> None:
         self.power_state = POWER_STATES[power]
@@ -176,45 +179,48 @@ class SimulatedWebOsTV:
             payload = self._payload(uri, {}, subscribing=True)
             await sub.ws.send_json({"type": "response", "id": sub.msg_id, "payload": payload})
 
-    async def _register(self, ws: web.WebSocketResponse, msg: dict[str, Any]) -> bool:
+    async def _register(self, ws: web.WebSocketResponse, msg: dict[str, Any]) -> None:
         key = (msg.get("payload") or {}).get("client-key")
         self.registered_keys.append(key)
         if key == self.client_key:
             await ws.send_json({"type": "registered", "id": msg["id"], "payload": {}})
-            return True
+            return
         prompt = {"pairingType": "PROMPT", "returnValue": True}
         await ws.send_json({"type": "response", "id": msg["id"], "payload": prompt})
         if self.pairing_prompt == "hold":
-            self._answer = asyncio.get_running_loop().create_future()
-            accepted = await self._answer
+            answer = asyncio.get_running_loop().create_future()
+            self._prompts.append(answer)
+            accepted = await answer
         else:
             accepted = self.pairing_prompt == "accept"
         if not accepted:
             await ws.send_json({"type": "error", "id": msg["id"], "error": "403 User denied"})
-            return False
+            await ws.close()
+            return
         granted = {"client-key": self.client_key}
         await ws.send_json({"type": "registered", "id": msg["id"], "payload": granted})
-        return True
 
     async def _main(self, request: web.Request) -> web.WebSocketResponse:
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         self._sockets.add(ws)
-        async for raw in ws:
-            if raw.type is not WSMsgType.TEXT:
-                break
-            msg = raw.json()
-            if msg["type"] == "hello":
-                hello = {"type": "hello", "id": "hello", "payload": {"protocolVersion": 1}}
-                await ws.send_json(hello)
-            elif msg["type"] == "register":
-                if not await self._register(ws, msg):
+        registrations: list[asyncio.Task[None]] = []  # a held prompt must not block reading
+        try:
+            async for raw in ws:
+                if raw.type is not WSMsgType.TEXT:
                     break
-            elif self.mute:
-                continue
-            else:
-                await self._respond(ws, msg)
-        self._sockets.discard(ws)
+                msg = raw.json()
+                if msg["type"] == "hello":
+                    hello = {"type": "hello", "id": "hello", "payload": {"protocolVersion": 1}}
+                    await ws.send_json(hello)
+                elif msg["type"] == "register":
+                    registrations.append(asyncio.create_task(self._register(ws, msg)))
+                elif not self.mute:
+                    await self._respond(ws, msg)
+        finally:
+            for task in registrations:
+                task.cancel()
+            self._sockets.discard(ws)
         return ws
 
     async def _input(self, request: web.Request) -> web.WebSocketResponse:

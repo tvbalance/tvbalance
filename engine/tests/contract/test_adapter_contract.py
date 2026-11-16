@@ -4,7 +4,8 @@ Adapters listed in IMPLEMENTED must pass the behavioral tests. The others are de
 their behavioral tests are xfail(strict), so finishing an adapter forces it into IMPLEMENTED.
 """
 
-from contextlib import AbstractAsyncContextManager
+from collections.abc import AsyncIterator
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 
 import pytest
 
@@ -25,11 +26,21 @@ from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.registry import load_plugins
 from tvbalance.sdk.types import AdapterConfig, AppInfo, Capability, Maturity, PairingState
 
-IMPLEMENTED = {"fake"}
+IMPLEMENTED = {"fake", "webos"}
 
 PLUGINS = load_plugins()
 HARNESSES = load_harnesses()
 CONFIG = AdapterConfig(host="127.0.0.1", credentials={})
+
+
+@asynccontextmanager
+async def _config(plugin_id: str) -> AsyncIterator[AdapterConfig]:
+    """The harness TV's config when the adapter has one, else a placeholder."""
+    if plugin_id in HARNESSES:
+        async with HARNESSES[plugin_id]() as tv:
+            yield tv.config
+    else:
+        yield CONFIG
 
 
 def _simulated(plugin_id: str) -> AbstractAsyncContextManager[SimulatedTV]:
@@ -76,37 +87,40 @@ def _plugin(plugin_id: str) -> AdapterPlugin:
 
 @pytest.mark.parametrize("plugin_id", BEHAVIORAL)
 async def test_connect_observe_close(plugin_id: str) -> None:
-    adapter = _plugin(plugin_id).factory(CONFIG)
-    await adapter.connect()
-    obs = await adapter.observe()
-    assert isinstance(obs, Observation)
-    assert obs.observed_at.tzinfo is not None, "observations must carry timezone-aware times"
-    await adapter.close()
-    await adapter.close()  # closing twice must be safe
+    async with _config(plugin_id) as config:
+        adapter = _plugin(plugin_id).factory(config)
+        await adapter.connect()
+        obs = await adapter.observe()
+        assert isinstance(obs, Observation)
+        assert obs.observed_at.tzinfo is not None, "observations must carry timezone-aware times"
+        await adapter.close()
+        await adapter.close()  # closing twice must be safe
 
 
 @pytest.mark.parametrize("plugin_id", BEHAVIORAL)
 async def test_inventory_matches_declared_capabilities(plugin_id: str) -> None:
     plugin = _plugin(plugin_id)
-    adapter = plugin.factory(CONFIG)
-    await adapter.connect()
-    if Capability.LIST_APPS in plugin.info.capabilities:
-        apps = await adapter.list_apps()
-        assert all(isinstance(a, AppInfo) and a.app_id for a in apps)
-    await adapter.close()
+    async with _config(plugin_id) as config:
+        adapter = plugin.factory(config)
+        await adapter.connect()
+        if Capability.LIST_APPS in plugin.info.capabilities:
+            apps = await adapter.list_apps()
+            assert all(isinstance(a, AppInfo) and a.app_id for a in apps)
+        await adapter.close()
 
 
 @pytest.mark.parametrize("plugin_id", BEHAVIORAL)
 async def test_pairing_flow_reaches_a_terminal_state(plugin_id: str) -> None:
-    flow = _plugin(plugin_id).factory(CONFIG).pairing()
-    state = await flow.start()
-    for _ in range(3):
-        if state in {PairingState.COMPLETED, PairingState.FAILED}:
-            break
-        state = await flow.poll()
-    assert state in {PairingState.COMPLETED, PairingState.FAILED}
-    if state is PairingState.COMPLETED:
-        assert flow.credentials()
+    async with _config(plugin_id) as config:
+        flow = _plugin(plugin_id).factory(config).pairing()
+        state = await flow.start()
+        for _ in range(3):
+            if state in {PairingState.COMPLETED, PairingState.FAILED}:
+                break
+            state = await flow.poll()
+        assert state in {PairingState.COMPLETED, PairingState.FAILED}
+        if state is PairingState.COMPLETED:
+            assert flow.credentials()
 
 
 @pytest.mark.parametrize("plugin_id", BEHAVIORAL)
