@@ -89,3 +89,11 @@ settings = Table(
     Column("key", String, primary_key=True),
     Column("value", JSON, nullable=False),
 )
+
+enforcement_state = Table(
+    "enforcement_state",
+    metadata,
+    Column("tv_id", ForeignKey("tvs.id", ondelete="CASCADE"), primary_key=True),
+    Column("state", JSON, nullable=False),
+    Column("updated_at", UtcDateTime, nullable=False),
+)

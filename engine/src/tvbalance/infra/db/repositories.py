@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import uuid
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -14,15 +15,19 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from tvbalance.config import EngineConfig
+from tvbalance.domain.enforcement import EnforcementState
 from tvbalance.domain.models import Override, Policy, Usage
 from tvbalance.infra.clock import SystemClock
 from tvbalance.infra.db import tables
 from tvbalance.infra.db.engine import create_engine
 from tvbalance.infra.db.migrate import upgrade_to_head
 from tvbalance.infra.db.policy_codec import VERSION, decode_policy, encode_policy
+from tvbalance.infra.db.state_codec import StateDecodeError, decode_state, encode_state
 from tvbalance.infra.secrets import SecretBox, SecretError
 from tvbalance.ports.services import Clock
 from tvbalance.ports.storage import NotFoundError, PolicyRecord, StoredEvent, TvRecord
+
+log = logging.getLogger(__name__)
 
 DB_FILE = "tvbalance.db"
 KEY_FILE = "secret.key"
@@ -280,6 +285,35 @@ class SqliteSettingsStore:
             await conn.execute(stmt)
 
 
+class SqliteEnforcementStateStore:
+    def __init__(self, engine: AsyncEngine, clock: Clock) -> None:
+        self._engine, self._clock = engine, clock
+
+    async def load(self, tv_id: str) -> EnforcementState:
+        query = select(tables.enforcement_state.c.state).where(
+            tables.enforcement_state.c.tv_id == tv_id
+        )
+        async with self._engine.connect() as conn:
+            row = (await conn.execute(query)).first()
+        if row is None:
+            return EnforcementState()
+        try:
+            return decode_state(row.state)
+        except StateDecodeError:
+            log.warning("unreadable enforcement state for TV %s: starting fresh", tv_id)
+            return EnforcementState()
+
+    async def save(self, tv_id: str, state: EnforcementState) -> None:
+        values = {"state": encode_state(state), "updated_at": self._clock.now()}
+        stmt = insert(tables.enforcement_state).values(tv_id=tv_id, **values)
+        stmt = stmt.on_conflict_do_update(
+            index_elements=[tables.enforcement_state.c.tv_id], set_=values
+        )
+        with _unknown_references():
+            async with self._engine.begin() as conn:
+                await conn.execute(stmt)
+
+
 class SqliteStorage:
     def __init__(self, engine: AsyncEngine, box: SecretBox, clock: Clock) -> None:
         self._engine = engine
@@ -289,6 +323,7 @@ class SqliteStorage:
         self.overrides = SqliteOverrideStore(engine)
         self.events = SqliteEventLog(engine)
         self.settings = SqliteSettingsStore(engine)
+        self.enforcement = SqliteEnforcementStateStore(engine, clock)
 
     async def close(self) -> None:
         await self._engine.dispose()

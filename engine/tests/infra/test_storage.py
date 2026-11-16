@@ -1,4 +1,6 @@
 import asyncio
+import logging
+import sqlite3
 from collections.abc import AsyncIterator
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
@@ -6,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from tvbalance.config import EngineConfig
+from tvbalance.domain.enforcement import EnforcementState
 from tvbalance.domain.models import AppTarget, Override, Policy, Usage
 from tvbalance.infra.db.repositories import open_storage
 from tvbalance.infra.secrets import SecretError
@@ -328,3 +331,64 @@ async def test_settings_default_overwrite_and_json_values(storage: Storage) -> N
     await storage.settings.set("region", {"country": "IT", "tz": "Europe/Rome"})
     assert await storage.settings.get("language") == "de"
     assert await storage.settings.get("region") == {"country": "IT", "tz": "Europe/Rome"}
+
+
+# --- enforcement state ----------------------------------------------------------------------
+
+STATE = EnforcementState(
+    day=DAY,
+    warned=frozenset({10}),
+    episode_started=T0,
+    redirected=True,
+    power_offs=(T0 - timedelta(minutes=2),),
+    paused_until=T0 + timedelta(minutes=10),
+)
+
+
+async def test_a_tv_without_saved_state_starts_fresh(storage: Storage) -> None:
+    tv_id = await add_tv(storage)
+    assert await storage.enforcement.load(tv_id) == EnforcementState()
+
+
+async def test_enforcement_state_round_trips_and_is_replaced(storage: Storage) -> None:
+    tv_id = await add_tv(storage)
+    await storage.enforcement.save(tv_id, STATE)
+    assert await storage.enforcement.load(tv_id) == STATE
+    await storage.enforcement.save(tv_id, EnforcementState(day=DAY))
+    assert await storage.enforcement.load(tv_id) == EnforcementState(day=DAY)
+
+
+async def test_enforcement_state_survives_a_restart(config: EngineConfig) -> None:
+    first = await open_storage(config)
+    tv_id = await add_tv(first)
+    await first.enforcement.save(tv_id, STATE)
+    await first.close()
+    second = await open_storage(config)
+    try:
+        assert await second.enforcement.load(tv_id) == STATE
+    finally:
+        await second.close()
+
+
+async def test_saving_state_for_an_unknown_tv_is_not_found(storage: Storage) -> None:
+    with pytest.raises(NotFoundError):
+        await storage.enforcement.save("missing", STATE)
+
+
+async def test_removing_a_tv_removes_its_enforcement_state(storage: Storage) -> None:
+    tv_id = await add_tv(storage)
+    await storage.enforcement.save(tv_id, STATE)
+    await storage.tvs.remove(tv_id)
+    assert await storage.enforcement.load(tv_id) == EnforcementState()
+
+
+async def test_an_unreadable_state_document_falls_back_to_fresh_state(
+    storage: Storage, config: EngineConfig, caplog: pytest.LogCaptureFixture
+) -> None:
+    tv_id = await add_tv(storage)
+    await storage.enforcement.save(tv_id, STATE)
+    with sqlite3.connect(config.data_dir / "tvbalance.db") as db:
+        db.execute("UPDATE enforcement_state SET state = '{\"version\": 99}'")
+    with caplog.at_level(logging.WARNING):
+        assert await storage.enforcement.load(tv_id) == EnforcementState()
+    assert "enforcement state" in caplog.text

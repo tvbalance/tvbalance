@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any, Protocol
 
+from tvbalance.domain.enforcement import EnforcementState
 from tvbalance.domain.models import Override, Policy, Usage
 
 
@@ -116,6 +117,14 @@ class SettingsStore(Protocol):
     async def set(self, key: str, value: Any) -> None: ...
 
 
+class EnforcementStateStore(Protocol):
+    async def load(self, tv_id: str) -> EnforcementState:
+        """A TV without saved state, or with an unreadable one, starts from a fresh state."""
+        ...
+
+    async def save(self, tv_id: str, state: EnforcementState) -> None: ...
+
+
 class Storage(Protocol):
     tvs: TvStore
     policies: PolicyStore
@@ -123,5 +132,6 @@ class Storage(Protocol):
     overrides: OverrideStore
     events: EventLog
     settings: SettingsStore
+    enforcement: EnforcementStateStore
 
     async def close(self) -> None: ...
