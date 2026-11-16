@@ -1,0 +1,12 @@
+{
+  "app": { "name": "TVBalance", "tagline": "Healthy screen-time rules for your family's smart TV" },
+  "system": {
+    "title": "System",
+    "version": "Version",
+    "apiVersion": "API version",
+    "adapters": "Supported TV brands",
+    "maturity": { "stable": "Stable", "beta": "Beta", "experimental": "Experimental" },
+    "loading": "Loading…",
+    "error": "Cannot reach the Engine."
+  }
+}

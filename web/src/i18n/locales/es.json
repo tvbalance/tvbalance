@@ -1,0 +1,12 @@
+{
+  "app": { "name": "TVBalance", "tagline": "Reglas saludables de tiempo de pantalla para la smart TV de tu familia" },
+  "system": {
+    "title": "Sistema",
+    "version": "Versión",
+    "apiVersion": "Versión de la API",
+    "adapters": "Marcas de TV compatibles",
+    "maturity": { "stable": "Estable", "beta": "Beta", "experimental": "Experimental" },
+    "loading": "Cargando…",
+    "error": "No se puede conectar con el Engine."
+  }
+}

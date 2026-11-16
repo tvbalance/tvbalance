@@ -1,0 +1,12 @@
+{
+  "app": { "name": "TVBalance", "tagline": "Regole sane per il tempo davanti alla smart TV di famiglia" },
+  "system": {
+    "title": "Sistema",
+    "version": "Versione",
+    "apiVersion": "Versione API",
+    "adapters": "Marche di TV supportate",
+    "maturity": { "stable": "Stabile", "beta": "Beta", "experimental": "Experimental" },
+    "loading": "Caricamento…",
+    "error": "Impossibile raggiungere l'Engine."
+  }
+}
