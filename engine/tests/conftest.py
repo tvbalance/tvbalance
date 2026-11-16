@@ -12,6 +12,18 @@ from tvbalance.api.app import create_app
 from tvbalance.config import EngineConfig
 
 
+@pytest.fixture(autouse=True)
+def cheap_password_hashing(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Argon2 at production cost takes ~100 ms per hash; tests only need the same behavior."""
+    from argon2 import PasswordHasher
+
+    from tvbalance.infra import passwords
+
+    monkeypatch.setattr(
+        passwords, "_hasher", PasswordHasher(time_cost=1, memory_cost=8, parallelism=1)
+    )
+
+
 @pytest.fixture
 def engine_config(tmp_path: Path) -> EngineConfig:
     return EngineConfig(data_dir=tmp_path / "data")
