@@ -1,0 +1,8 @@
+{
+  "time_warning": "Le temps de télévision se termine dans {minutes} minutes.",
+  "time_warning_one": "Le temps de télévision se termine dans {minutes} minute.",
+  "time_warning_soon": "Le temps de télévision est bientôt écoulé.",
+  "time_up": "Le temps de télévision est terminé.",
+  "content_blocked": "Ce contenu n'est pas disponible pour le moment.",
+  "powering_off": "La télévision va s'éteindre."
+}
