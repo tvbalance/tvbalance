@@ -43,10 +43,16 @@ _HTTP_CODES = {
 
 class ApiError(Exception):
     def __init__(
-        self, status: int, code: str, message: str, headers: dict[str, str] | None = None
+        self,
+        status: int,
+        code: str,
+        message: str,
+        headers: dict[str, str] | None = None,
+        details: list[dict[str, Any]] | None = None,
     ) -> None:
         super().__init__(message)
-        self.status, self.code, self.message, self.headers = status, code, message, headers
+        self.status, self.code, self.message = status, code, message
+        self.headers, self.details = headers, details
 
 
 def not_found(what: str) -> ApiError:
@@ -69,7 +75,7 @@ def _response(
 def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(ApiError)
     async def api_error(_: Request, exc: ApiError) -> JSONResponse:
-        return _response(exc.status, exc.code, exc.message, exc.headers)
+        return _response(exc.status, exc.code, exc.message, exc.headers, exc.details)
 
     @app.exception_handler(AuthError)
     async def auth_error(_: Request, exc: AuthError) -> JSONResponse:

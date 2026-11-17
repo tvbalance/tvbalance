@@ -56,6 +56,14 @@ def sign_in_as_admin(client: TestClient, password: str = ADMIN_PASSWORD) -> None
     client.headers[CSRF_HEADER] = response.json()["csrf_token"]
 
 
+def seed_tv(client: TestClient, adapter: str = "fake", name: str = "Living room") -> str:
+    """Pair a TV straight in the storage of the running app (the API has no pairing yet)."""
+    storage = client.app.state.storage  # type: ignore[attr-defined]
+    assert client.portal is not None
+    record = client.portal.call(storage.tvs.add, adapter, name, "tv.local", {"client_key": "k"})
+    return str(record.id)
+
+
 def watching(app: str | None = "video") -> Observation:
     return Observation(observed_at=T0, power=Power.ON, foreground_app=app)
 

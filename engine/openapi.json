@@ -68,6 +68,57 @@
         "title": "Capability",
         "type": "string"
       },
+      "DecisionOut": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "allow",
+              "warn",
+              "block"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "minutes_left": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes Left"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "DecisionOut",
+        "type": "object"
+      },
       "ErrorBody": {
         "properties": {
           "code": {
@@ -111,6 +162,49 @@
           "error"
         ],
         "title": "ErrorResponse",
+        "type": "object"
+      },
+      "EscalationDoc": {
+        "additionalProperties": false,
+        "properties": {
+          "cap_pause": {
+            "default": 600,
+            "minimum": 0.0,
+            "title": "Cap Pause",
+            "type": "number"
+          },
+          "cap_window": {
+            "default": 300,
+            "minimum": 0.0,
+            "title": "Cap Window",
+            "type": "number"
+          },
+          "debounce": {
+            "default": 3,
+            "minimum": 0.0,
+            "title": "Debounce",
+            "type": "number"
+          },
+          "grace": {
+            "default": 15,
+            "minimum": 0.0,
+            "title": "Grace",
+            "type": "number"
+          },
+          "message_repeat": {
+            "default": 60,
+            "minimum": 0.0,
+            "title": "Message Repeat",
+            "type": "number"
+          },
+          "power_off_cap": {
+            "default": 3,
+            "minimum": 1.0,
+            "title": "Power Off Cap",
+            "type": "integer"
+          }
+        },
+        "title": "EscalationDoc",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -298,6 +392,239 @@
         "title": "PinSet",
         "type": "object"
       },
+      "PolicyCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicyDoc",
+            "default": {
+              "always_allowed_apps": [],
+              "always_allowed_channels": [],
+              "always_allowed_inputs": [],
+              "blocked_apps": [],
+              "blocked_channels": [],
+              "blocked_inputs": [],
+              "escalation": {
+                "cap_pause": 600.0,
+                "cap_window": 300.0,
+                "debounce": 3.0,
+                "grace": 15.0,
+                "message_repeat": 60.0,
+                "power_off_cap": 3
+              },
+              "schedule": {
+                "special_days": {},
+                "windows": {}
+              },
+              "warn_at_minutes": [
+                10,
+                5
+              ]
+            }
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "PolicyCreate",
+        "type": "object"
+      },
+      "PolicyDoc": {
+        "additionalProperties": false,
+        "properties": {
+          "allow_list_apps": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allow List Apps"
+          },
+          "always_allowed_apps": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Always Allowed Apps",
+            "type": "array"
+          },
+          "always_allowed_channels": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Always Allowed Channels",
+            "type": "array"
+          },
+          "always_allowed_inputs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Always Allowed Inputs",
+            "type": "array"
+          },
+          "blocked_apps": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Blocked Apps",
+            "type": "array"
+          },
+          "blocked_channels": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Blocked Channels",
+            "type": "array"
+          },
+          "blocked_inputs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Blocked Inputs",
+            "type": "array"
+          },
+          "daily_budget_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Budget Minutes"
+          },
+          "escalation": {
+            "$ref": "#/components/schemas/EscalationDoc",
+            "default": {
+              "cap_pause": 600.0,
+              "cap_window": 300.0,
+              "debounce": 3.0,
+              "grace": 15.0,
+              "message_repeat": 60.0,
+              "power_off_cap": 3
+            }
+          },
+          "fallback": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TargetDoc"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleDoc",
+            "default": {
+              "special_days": {},
+              "windows": {}
+            }
+          },
+          "warn_at_minutes": {
+            "default": [
+              10,
+              5
+            ],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Warn At Minutes",
+            "type": "array"
+          }
+        },
+        "title": "PolicyDoc",
+        "type": "object"
+      },
+      "PolicyOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicyDoc"
+          },
+          "tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tv Ids",
+            "type": "array"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "policy",
+          "updated_at",
+          "tv_ids"
+        ],
+        "title": "PolicyOut",
+        "type": "object"
+      },
+      "PolicyUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicyDoc"
+          }
+        },
+        "required": [
+          "policy"
+        ],
+        "title": "PolicyUpdate",
+        "type": "object"
+      },
+      "Power": {
+        "enum": [
+          "on",
+          "standby",
+          "off"
+        ],
+        "title": "Power",
+        "type": "string"
+      },
       "Revoked": {
         "properties": {
           "revoked": {
@@ -309,6 +636,38 @@
           "revoked"
         ],
         "title": "Revoked",
+        "type": "object"
+      },
+      "ScheduleDoc": {
+        "additionalProperties": false,
+        "properties": {
+          "special_days": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/WindowDoc"
+              },
+              "type": "array"
+            },
+            "default": {},
+            "propertyNames": {
+              "format": "date"
+            },
+            "title": "Special Days",
+            "type": "object"
+          },
+          "windows": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/WindowDoc"
+              },
+              "type": "array"
+            },
+            "default": {},
+            "title": "Windows",
+            "type": "object"
+          }
+        },
+        "title": "ScheduleDoc",
         "type": "object"
       },
       "SessionOut": {
@@ -374,6 +733,37 @@
           "password"
         ],
         "title": "SetupRequest",
+        "type": "object"
+      },
+      "TargetDoc": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "kind": {
+            "enum": [
+              "app",
+              "input",
+              "channel",
+              "home"
+            ],
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "TargetDoc",
         "type": "object"
       },
       "TokenCreate": {
@@ -535,6 +925,234 @@
         "title": "TokenOut",
         "type": "object"
       },
+      "TvOut": {
+        "properties": {
+          "adapter_id": {
+            "title": "Adapter Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "host": {
+            "title": "Host",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "needs_pairing": {
+            "title": "Needs Pairing",
+            "type": "boolean"
+          },
+          "policy_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TvStatusOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "adapter_id",
+          "name",
+          "host",
+          "policy_id",
+          "enabled",
+          "needs_pairing",
+          "created_at",
+          "status"
+        ],
+        "title": "TvOut",
+        "type": "object"
+      },
+      "TvStatusOut": {
+        "properties": {
+          "channel_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Channel Id"
+          },
+          "connected": {
+            "title": "Connected",
+            "type": "boolean"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DecisionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "foreground_app": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foreground App"
+          },
+          "input_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Id"
+          },
+          "pairing_required": {
+            "title": "Pairing Required",
+            "type": "boolean"
+          },
+          "power": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Power"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "program_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Program Title"
+          },
+          "remaining_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Seconds"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "watched_seconds": {
+            "title": "Watched Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "connected",
+          "pairing_required",
+          "power",
+          "foreground_app",
+          "input_id",
+          "channel_id",
+          "program_title",
+          "decision",
+          "watched_seconds",
+          "remaining_seconds",
+          "updated_at"
+        ],
+        "title": "TvStatusOut",
+        "type": "object"
+      },
+      "TvUpdate": {
+        "additionalProperties": false,
+        "description": "Only the fields present are changed; ``policy_id: null`` detaches the policy.",
+        "properties": {
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "policy_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Id"
+          }
+        },
+        "title": "TvUpdate",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -573,6 +1191,27 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "WindowDoc": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "WindowDoc",
         "type": "object"
       }
     }
@@ -1412,6 +2051,522 @@
         "summary": "Info",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/api/v1/policies": {
+      "get": {
+        "operationId": "list_policies_api_v1_policies_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PolicyOut"
+                  },
+                  "title": "Response List Policies Api V1 Policies Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "List Policies",
+        "tags": [
+          "policies"
+        ]
+      },
+      "post": {
+        "operationId": "create_policy_api_v1_policies_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Policy",
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/api/v1/policies/{policy_id}": {
+      "get": {
+        "operationId": "get_policy_api_v1_policies__policy_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "policy_id",
+            "required": true,
+            "schema": {
+              "title": "Policy Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Policy",
+        "tags": [
+          "policies"
+        ]
+      },
+      "put": {
+        "operationId": "save_policy_api_v1_policies__policy_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "policy_id",
+            "required": true,
+            "schema": {
+              "title": "Policy Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Policy",
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/api/v1/tvs": {
+      "get": {
+        "operationId": "list_tvs_api_v1_tvs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TvOut"
+                  },
+                  "title": "Response List Tvs Api V1 Tvs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "List Tvs",
+        "tags": [
+          "tvs"
+        ]
+      }
+    },
+    "/api/v1/tvs/{tv_id}": {
+      "delete": {
+        "operationId": "remove_tv_api_v1_tvs__tv_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Tv",
+        "tags": [
+          "tvs"
+        ]
+      },
+      "get": {
+        "operationId": "get_tv_api_v1_tvs__tv_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TvOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Tv",
+        "tags": [
+          "tvs"
+        ]
+      },
+      "patch": {
+        "operationId": "update_tv_api_v1_tvs__tv_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TvUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TvOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Tv",
+        "tags": [
+          "tvs"
         ]
       }
     }

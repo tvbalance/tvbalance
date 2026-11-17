@@ -100,6 +100,9 @@ class SqliteTvStore:
     async def set_enabled(self, tv_id: str, enabled: bool) -> None:
         await self._update(tv_id, enabled=enabled)
 
+    async def rename(self, tv_id: str, name: str) -> None:
+        await self._update(tv_id, name=name)
+
     async def remove(self, tv_id: str) -> bool:
         async with self._engine.begin() as conn:
             result = await conn.execute(delete(tables.tvs).where(tables.tvs.c.id == tv_id))

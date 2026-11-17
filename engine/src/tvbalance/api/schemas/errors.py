@@ -15,3 +15,9 @@ class ErrorBody(BaseModel):
 
 class ErrorResponse(BaseModel):
     error: ErrorBody
+
+
+type Responses = dict[int | str, dict[str, Any]]
+
+AUTH_ERRORS: Responses = {401: {"model": ErrorResponse}, 403: {"model": ErrorResponse}}
+NOT_FOUND_ERRORS: Responses = {**AUTH_ERRORS, 404: {"model": ErrorResponse}}

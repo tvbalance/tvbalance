@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from tvbalance import __version__
 from tvbalance.api.errors import install_error_handlers
-from tvbalance.api.routes import auth, system
+from tvbalance.api.routes import auth, policies, system, tvs
 from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
@@ -73,6 +73,8 @@ def create_app(
     install_error_handlers(app)
     app.include_router(system.router)
     app.include_router(auth.router)
+    app.include_router(tvs.router)
+    app.include_router(policies.router)
 
     if web_dir is not None and web_dir.is_dir():
         app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")
