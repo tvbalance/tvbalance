@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from tvbalance import __version__
 from tvbalance.api.errors import install_error_handlers
-from tvbalance.api.routes import auth, policies, system, tvs
+from tvbalance.api.routes import auth, control, policies, system, tvs
 from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
@@ -40,9 +40,10 @@ def create_app(
     Testing-only adapters (the fake TV) are listed only when `include_testing` is set.
     With a `config` the storage is opened at startup (running the migrations) and closed at
     shutdown; it is available as `app.state.storage`, next to the authentication service
-    (`app.state.auth`), the event bus (`app.state.events`) and the supervisor that watches every
-    paired TV (`app.state.supervisor`). `clock` and `supervisor_settings` let tests control time
-    and pacing. Without a config the API serves only its public routes.
+    (`app.state.auth`), the clock (`app.state.clock`), the event bus (`app.state.events`) and the
+    supervisor that watches every paired TV (`app.state.supervisor`). `clock` and
+    `supervisor_settings` let tests control time and pacing. Without a config the API serves
+    only its public routes.
     """
 
     @asynccontextmanager
@@ -52,6 +53,7 @@ def create_app(
             return
         clock_ = clock or SystemClock()
         storage = await open_storage(config, clock_)
+        app.state.clock = clock_
         app.state.storage = storage
         app.state.auth = AuthService(storage.auth, clock_)
         app.state.events = EventBus(storage.events)
@@ -75,6 +77,7 @@ def create_app(
     app.include_router(auth.router)
     app.include_router(tvs.router)
     app.include_router(policies.router)
+    app.include_router(control.router)
 
     if web_dir is not None and web_dir.is_dir():
         app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")

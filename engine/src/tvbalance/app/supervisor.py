@@ -51,6 +51,12 @@ class Supervisor:
             if record.id not in self._tasks:
                 self._launch(record)
 
+    def nudge(self, tv_id: str) -> None:
+        """Make the worker of ``tv_id`` re-evaluate now, without reconnecting to the TV."""
+        worker = self._workers.get(tv_id)
+        if worker is not None:
+            worker.nudge()
+
     def status(self, tv_id: str) -> TvStatus | None:
         worker = self._workers.get(tv_id)
         return None if worker is None else worker.status

@@ -17,6 +17,7 @@ from starlette.requests import HTTPConnection
 from tvbalance.api.errors import ApiError
 from tvbalance.app.auth import SCOPES, AuthService, Principal, csrf_token_for
 from tvbalance.app.supervisor import Supervisor
+from tvbalance.ports.services import Clock
 from tvbalance.ports.storage import Storage
 
 SESSION_COOKIE = "tvb_session"
@@ -41,6 +42,13 @@ def get_storage(conn: HTTPConnection) -> Storage:
     if storage is None:
         raise ApiError(503, "unavailable", "the engine is not ready")
     return storage
+
+
+def get_clock(conn: HTTPConnection) -> Clock:
+    clock: Clock | None = getattr(conn.app.state, "clock", None)
+    if clock is None:
+        raise ApiError(503, "unavailable", "the engine is not ready")
+    return clock
 
 
 def get_supervisor(conn: HTTPConnection) -> Supervisor:

@@ -49,6 +49,41 @@
         "title": "AuthState",
         "type": "object"
       },
+      "BonusOut": {
+        "properties": {
+          "bonus_minutes": {
+            "title": "Bonus Minutes",
+            "type": "integer"
+          },
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "bonus_minutes"
+        ],
+        "title": "BonusOut",
+        "type": "object"
+      },
+      "BonusRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "minutes": {
+            "maximum": 240.0,
+            "minimum": 1.0,
+            "title": "Minutes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "minutes"
+        ],
+        "title": "BonusRequest",
+        "type": "object"
+      },
       "Capability": {
         "enum": [
           "foreground_app",
@@ -341,6 +376,64 @@
         "title": "Me",
         "type": "object"
       },
+      "OverrideOut": {
+        "properties": {
+          "allow": {
+            "title": "Allow",
+            "type": "boolean"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "until": {
+            "format": "date-time",
+            "title": "Until",
+            "type": "string"
+          }
+        },
+        "required": [
+          "allow",
+          "until",
+          "created_at"
+        ],
+        "title": "OverrideOut",
+        "type": "object"
+      },
+      "OverrideRequest": {
+        "additionalProperties": false,
+        "description": "Allow or block a TV for a while: give ``minutes`` or ask for ``until_midnight``.",
+        "properties": {
+          "allow": {
+            "title": "Allow",
+            "type": "boolean"
+          },
+          "minutes": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes"
+          },
+          "until_midnight": {
+            "default": false,
+            "title": "Until Midnight",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow"
+        ],
+        "title": "OverrideRequest",
+        "type": "object"
+      },
       "PasswordChange": {
         "additionalProperties": false,
         "properties": {
@@ -360,6 +453,20 @@
           "new_password"
         ],
         "title": "PasswordChange",
+        "type": "object"
+      },
+      "PauseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "minutes": {
+            "default": 30,
+            "maximum": 1440.0,
+            "minimum": 1.0,
+            "title": "Minutes",
+            "type": "integer"
+          }
+        },
+        "title": "PauseRequest",
         "type": "object"
       },
       "PinLoginRequest": {
@@ -2567,6 +2674,316 @@
         "summary": "Update Tv",
         "tags": [
           "tvs"
+        ]
+      }
+    },
+    "/api/v1/tvs/{tv_id}/bonus": {
+      "post": {
+        "operationId": "grant_bonus_api_v1_tvs__tv_id__bonus_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BonusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BonusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Grant Bonus",
+        "tags": [
+          "control"
+        ]
+      }
+    },
+    "/api/v1/tvs/{tv_id}/override": {
+      "delete": {
+        "operationId": "clear_overrides_api_v1_tvs__tv_id__override_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Clear Overrides",
+        "tags": [
+          "control"
+        ]
+      },
+      "post": {
+        "operationId": "set_override_api_v1_tvs__tv_id__override_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverrideRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverrideOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Override",
+        "tags": [
+          "control"
+        ]
+      }
+    },
+    "/api/v1/tvs/{tv_id}/pause": {
+      "post": {
+        "description": "An instant pause: block the TV for a while, whatever the schedule says.",
+        "operationId": "pause_api_v1_tvs__tv_id__pause_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PauseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverrideOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Pause",
+        "tags": [
+          "control"
         ]
       }
     }

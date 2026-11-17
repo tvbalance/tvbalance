@@ -10,10 +10,10 @@ import asyncio
 import logging
 from collections.abc import Callable
 from contextlib import suppress
-from datetime import datetime, tzinfo
-from zoneinfo import ZoneInfo
+from datetime import datetime
 
 from tvbalance.app.events import EventBus, to_record
+from tvbalance.app.household import household_now
 from tvbalance.app.messages import localize
 from tvbalance.app.session import TVSession
 from tvbalance.app.status import SupervisorSettings, TvStatus
@@ -191,14 +191,11 @@ class TvWorker:
         self._set_status(observation=obs, decision=decision, usage=usage, policy=policy, at=now)
 
     async def _local_now(self) -> datetime:
-        zone: tzinfo | None = None
-        name = await self._storage.settings.get("timezone")
-        if name:
-            try:
-                zone = ZoneInfo(str(name))
-            except (KeyError, ValueError, OSError):
-                log.warning("unknown timezone %r: using the system zone", name)
-        return self._clock.now().astimezone(zone)
+        return await household_now(self._storage.settings, self._clock)
+
+    def nudge(self) -> None:
+        """Look at the TV now instead of at the next tick (an override or bonus just changed)."""
+        self._wake.set()
 
     # -- loop -------------------------------------------------------------------------------
 
