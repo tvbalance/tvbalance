@@ -2,14 +2,21 @@
 
 Healthy screen-time rules for your family's smart TV.
 
-> **Pre-alpha.** This Add-on starts the TVBalance Engine and shows its status page. Rules, pairing
-> and the Home Assistant entities arrive in later releases.
-
 ## Installation
 
 1. In Home Assistant, open **Settings → Add-ons → Add-on Store → ⋮ → Repositories**.
 2. Add `https://github.com/tvbalance/tvbalance`.
 3. Install **TVBalance**, start it and open the **TVBalance** panel in the sidebar.
+4. Follow the on-screen setup: create the administrator password, then add your first TV.
+
+## Home Assistant integration
+
+When the Add-on starts it announces itself to Home Assistant. A **TVBalance** notification appears under
+**Settings → Devices & services**: choose **Configure** and confirm. No address or token has to be typed.
+
+The Add-on creates an API token named "Home Assistant (Add-on)" with the read and control scopes and keeps it
+across restarts. If you revoke it in **Settings → API tokens**, restart the Add-on: it creates a new one and Home
+Assistant picks it up on its own.
 
 ## Network
 

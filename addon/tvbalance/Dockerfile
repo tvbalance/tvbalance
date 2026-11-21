@@ -29,10 +29,22 @@ RUN uv sync --frozen --no-dev --no-install-workspace --package tvbalance \
       --package tvbalance-adapter-samsung
 COPY --from=web /web/dist /app/web
 
+ARG BUILD_VERSION=dev
+ARG BUILD_ARCH=amd64
+LABEL io.hass.type="addon" \
+      io.hass.name="TVBalance" \
+      io.hass.version="${BUILD_VERSION}" \
+      io.hass.arch="${BUILD_ARCH}" \
+      org.opencontainers.image.title="TVBalance" \
+      org.opencontainers.image.version="${BUILD_VERSION}" \
+      org.opencontainers.image.source="https://github.com/tvbalance/tvbalance" \
+      org.opencontainers.image.licenses="Apache-2.0"
+
 ENV PATH="/app/.venv/bin:$PATH" \
     TVBALANCE_WEB_DIR=/app/web \
     TVBALANCE_DATA_DIR=/data \
-    TVBALANCE_PORT=8765     TVBALANCE_INGRESS_TRUSTED=172.30.32.2
+    TVBALANCE_PORT=8765 \
+    TVBALANCE_INGRESS_TRUSTED=172.30.32.2
 VOLUME /data
 EXPOSE 8765
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
