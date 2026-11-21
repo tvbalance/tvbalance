@@ -1,17 +1,81 @@
 {
-  "app": { "name": "TVBalance", "tagline": "Des règles saines de temps d'écran pour la smart TV de votre famille" },
+  "app": {
+    "name": "TVBalance",
+    "tagline": "Des règles saines de temps d'écran pour la smart TV de votre famille"
+  },
   "system": {
     "title": "Système",
     "version": "Version",
     "apiVersion": "Version de l'API",
     "adapters": "Marques de TV prises en charge",
-    "maturity": { "stable": "Stable", "beta": "Beta", "experimental": "Experimental" },
+    "maturity": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "experimental": "Experimental"
+    },
     "loading": "Chargement…",
     "error": "Impossible de joindre l'Engine."
   },
-  "auth": {"loading":"Chargement…","error":"Impossible de joindre le moteur."},
-  "welcome": {"title":"Bienvenue"},
-  "login": {"title":"Se connecter"},
-  "nav": {"label":"Principal","dashboard":"Tableau de bord","system":"Système"},
-  "dashboard": {"title":"Tableau de bord","empty":"Aucune TV pour le moment. L'ajout d'une TV arrive bientôt."}
+  "auth": {
+    "loading": "Chargement…",
+    "error": "Impossible de joindre le moteur."
+  },
+  "welcome": {
+    "title": "Bienvenue dans TVBalance",
+    "intro": "Configurons tout en trois étapes rapides.",
+    "step": "Étape {{current}} sur {{total}}",
+    "passwordTitle": "Créer le mot de passe administrateur",
+    "passwordHelp": "Ce mot de passe protège les règles. Gardez-le pour vous.",
+    "password": "Mot de passe",
+    "passwordHint": "Au moins {{min}} caractères.",
+    "confirm": "Répéter le mot de passe",
+    "passwordShort": "Le mot de passe doit comporter au moins {{min}} caractères.",
+    "passwordMismatch": "Les deux mots de passe ne correspondent pas.",
+    "next": "Continuer",
+    "regionTitle": "Langue et fuseau horaire",
+    "rulesTitle": "Votre première règle",
+    "rulesHelp": "Partez d'une règle toute prête et affinez-la plus tard.",
+    "usePreset": "Utiliser cette règle",
+    "skip": "Passer pour l'instant"
+  },
+  "login": {
+    "title": "Se connecter",
+    "intro": "Saisissez votre mot de passe, ou le code PIN pour un accès rapide.",
+    "methods": "Méthode de connexion",
+    "password": "Mot de passe",
+    "pin": "PIN",
+    "submit": "Se connecter",
+    "wrong": "Ce n'est pas correct. Réessayez.",
+    "pinLocked": "Trop de PIN erronés. Connectez-vous avec le mot de passe."
+  },
+  "nav": {
+    "label": "Principal",
+    "dashboard": "Tableau de bord",
+    "system": "Système"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "empty": "Aucune TV pour le moment. L'ajout d'une TV arrive bientôt."
+  },
+  "region": {
+    "language": "Langue",
+    "timezone": "Fuseau horaire",
+    "timezoneHint": "Les horaires et les limites quotidiennes suivent ce fuseau horaire."
+  },
+  "presets": {
+    "school": "Jours d'école",
+    "schoolSummary": "En semaine 16:00–20:00, le week-end 09:00–21:00, jusqu'à 2 heures par jour, alertes à 10 et 5 minutes."
+  },
+  "errors": {
+    "unknown": "Une erreur s'est produite.",
+    "network": "Impossible de joindre le moteur.",
+    "rate_limited": "Trop de tentatives. Réessayez dans {{seconds}} s.",
+    "not_authenticated": "Vous êtes déconnecté.",
+    "forbidden": "Vous n'avez pas le droit de faire cela.",
+    "validation_failed": "Certaines valeurs ne sont pas valides.",
+    "not_found": "Introuvable.",
+    "conflict": "Cela entre en conflit avec l'état actuel.",
+    "tv_offline": "La TV est injoignable pour le moment.",
+    "unavailable": "Le moteur démarre. Réessayez dans un instant."
+  }
 }

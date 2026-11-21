@@ -1,17 +1,81 @@
 {
-  "app": { "name": "TVBalance", "tagline": "Gesunde Bildschirmzeit-Regeln für den Smart-TV Ihrer Familie" },
+  "app": {
+    "name": "TVBalance",
+    "tagline": "Gesunde Bildschirmzeit-Regeln für den Smart-TV Ihrer Familie"
+  },
   "system": {
     "title": "System",
     "version": "Version",
     "apiVersion": "API-Version",
     "adapters": "Unterstützte TV-Marken",
-    "maturity": { "stable": "Stabil", "beta": "Beta", "experimental": "Experimental" },
+    "maturity": {
+      "stable": "Stabil",
+      "beta": "Beta",
+      "experimental": "Experimental"
+    },
     "loading": "Wird geladen…",
     "error": "Die Engine ist nicht erreichbar."
   },
-  "auth": {"loading":"Wird geladen…","error":"Die Engine ist nicht erreichbar."},
-  "welcome": {"title":"Willkommen"},
-  "login": {"title":"Anmelden"},
-  "nav": {"label":"Hauptmenü","dashboard":"Übersicht","system":"System"},
-  "dashboard": {"title":"Übersicht","empty":"Noch kein Fernseher. Das Hinzufügen kommt bald."}
+  "auth": {
+    "loading": "Wird geladen…",
+    "error": "Die Engine ist nicht erreichbar."
+  },
+  "welcome": {
+    "title": "Willkommen bei TVBalance",
+    "intro": "Richten wir alles in drei kurzen Schritten ein.",
+    "step": "Schritt {{current}} von {{total}}",
+    "passwordTitle": "Admin-Passwort festlegen",
+    "passwordHelp": "Dieses Passwort schützt die Regeln. Behalten Sie es für sich.",
+    "password": "Passwort",
+    "passwordHint": "Mindestens {{min}} Zeichen.",
+    "confirm": "Passwort wiederholen",
+    "passwordShort": "Das Passwort braucht mindestens {{min}} Zeichen.",
+    "passwordMismatch": "Die beiden Passwörter stimmen nicht überein.",
+    "next": "Weiter",
+    "regionTitle": "Sprache und Zeitzone",
+    "rulesTitle": "Ihre erste Regel",
+    "rulesHelp": "Beginnen Sie mit einer fertigen Regel und passen Sie sie später an.",
+    "usePreset": "Diese Regel verwenden",
+    "skip": "Vorerst überspringen"
+  },
+  "login": {
+    "title": "Anmelden",
+    "intro": "Geben Sie Ihr Passwort ein oder die PIN für den schnellen Zugriff.",
+    "methods": "Anmeldemethode",
+    "password": "Passwort",
+    "pin": "PIN",
+    "submit": "Anmelden",
+    "wrong": "Das stimmt nicht. Versuchen Sie es erneut.",
+    "pinLocked": "Zu viele falsche PINs. Melden Sie sich mit dem Passwort an."
+  },
+  "nav": {
+    "label": "Hauptmenü",
+    "dashboard": "Übersicht",
+    "system": "System"
+  },
+  "dashboard": {
+    "title": "Übersicht",
+    "empty": "Noch kein Fernseher. Das Hinzufügen kommt bald."
+  },
+  "region": {
+    "language": "Sprache",
+    "timezone": "Zeitzone",
+    "timezoneHint": "Zeitpläne und Tageslimits richten sich nach dieser Zeitzone."
+  },
+  "presets": {
+    "school": "Schultage",
+    "schoolSummary": "Werktags 16:00–20:00, am Wochenende 09:00–21:00, bis zu 2 Stunden täglich, Warnungen bei 10 und 5 Minuten."
+  },
+  "errors": {
+    "unknown": "Etwas ist schiefgelaufen.",
+    "network": "Die Engine ist nicht erreichbar.",
+    "rate_limited": "Zu viele Versuche. Versuchen Sie es in {{seconds}} s erneut.",
+    "not_authenticated": "Sie sind abgemeldet.",
+    "forbidden": "Das ist nicht erlaubt.",
+    "validation_failed": "Einige Werte sind ungültig.",
+    "not_found": "Nicht gefunden.",
+    "conflict": "Das steht im Konflikt mit dem aktuellen Zustand.",
+    "tv_offline": "Der Fernseher ist gerade nicht erreichbar.",
+    "unavailable": "Die Engine startet. Versuchen Sie es gleich erneut."
+  }
 }

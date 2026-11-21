@@ -1,17 +1,81 @@
 {
-  "app": { "name": "TVBalance", "tagline": "Regole sane per il tempo davanti alla smart TV di famiglia" },
+  "app": {
+    "name": "TVBalance",
+    "tagline": "Regole sane per il tempo davanti alla smart TV di famiglia"
+  },
   "system": {
     "title": "Sistema",
     "version": "Versione",
     "apiVersion": "Versione API",
     "adapters": "Marche di TV supportate",
-    "maturity": { "stable": "Stabile", "beta": "Beta", "experimental": "Experimental" },
+    "maturity": {
+      "stable": "Stabile",
+      "beta": "Beta",
+      "experimental": "Experimental"
+    },
     "loading": "Caricamento…",
     "error": "Impossibile raggiungere l'Engine."
   },
-  "auth": {"loading":"Caricamento…","error":"Impossibile raggiungere il motore."},
-  "welcome": {"title":"Benvenuto"},
-  "login": {"title":"Accedi"},
-  "nav": {"label":"Principale","dashboard":"Pannello","system":"Sistema"},
-  "dashboard": {"title":"Pannello","empty":"Nessuna TV per ora. L'aggiunta di una TV arriverà presto."}
+  "auth": {
+    "loading": "Caricamento…",
+    "error": "Impossibile raggiungere il motore."
+  },
+  "welcome": {
+    "title": "Benvenuto in TVBalance",
+    "intro": "Configuriamo tutto in tre passaggi veloci.",
+    "step": "Passaggio {{current}} di {{total}}",
+    "passwordTitle": "Crea la password di amministratore",
+    "passwordHelp": "Questa password protegge le regole. Tienila per te.",
+    "password": "Password",
+    "passwordHint": "Almeno {{min}} caratteri.",
+    "confirm": "Ripeti la password",
+    "passwordShort": "La password deve avere almeno {{min}} caratteri.",
+    "passwordMismatch": "Le due password non coincidono.",
+    "next": "Continua",
+    "regionTitle": "Lingua e fuso orario",
+    "rulesTitle": "La tua prima regola",
+    "rulesHelp": "Parti da una regola pronta e rifiniscila dopo.",
+    "usePreset": "Usa questa regola",
+    "skip": "Salta per ora"
+  },
+  "login": {
+    "title": "Accedi",
+    "intro": "Inserisci la password, oppure il PIN per l'accesso rapido.",
+    "methods": "Metodo di accesso",
+    "password": "Password",
+    "pin": "PIN",
+    "submit": "Accedi",
+    "wrong": "Non è corretto. Riprova.",
+    "pinLocked": "Troppi PIN errati. Accedi con la password."
+  },
+  "nav": {
+    "label": "Principale",
+    "dashboard": "Pannello",
+    "system": "Sistema"
+  },
+  "dashboard": {
+    "title": "Pannello",
+    "empty": "Nessuna TV per ora. L'aggiunta di una TV arriverà presto."
+  },
+  "region": {
+    "language": "Lingua",
+    "timezone": "Fuso orario",
+    "timezoneHint": "Orari e limiti giornalieri seguono questo fuso orario."
+  },
+  "presets": {
+    "school": "Giorni di scuola",
+    "schoolSummary": "Giorni feriali 16:00–20:00, weekend 09:00–21:00, fino a 2 ore al giorno, avvisi a 10 e 5 minuti."
+  },
+  "errors": {
+    "unknown": "Qualcosa è andato storto.",
+    "network": "Impossibile raggiungere il motore.",
+    "rate_limited": "Troppi tentativi. Riprova tra {{seconds}} s.",
+    "not_authenticated": "Hai effettuato l'uscita.",
+    "forbidden": "Non hai il permesso di farlo.",
+    "validation_failed": "Alcuni valori non sono validi.",
+    "not_found": "Non trovato.",
+    "conflict": "È in conflitto con lo stato attuale.",
+    "tv_offline": "La TV non è raggiungibile in questo momento.",
+    "unavailable": "Il motore si sta avviando. Riprova tra un attimo."
+  }
 }

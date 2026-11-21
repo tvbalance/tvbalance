@@ -10,6 +10,23 @@ import it from "./locales/it.json";
 
 export const SUPPORTED_LANGUAGES = ["en", "it", "de", "fr", "es"] as const;
 
+export type Language = (typeof SUPPORTED_LANGUAGES)[number];
+
+/** Each language in its own name, so it can be found whatever the current one is. */
+export const LANGUAGE_NAMES: Record<Language, string> = {
+  en: "English",
+  it: "Italiano",
+  de: "Deutsch",
+  fr: "Français",
+  es: "Español",
+};
+
+/** The supported language closest to what i18next detected (e.g. "it-IT" gives "it"). */
+export function currentLanguage(): Language {
+  const base = i18n.language.slice(0, 2) as Language;
+  return SUPPORTED_LANGUAGES.includes(base) ? base : "en";
+}
+
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)

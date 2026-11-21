@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
 
+import { useSettings } from "../api/hooks";
+import i18n from "../i18n";
 import { cn } from "../lib";
 
 const ITEMS = [
@@ -11,6 +14,12 @@ const ITEMS = [
 /** A sidebar on wide screens and a bottom bar on phones, around the routed page. */
 export function Layout() {
   const { t } = useTranslation();
+  const settings = useSettings();
+  const saved = settings.data?.language;
+  // The saved language is the family's choice; it wins over what the browser reported.
+  useEffect(() => {
+    if (saved && i18n.language.slice(0, 2) !== saved) void i18n.changeLanguage(saved);
+  }, [saved]);
   const links = (
     <ul className="flex md:flex-col md:gap-1">
       {ITEMS.map((item) => (

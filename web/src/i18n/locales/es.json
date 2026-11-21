@@ -1,17 +1,81 @@
 {
-  "app": { "name": "TVBalance", "tagline": "Reglas saludables de tiempo de pantalla para la smart TV de tu familia" },
+  "app": {
+    "name": "TVBalance",
+    "tagline": "Reglas saludables de tiempo de pantalla para la smart TV de tu familia"
+  },
   "system": {
     "title": "Sistema",
     "version": "Versión",
     "apiVersion": "Versión de la API",
     "adapters": "Marcas de TV compatibles",
-    "maturity": { "stable": "Estable", "beta": "Beta", "experimental": "Experimental" },
+    "maturity": {
+      "stable": "Estable",
+      "beta": "Beta",
+      "experimental": "Experimental"
+    },
     "loading": "Cargando…",
     "error": "No se puede conectar con el Engine."
   },
-  "auth": {"loading":"Cargando…","error":"No se puede conectar con el motor."},
-  "welcome": {"title":"Bienvenido"},
-  "login": {"title":"Iniciar sesión"},
-  "nav": {"label":"Principal","dashboard":"Panel","system":"Sistema"},
-  "dashboard": {"title":"Panel","empty":"Aún no hay ninguna TV. Añadir una TV llegará pronto."}
+  "auth": {
+    "loading": "Cargando…",
+    "error": "No se puede conectar con el motor."
+  },
+  "welcome": {
+    "title": "Bienvenido a TVBalance",
+    "intro": "Vamos a configurarlo todo en tres pasos rápidos.",
+    "step": "Paso {{current}} de {{total}}",
+    "passwordTitle": "Crea la contraseña de administrador",
+    "passwordHelp": "Esta contraseña protege las reglas. Guárdala para ti.",
+    "password": "Contraseña",
+    "passwordHint": "Al menos {{min}} caracteres.",
+    "confirm": "Repite la contraseña",
+    "passwordShort": "La contraseña necesita al menos {{min}} caracteres.",
+    "passwordMismatch": "Las dos contraseñas no coinciden.",
+    "next": "Continuar",
+    "regionTitle": "Idioma y zona horaria",
+    "rulesTitle": "Tu primera regla",
+    "rulesHelp": "Empieza con una regla ya hecha y ajústala después.",
+    "usePreset": "Usar esta regla",
+    "skip": "Omitir por ahora"
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "intro": "Introduce tu contraseña, o el PIN para un acceso rápido.",
+    "methods": "Método de acceso",
+    "password": "Contraseña",
+    "pin": "PIN",
+    "submit": "Iniciar sesión",
+    "wrong": "No es correcto. Inténtalo de nuevo.",
+    "pinLocked": "Demasiados PIN erróneos. Inicia sesión con la contraseña."
+  },
+  "nav": {
+    "label": "Principal",
+    "dashboard": "Panel",
+    "system": "Sistema"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "empty": "Aún no hay ninguna TV. Añadir una TV llegará pronto."
+  },
+  "region": {
+    "language": "Idioma",
+    "timezone": "Zona horaria",
+    "timezoneHint": "Los horarios y los límites diarios siguen esta zona horaria."
+  },
+  "presets": {
+    "school": "Días de colegio",
+    "schoolSummary": "Entre semana 16:00–20:00, fines de semana 09:00–21:00, hasta 2 horas al día, avisos a los 10 y 5 minutos."
+  },
+  "errors": {
+    "unknown": "Algo salió mal.",
+    "network": "No se puede conectar con el motor.",
+    "rate_limited": "Demasiados intentos. Inténtalo de nuevo en {{seconds}} s.",
+    "not_authenticated": "Has cerrado sesión.",
+    "forbidden": "No tienes permiso para hacer eso.",
+    "validation_failed": "Algunos valores no son válidos.",
+    "not_found": "No encontrado.",
+    "conflict": "Entra en conflicto con el estado actual.",
+    "tv_offline": "La TV no está accesible ahora mismo.",
+    "unavailable": "El motor se está iniciando. Inténtalo de nuevo en un momento."
+  }
 }

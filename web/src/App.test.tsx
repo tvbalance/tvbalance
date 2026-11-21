@@ -56,7 +56,7 @@ describe("auth gate", () => {
       "GET auth/me": failure(401, "setup_required"),
     });
     renderApp();
-    expect(await screen.findByRole("heading", { name: "Welcome" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Welcome to TVBalance" })).toBeInTheDocument();
     expect(window.location.hash).toBe("#/welcome");
     expect(FakeSocket.instances).toHaveLength(0);
   });

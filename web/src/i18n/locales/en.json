@@ -1,17 +1,81 @@
 {
-  "app": { "name": "TVBalance", "tagline": "Healthy screen-time rules for your family's smart TV" },
+  "app": {
+    "name": "TVBalance",
+    "tagline": "Healthy screen-time rules for your family's smart TV"
+  },
   "system": {
     "title": "System",
     "version": "Version",
     "apiVersion": "API version",
     "adapters": "Supported TV brands",
-    "maturity": { "stable": "Stable", "beta": "Beta", "experimental": "Experimental" },
+    "maturity": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "experimental": "Experimental"
+    },
     "loading": "Loading…",
     "error": "Cannot reach the Engine."
   },
-  "auth": {"loading":"Loading…","error":"Cannot reach the Engine."},
-  "welcome": {"title":"Welcome"},
-  "login": {"title":"Sign in"},
-  "nav": {"label":"Main","dashboard":"Dashboard","system":"System"},
-  "dashboard": {"title":"Dashboard","empty":"No TV yet. Adding a TV is coming soon."}
+  "auth": {
+    "loading": "Loading…",
+    "error": "Cannot reach the Engine."
+  },
+  "welcome": {
+    "title": "Welcome to TVBalance",
+    "intro": "Let's set things up in three quick steps.",
+    "step": "Step {{current}} of {{total}}",
+    "passwordTitle": "Create the admin password",
+    "passwordHelp": "This password protects the rules. Keep it to yourself.",
+    "password": "Password",
+    "passwordHint": "At least {{min}} characters.",
+    "confirm": "Repeat the password",
+    "passwordShort": "The password needs at least {{min}} characters.",
+    "passwordMismatch": "The two passwords do not match.",
+    "next": "Continue",
+    "regionTitle": "Language and time zone",
+    "rulesTitle": "Your first rule",
+    "rulesHelp": "Start from a ready-made rule and fine-tune it later.",
+    "usePreset": "Use this rule",
+    "skip": "Skip for now"
+  },
+  "login": {
+    "title": "Sign in",
+    "intro": "Enter your password, or the PIN for quick access.",
+    "methods": "Sign-in method",
+    "password": "Password",
+    "pin": "PIN",
+    "submit": "Sign in",
+    "wrong": "That is not right. Try again.",
+    "pinLocked": "Too many wrong PINs. Sign in with the password."
+  },
+  "nav": {
+    "label": "Main",
+    "dashboard": "Dashboard",
+    "system": "System"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "empty": "No TV yet. Adding a TV is coming soon."
+  },
+  "region": {
+    "language": "Language",
+    "timezone": "Time zone",
+    "timezoneHint": "Schedules and daily limits follow this time zone."
+  },
+  "presets": {
+    "school": "School days",
+    "schoolSummary": "Weekdays 16:00–20:00, weekends 09:00–21:00, up to 2 hours a day, warnings at 10 and 5 minutes."
+  },
+  "errors": {
+    "unknown": "Something went wrong.",
+    "network": "Cannot reach the Engine.",
+    "rate_limited": "Too many attempts. Try again in {{seconds}} s.",
+    "not_authenticated": "You are signed out.",
+    "forbidden": "You are not allowed to do that.",
+    "validation_failed": "Some values are not valid.",
+    "not_found": "Not found.",
+    "conflict": "That conflicts with the current state.",
+    "tv_offline": "The TV is not reachable right now.",
+    "unavailable": "The Engine is starting. Try again in a moment."
+  }
 }
