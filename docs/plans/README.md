@@ -32,7 +32,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M15 | EPG catalog and channel matching (Pro, private repository) | M11 |
 | M16 | Profiles and calendar, advanced budgets, reports (Pro) | M1, M11 |
 | M17 | Documentation site and user guide in five languages | any |
-| M18 | HTTPS on the LAN with a locally managed certificate | M5, M6, M8 |
+| M18 | HTTPS on the LAN with a locally managed certificate (in progress, see M18-https-lan.md) | M5, M6, M8 |
 
 ## Decisions that deviate from the first skeleton plan
 
