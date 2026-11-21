@@ -2,9 +2,25 @@
 name = "tvbalance-client"
 version = "0.1.0"
 description = "Async client for the TVBalance Engine API (used by the Home Assistant integration)"
-license = { text = "Apache-2.0" }
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "TVBalance Maintainers", email = "maintainers@tvbalance.dev" }]
+keywords = ["tvbalance", "home-assistant", "parental-control", "smart-tv"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
 requires-python = ">=3.13"
 dependencies = ["aiohttp>=3.10"]
+
+[project.urls]
+Homepage = "https://github.com/tvbalance/tvbalance"
+Issues = "https://github.com/tvbalance/tvbalance/issues"
 
 [build-system]
 requires = ["hatchling"]
