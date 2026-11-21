@@ -66,3 +66,47 @@ jobs:
             BUILD_VERSION=${{ steps.meta.outputs.version }}
             BUILD_ARCH=aarch64
           tags: ghcr.io/${{ github.repository_owner }}/tvbalance-addon-aarch64:${{ steps.meta.outputs.version }}
+
+  # HACS needs the integration at the root of its own repository, so each release is mirrored there.
+  # Skipped until the HACS_MIRROR_TOKEN secret (write access to the mirror repository) exists.
+  hacs-mirror:
+    name: Mirror the integration for HACS
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      HACS_MIRROR_TOKEN: ${{ secrets.HACS_MIRROR_TOKEN }}
+      MIRROR_REPO: ${{ github.repository_owner }}/tvbalance-ha
+    steps:
+      - if: env.HACS_MIRROR_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          path: source
+      - if: env.HACS_MIRROR_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.MIRROR_REPO }}
+          token: ${{ env.HACS_MIRROR_TOKEN }}
+          path: mirror
+      - if: env.HACS_MIRROR_TOKEN != ''
+        name: Publish the mirror
+        env:
+          GH_TOKEN: ${{ env.HACS_MIRROR_TOKEN }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          cd mirror
+          git rm -rq --ignore-unmatch .
+          mkdir -p custom_components
+          cp -r ../source/ha/custom_components/tvbalance custom_components/tvbalance
+          cp ../source/ha/hacs/hacs.json ../source/ha/hacs/README.md .
+          cp ../source/LICENSE .
+          find . -name __pycache__ -prune -exec rm -rf {} +
+          git config user.name "TVBalance Maintainers"
+          git config user.email "maintainers@tvbalance.dev"
+          git add -A
+          git commit -m "Release ${version}" || echo "nothing changed"
+          git tag -f "v${version}"
+          git push origin HEAD "v${version}" --force
+          gh release create "v${version}" --repo "${MIRROR_REPO}" --title "TVBalance ${version}" \
+            --notes "Mirror of TVBalance ${version}." || echo "release already exists"
