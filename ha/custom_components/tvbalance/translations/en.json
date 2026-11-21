@@ -8,6 +8,13 @@
           "url": "Engine URL",
           "token": "API token"
         }
+      },
+      "reauth_confirm": {
+        "title": "Sign in to TVBalance again",
+        "description": "The Engine at {url} no longer accepts the API token. Create a new token in the TVBalance web app and enter it here.",
+        "data": {
+          "token": "API token"
+        }
       }
     },
     "error": {
@@ -16,7 +23,34 @@
       "invalid_response": "The server answered, but it does not look like a TVBalance Engine."
     },
     "abort": {
-      "already_configured": "This Engine is already configured."
+      "already_configured": "This Engine is already configured.",
+      "reauth_successful": "The new API token is working."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status",
+        "state": {
+          "watching": "On",
+          "standby": "Standby",
+          "off": "Off",
+          "unreachable": "Unreachable",
+          "needs_pairing": "Needs pairing",
+          "not_monitored": "Not monitored"
+        }
+      },
+      "app": { "name": "App" },
+      "input": { "name": "Input" },
+      "channel": { "name": "Channel" },
+      "program": { "name": "Program" },
+      "watched_today": { "name": "Watched today" },
+      "time_left": { "name": "Time left today" }
+    },
+    "binary_sensor": {
+      "blocked": { "name": "Blocked" },
+      "connected": { "name": "Connected" },
+      "needs_pairing": { "name": "Needs pairing" }
     }
   }
 }

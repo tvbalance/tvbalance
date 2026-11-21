@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
@@ -47,5 +48,36 @@ class TVBalanceConfigFlow(ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=self.add_suggested_values_to_schema(schema, user_input),
+            errors=errors,
+        )
+
+    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> ConfigFlowResult:
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        entry = self._get_reauth_entry()
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            token = user_input[CONF_TOKEN].strip()
+            client = TVBalanceClient(
+                entry.data[CONF_URL], token, session=async_get_clientsession(self.hass)
+            )
+            try:
+                await client.tvs()
+            except TVBalanceConnectionError:
+                errors["base"] = "cannot_connect"
+            except AuthenticationError:
+                errors["base"] = "invalid_auth"
+            except TVBalanceError:
+                errors["base"] = "invalid_response"
+            else:
+                return self.async_update_reload_and_abort(entry, data_updates={CONF_TOKEN: token})
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=vol.Schema({vol.Required(CONF_TOKEN): str}),
+            description_placeholders={"url": entry.data[CONF_URL]},
             errors=errors,
         )

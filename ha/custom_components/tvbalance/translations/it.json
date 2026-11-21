@@ -2,21 +2,55 @@
   "config": {
     "step": {
       "user": {
-        "title": "Collega TVBalance",
-        "description": "Inserisci l'indirizzo del tuo TVBalance Engine (porta predefinita 8765).",
+        "title": "Collegati a TVBalance",
+        "description": "Inserisci l'indirizzo del tuo Engine TVBalance (porta predefinita 8765).",
         "data": {
           "url": "URL dell'Engine",
+          "token": "Token API"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Accedi di nuovo a TVBalance",
+        "description": "L'Engine su {url} non accetta più il token API. Crea un nuovo token nell'app web di TVBalance e inseriscilo qui.",
+        "data": {
           "token": "Token API"
         }
       }
     },
     "error": {
-      "cannot_connect": "Impossibile raggiungere TVBalance Engine.",
+      "cannot_connect": "Impossibile raggiungere l'Engine TVBalance.",
       "invalid_auth": "L'Engine ha rifiutato il token API.",
-      "invalid_response": "Il server ha risposto, ma non sembra un TVBalance Engine."
+      "invalid_response": "Il server ha risposto, ma non sembra un Engine TVBalance."
     },
     "abort": {
-      "already_configured": "Questo Engine è già configurato."
+      "already_configured": "Questo Engine è già configurato.",
+      "reauth_successful": "Il nuovo token API funziona."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Stato",
+        "state": {
+          "watching": "Accesa",
+          "standby": "In standby",
+          "off": "Spenta",
+          "unreachable": "Non raggiungibile",
+          "needs_pairing": "Da associare",
+          "not_monitored": "Non controllata"
+        }
+      },
+      "app": { "name": "App" },
+      "input": { "name": "Ingresso" },
+      "channel": { "name": "Canale" },
+      "program": { "name": "Programma" },
+      "watched_today": { "name": "Visto oggi" },
+      "time_left": { "name": "Tempo rimasto oggi" }
+    },
+    "binary_sensor": {
+      "blocked": { "name": "Bloccata" },
+      "connected": { "name": "Connessa" },
+      "needs_pairing": { "name": "Da associare" }
     }
   }
 }

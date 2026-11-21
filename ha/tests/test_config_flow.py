@@ -31,6 +31,7 @@ async def test_user_flow_creates_entry(
     aioclient_mock.get(f"{URL}/api/v1/info", json=INFO)
     aioclient_mock.get(f"{URL}/api/v1/tvs", json=[])
     aioclient_mock.get(f"{URL}/api/v1/health", json={"status": "ok"})
+    aioclient_mock.get(f"{URL}/api/v1/adapters", json=ADAPTERS)
     result = await _start(hass)
     assert result["type"] is FlowResultType.FORM
 

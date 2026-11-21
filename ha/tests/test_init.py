@@ -15,8 +15,14 @@ def _entry() -> MockConfigEntry:
     return MockConfigEntry(domain=DOMAIN, unique_id=URL, data={CONF_URL: URL, CONF_TOKEN: "secret"})
 
 
-async def test_setup_and_unload(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
+def _engine(aioclient_mock: AiohttpClientMocker) -> None:
     aioclient_mock.get(f"{URL}/api/v1/health", json={"status": "ok"})
+    aioclient_mock.get(f"{URL}/api/v1/adapters", json=ADAPTERS)
+    aioclient_mock.get(f"{URL}/api/v1/tvs", json=[])
+
+
+async def test_setup_and_unload(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
+    _engine(aioclient_mock)
     entry = _entry()
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)
@@ -39,9 +45,8 @@ async def test_setup_retries_when_engine_is_down(
 async def test_diagnostics_redact_the_token(
     hass: HomeAssistant, hass_client, aioclient_mock: AiohttpClientMocker
 ) -> None:
-    aioclient_mock.get(f"{URL}/api/v1/health", json={"status": "ok"})
+    _engine(aioclient_mock)
     aioclient_mock.get(f"{URL}/api/v1/info", json=INFO)
-    aioclient_mock.get(f"{URL}/api/v1/adapters", json=ADAPTERS)
     entry = _entry()
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)

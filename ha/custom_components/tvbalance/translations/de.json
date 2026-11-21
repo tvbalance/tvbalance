@@ -8,15 +8,49 @@
           "url": "Engine-URL",
           "token": "API-Token"
         }
+      },
+      "reauth_confirm": {
+        "title": "Erneut bei TVBalance anmelden",
+        "description": "Die Engine unter {url} akzeptiert das API-Token nicht mehr. Erstelle in der TVBalance-Web-App ein neues Token und gib es hier ein.",
+        "data": {
+          "token": "API-Token"
+        }
       }
     },
     "error": {
       "cannot_connect": "Die TVBalance Engine ist nicht erreichbar.",
       "invalid_auth": "Die Engine hat das API-Token abgelehnt.",
-      "invalid_response": "Der Server antwortet, scheint aber keine TVBalance Engine zu sein."
+      "invalid_response": "Der Server hat geantwortet, sieht aber nicht wie eine TVBalance Engine aus."
     },
     "abort": {
-      "already_configured": "Diese Engine ist bereits eingerichtet."
+      "already_configured": "Diese Engine ist bereits eingerichtet.",
+      "reauth_successful": "Das neue API-Token funktioniert."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status",
+        "state": {
+          "watching": "An",
+          "standby": "Standby",
+          "off": "Aus",
+          "unreachable": "Nicht erreichbar",
+          "needs_pairing": "Kopplung nötig",
+          "not_monitored": "Nicht überwacht"
+        }
+      },
+      "app": { "name": "App" },
+      "input": { "name": "Eingang" },
+      "channel": { "name": "Kanal" },
+      "program": { "name": "Sendung" },
+      "watched_today": { "name": "Heute gesehen" },
+      "time_left": { "name": "Verbleibende Zeit heute" }
+    },
+    "binary_sensor": {
+      "blocked": { "name": "Gesperrt" },
+      "connected": { "name": "Verbunden" },
+      "needs_pairing": { "name": "Kopplung nötig" }
     }
   }
 }

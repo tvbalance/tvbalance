@@ -17,7 +17,7 @@ TO_REDACT = {CONF_TOKEN}
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: TVBalanceConfigEntry
 ) -> dict[str, Any]:
-    client = entry.runtime_data
+    client = entry.runtime_data.client
     info = await client.info()
     adapters = await client.adapters()
     return {

@@ -3,20 +3,54 @@
     "step": {
       "user": {
         "title": "Conectar con TVBalance",
-        "description": "Introduce la dirección de tu TVBalance Engine (puerto predeterminado 8765).",
+        "description": "Introduce la dirección de tu Engine de TVBalance (puerto predeterminado 8765).",
         "data": {
           "url": "URL del Engine",
+          "token": "Token de API"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Iniciar sesión de nuevo en TVBalance",
+        "description": "El Engine en {url} ya no acepta el token de API. Crea un token nuevo en la aplicación web de TVBalance e introdúcelo aquí.",
+        "data": {
           "token": "Token de API"
         }
       }
     },
     "error": {
-      "cannot_connect": "No se puede conectar con TVBalance Engine.",
+      "cannot_connect": "No se puede acceder al Engine de TVBalance.",
       "invalid_auth": "El Engine rechazó el token de API.",
-      "invalid_response": "El servidor responde, pero no parece un TVBalance Engine."
+      "invalid_response": "El servidor respondió, pero no parece un Engine de TVBalance."
     },
     "abort": {
-      "already_configured": "Este Engine ya está configurado."
+      "already_configured": "Este Engine ya está configurado.",
+      "reauth_successful": "El nuevo token de API funciona."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Estado",
+        "state": {
+          "watching": "Encendida",
+          "standby": "En espera",
+          "off": "Apagada",
+          "unreachable": "Inaccesible",
+          "needs_pairing": "Necesita vincularse",
+          "not_monitored": "Sin supervisión"
+        }
+      },
+      "app": { "name": "Aplicación" },
+      "input": { "name": "Entrada" },
+      "channel": { "name": "Canal" },
+      "program": { "name": "Programa" },
+      "watched_today": { "name": "Visto hoy" },
+      "time_left": { "name": "Tiempo restante hoy" }
+    },
+    "binary_sensor": {
+      "blocked": { "name": "Bloqueada" },
+      "connected": { "name": "Conectada" },
+      "needs_pairing": { "name": "Necesita vincularse" }
     }
   }
 }

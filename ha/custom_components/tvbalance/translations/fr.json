@@ -2,21 +2,55 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connecter TVBalance",
-        "description": "Saisissez l'adresse de votre TVBalance Engine (port par défaut 8765).",
+        "title": "Se connecter à TVBalance",
+        "description": "Saisissez l'adresse de votre Engine TVBalance (port par défaut 8765).",
         "data": {
           "url": "URL de l'Engine",
-          "token": "Jeton API"
+          "token": "Jeton d'API"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Se reconnecter à TVBalance",
+        "description": "L'Engine à l'adresse {url} n'accepte plus le jeton d'API. Créez un nouveau jeton dans l'application web TVBalance et saisissez-le ici.",
+        "data": {
+          "token": "Jeton d'API"
         }
       }
     },
     "error": {
-      "cannot_connect": "Impossible de joindre le TVBalance Engine.",
+      "cannot_connect": "Impossible de joindre l'Engine TVBalance.",
       "invalid_auth": "L'Engine a refusé le jeton d'API.",
-      "invalid_response": "Le serveur répond, mais ne semble pas être un TVBalance Engine."
+      "invalid_response": "Le serveur a répondu, mais ne ressemble pas à un Engine TVBalance."
     },
     "abort": {
-      "already_configured": "Cet Engine est déjà configuré."
+      "already_configured": "Cet Engine est déjà configuré.",
+      "reauth_successful": "Le nouveau jeton d'API fonctionne."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "État",
+        "state": {
+          "watching": "Allumée",
+          "standby": "En veille",
+          "off": "Éteinte",
+          "unreachable": "Injoignable",
+          "needs_pairing": "À associer",
+          "not_monitored": "Non surveillée"
+        }
+      },
+      "app": { "name": "Application" },
+      "input": { "name": "Entrée" },
+      "channel": { "name": "Chaîne" },
+      "program": { "name": "Programme" },
+      "watched_today": { "name": "Regardé aujourd'hui" },
+      "time_left": { "name": "Temps restant aujourd'hui" }
+    },
+    "binary_sensor": {
+      "blocked": { "name": "Bloquée" },
+      "connected": { "name": "Connectée" },
+      "needs_pairing": { "name": "À associer" }
     }
   }
 }

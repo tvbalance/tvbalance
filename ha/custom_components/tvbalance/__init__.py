@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -10,10 +11,11 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from tvbalance_client import TVBalanceClient, TVBalanceError
 
 from .const import CONF_TOKEN, CONF_URL
+from .coordinator import TVBalanceCoordinator
 
-type TVBalanceConfigEntry = ConfigEntry[TVBalanceClient]
+type TVBalanceConfigEntry = ConfigEntry[TVBalanceCoordinator]
 
-PLATFORMS: list[str] = []
+PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: TVBalanceConfigEntry) -> bool:
@@ -26,9 +28,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: TVBalanceConfigEntry) ->
         await client.health()
     except TVBalanceError as ex:
         raise ConfigEntryNotReady(f"TVBalance Engine unavailable: {ex}") from ex
-    entry.runtime_data = client
+    coordinator = TVBalanceCoordinator(hass, entry, client)
+    await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = coordinator
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: TVBalanceConfigEntry) -> bool:
-    return True
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
