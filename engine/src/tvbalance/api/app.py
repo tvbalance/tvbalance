@@ -27,12 +27,14 @@ from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
 from tvbalance.app.ha_discovery import HomeAssistantDiscovery
+from tvbalance.app.notifications import PushNotifier, load_vapid_keys
 from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.config import EngineConfig
 from tvbalance.infra.clock import SystemClock
 from tvbalance.infra.db.repositories import open_storage
+from tvbalance.infra.webpush import WebPushSender
 from tvbalance.ports.services import Clock
 from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.registry import load_plugins
@@ -89,7 +91,11 @@ def create_app(
         if config.supervisor_token:
             discovery = HomeAssistantDiscovery(auth_, storage.secrets, config)
         app.state.ha_discovery = discovery
+        app.state.vapid_keys = await load_vapid_keys(storage.secrets)
+        sender = WebPushSender(app.state.vapid_keys)
+        notifier = app.state.push = PushNotifier(storage, app.state.events, sender, clock_)
         try:
+            await notifier.start()
             await app.state.supervisor.start()
             if discovery:
                 discovery.start()
@@ -99,6 +105,8 @@ def create_app(
                 await discovery.stop()
             await app.state.pairing.stop()
             await app.state.supervisor.stop()
+            await notifier.stop()
+            await sender.close()
             await storage.close()
 
     registered = load_plugins() if plugins is None else plugins

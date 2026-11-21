@@ -4,5 +4,16 @@
   "time_warning_soon": "Il tempo davanti alla TV sta per finire.",
   "time_up": "Il tempo davanti alla TV è finito.",
   "content_blocked": "Questo contenuto non è disponibile in questo momento.",
-  "powering_off": "La TV si sta spegnendo."
+  "powering_off": "La TV si sta spegnendo.",
+  "push_pairing_lost": "Associazione persa. Apri TVBalance per associare di nuovo la TV.",
+  "push_tv_unreachable": "La TV non è raggiungibile.",
+  "push_blocked_outside_window": "Fuori dagli orari consentiti.",
+  "push_blocked_budget_exhausted": "Il tempo di TV di oggi è esaurito.",
+  "push_blocked_app_blocked": "Un'app è stata bloccata.",
+  "push_blocked_input_blocked": "Un ingresso è stato bloccato.",
+  "push_blocked_channel_blocked": "Un canale è stato bloccato.",
+  "push_blocked_override": "Bloccata da una regola temporanea.",
+  "push_time_warning": "Restano {minutes} minuti di TV.",
+  "push_time_warning_one": "Resta 1 minuto di TV.",
+  "push_test": "Le notifiche funzionano."
 }

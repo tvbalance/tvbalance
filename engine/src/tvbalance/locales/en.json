@@ -4,5 +4,16 @@
   "time_warning_soon": "TV time is ending soon.",
   "time_up": "TV time is over.",
   "content_blocked": "This content is not available right now.",
-  "powering_off": "The TV is turning off."
+  "powering_off": "The TV is turning off.",
+  "push_pairing_lost": "Pairing lost. Open TVBalance to pair the TV again.",
+  "push_tv_unreachable": "The TV cannot be reached.",
+  "push_blocked_outside_window": "Outside the allowed hours.",
+  "push_blocked_budget_exhausted": "Today's TV time is used up.",
+  "push_blocked_app_blocked": "An app was blocked.",
+  "push_blocked_input_blocked": "An input was blocked.",
+  "push_blocked_channel_blocked": "A channel was blocked.",
+  "push_blocked_override": "Blocked by a temporary rule.",
+  "push_time_warning": "{minutes} minutes of TV time left.",
+  "push_time_warning_one": "1 minute of TV time left.",
+  "push_test": "Notifications are working."
 }

@@ -4,5 +4,16 @@
   "time_warning_soon": "El tiempo de televisión está por terminar.",
   "time_up": "Se acabó el tiempo de televisión.",
   "content_blocked": "Este contenido no está disponible en este momento.",
-  "powering_off": "El televisor se va a apagar."
+  "powering_off": "El televisor se va a apagar.",
+  "push_pairing_lost": "Emparejamiento perdido. Abre TVBalance para emparejar de nuevo la tele.",
+  "push_tv_unreachable": "No se puede conectar con la tele.",
+  "push_blocked_outside_window": "Fuera del horario permitido.",
+  "push_blocked_budget_exhausted": "El tiempo de tele de hoy se ha agotado.",
+  "push_blocked_app_blocked": "Se bloqueó una aplicación.",
+  "push_blocked_input_blocked": "Se bloqueó una entrada.",
+  "push_blocked_channel_blocked": "Se bloqueó un canal.",
+  "push_blocked_override": "Bloqueado por una regla temporal.",
+  "push_time_warning": "Quedan {minutes} minutos de tele.",
+  "push_time_warning_one": "Queda 1 minuto de tele.",
+  "push_test": "Las notificaciones funcionan."
 }

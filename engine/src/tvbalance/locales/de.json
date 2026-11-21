@@ -4,5 +4,16 @@
   "time_warning_soon": "Die Fernsehzeit endet bald.",
   "time_up": "Die Fernsehzeit ist vorbei.",
   "content_blocked": "Dieser Inhalt ist im Moment nicht verfügbar.",
-  "powering_off": "Der Fernseher schaltet sich aus."
+  "powering_off": "Der Fernseher schaltet sich aus.",
+  "push_pairing_lost": "Kopplung verloren. Öffne TVBalance, um den Fernseher erneut zu koppeln.",
+  "push_tv_unreachable": "Der Fernseher ist nicht erreichbar.",
+  "push_blocked_outside_window": "Außerhalb der erlaubten Zeiten.",
+  "push_blocked_budget_exhausted": "Die heutige Fernsehzeit ist aufgebraucht.",
+  "push_blocked_app_blocked": "Eine App wurde gesperrt.",
+  "push_blocked_input_blocked": "Ein Eingang wurde gesperrt.",
+  "push_blocked_channel_blocked": "Ein Sender wurde gesperrt.",
+  "push_blocked_override": "Durch eine vorübergehende Regel gesperrt.",
+  "push_time_warning": "Noch {minutes} Minuten Fernsehzeit.",
+  "push_time_warning_one": "Noch 1 Minute Fernsehzeit.",
+  "push_test": "Benachrichtigungen funktionieren."
 }
