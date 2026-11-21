@@ -13,7 +13,8 @@ Every endpoint except the ones below needs a credential.
 | Public endpoint                         | Purpose                                         |
 | --------------------------------------- | ----------------------------------------------- |
 | `GET /health`                           | Add-on watchdog                                 |
-| `GET /info`                             | `{version, api_version}`                        |
+| `GET /info`                             | `{version, api_version, https_port}`            |
+| `GET /tls/ca.crt`, `GET /tls/ca.mobileconfig` | The local CA (PEM, iOS profile); 404 unless automatic |
 | `GET /auth/state`, `POST /auth/setup`   | First-run setup (only until an admin exists)    |
 | `POST /auth/login`, `POST /auth/pin-login` | Sign in                                      |
 
@@ -78,6 +79,9 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
   `POST /push/subscriptions/{id}/test`. A subscription lists the events it wants
   (`pairing_lost`, `tv_unreachable`, `blocked`, `time_warning`); posting the same endpoint again
   refreshes it. The endpoint itself is never returned.
+- **HTTPS** (full admin only): `GET /tls` (mode, certificate names and expiry, CA fingerprint, the HTTPS
+  addresses) and `POST /tls/rotate` (a new CA and certificate; devices must install the new CA again,
+  automatic mode only). `https_port` in `/info` is set only while HTTPS is available.
 
 ## Live events: `GET /api/v1/events/ws`
 

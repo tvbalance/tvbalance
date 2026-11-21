@@ -414,6 +414,17 @@
             "title": "Api Version",
             "type": "string"
           },
+          "https_port": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Https Port"
+          },
           "version": {
             "title": "Version",
             "type": "string"
@@ -1415,6 +1426,90 @@
           "kind"
         ],
         "title": "TargetDoc",
+        "type": "object"
+      },
+      "TlsStatusOut": {
+        "properties": {
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "ca_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ca Fingerprint"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "https_port": {
+            "title": "Https Port",
+            "type": "integer"
+          },
+          "mode": {
+            "title": "Mode",
+            "type": "string"
+          },
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Names",
+            "type": "array"
+          },
+          "skipped_names": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Skipped Names",
+            "type": "array"
+          },
+          "urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Urls",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mode",
+          "active",
+          "https_port",
+          "names",
+          "skipped_names",
+          "urls",
+          "expires_at",
+          "ca_fingerprint",
+          "error"
+        ],
+        "title": "TlsStatusOut",
         "type": "object"
       },
       "TokenCreate": {
@@ -3863,6 +3958,159 @@
         "summary": "Change Settings",
         "tags": [
           "settings"
+        ]
+      }
+    },
+    "/api/v1/tls": {
+      "get": {
+        "operationId": "tls_status_api_v1_tls_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TlsStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Tls Status",
+        "tags": [
+          "tls"
+        ]
+      }
+    },
+    "/api/v1/tls/ca.crt": {
+      "get": {
+        "description": "Public: it is a certificate, not a secret. The settings page shows its fingerprint to compare.",
+        "operationId": "ca_certificate_api_v1_tls_ca_crt_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "summary": "Ca Certificate",
+        "tags": [
+          "tls"
+        ]
+      }
+    },
+    "/api/v1/tls/ca.mobileconfig": {
+      "get": {
+        "description": "Public: an iOS/macOS profile that installs the same CA.",
+        "operationId": "ca_profile_api_v1_tls_ca_mobileconfig_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "summary": "Ca Profile",
+        "tags": [
+          "tls"
+        ]
+      }
+    },
+    "/api/v1/tls/rotate": {
+      "post": {
+        "description": "Create a new CA and certificate. Every device must install the new CA.",
+        "operationId": "rotate_api_v1_tls_rotate_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TlsStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          }
+        },
+        "summary": "Rotate",
+        "tags": [
+          "tls"
         ]
       }
     },

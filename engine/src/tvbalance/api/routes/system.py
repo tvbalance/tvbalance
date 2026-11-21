@@ -21,9 +21,11 @@ async def health() -> HealthResponse:
 
 
 @router.get("/info", response_model=InfoResponse)
-async def info() -> InfoResponse:
+async def info(request: Request) -> InfoResponse:
     """Public: enough for a client to check it talks to a compatible engine."""
-    return InfoResponse(version=__version__, api_version=API_VERSION)
+    manager = getattr(request.app.state, "tls", None)
+    https_port = manager.status().https_port if manager is not None and manager.active else None
+    return InfoResponse(version=__version__, api_version=API_VERSION, https_port=https_port)
 
 
 @router.get(

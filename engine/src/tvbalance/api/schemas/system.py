@@ -22,3 +22,5 @@ class AdapterOut(BaseModel):
 class InfoResponse(BaseModel):
     version: str
     api_version: str
+    # Where HTTPS listens, when it is available; clients use it to offer the secure address.
+    https_port: int | None = None

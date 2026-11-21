@@ -26,7 +26,11 @@ def test_health(client: TestClient) -> None:
 
 
 def test_info_is_public_and_only_says_what_engine_this_is(client: TestClient) -> None:
-    assert client.get("/api/v1/info").json() == {"version": __version__, "api_version": "1"}
+    assert client.get("/api/v1/info").json() == {
+        "version": __version__,
+        "api_version": "1",
+        "https_port": None,
+    }
 
 
 def test_adapters_list_capabilities_for_a_signed_in_caller(engine_config: EngineConfig) -> None:

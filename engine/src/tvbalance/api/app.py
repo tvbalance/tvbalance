@@ -22,6 +22,7 @@ from tvbalance.api.routes import (
     push,
     settings,
     system,
+    tls,
     tvs,
 )
 from tvbalance.api.routes.system import API_VERSION as API_VERSION
@@ -126,6 +127,7 @@ def create_app(
     app.include_router(tvs.router)
     app.include_router(pairing.router)
     app.include_router(push.router)
+    app.include_router(tls.router)
     app.include_router(policies.router)
     app.include_router(control.router)
     app.include_router(inventory.router)
