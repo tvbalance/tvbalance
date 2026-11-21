@@ -1,6 +1,6 @@
 # M8: Full Home Assistant integration
 
-Status: in progress.
+Status: done.
 
 ## Goal
 Spec F10: every TV becomes a Home Assistant device with entities, a harmless Pause button, admin-only services,

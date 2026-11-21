@@ -62,6 +62,6 @@ Changing rules, TVs and settings needs the administrator password.
 - **Security:** change the password; set or remove the parent PIN.
 - **Signed-in devices:** see every signed-in browser and sign out any of them, or all but this one.
 - **API tokens:** for other programs. A token's secret is shown once when you create it, so copy it right away.
-  Choose **read** and **control** for Home Assistant. Revoke a token at any time.
+  Choose **read** and **control** for Home Assistant (see home-assistant.md). Revoke a token at any time.
 
 **System** shows the version and the TV brands this release supports, with their maturity.
