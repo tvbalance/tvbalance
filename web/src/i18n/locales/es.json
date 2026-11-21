@@ -8,5 +8,8 @@
     "maturity": { "stable": "Estable", "beta": "Beta", "experimental": "Experimental" },
     "loading": "Cargando…",
     "error": "No se puede conectar con el Engine."
-  }
+  },
+  "auth": {"loading":"Cargando…","error":"No se puede conectar con el motor."},
+  "welcome": {"title":"Bienvenido"},
+  "login": {"title":"Iniciar sesión"}
 }

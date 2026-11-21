@@ -1,7 +1,10 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+import { AuthGate } from "./components/AuthGate";
+import { Login } from "./pages/Login";
 import { System } from "./pages/System";
+import { Welcome } from "./pages/Welcome";
 
 export function App() {
   const { t } = useTranslation();
@@ -14,7 +17,18 @@ export function App() {
         </header>
         <main>
           <Routes>
-            <Route path="/" element={<System />} />
+            <Route path="/welcome" element={<Welcome />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="*"
+              element={
+                <AuthGate>
+                  <Routes>
+                    <Route path="/" element={<System />} />
+                  </Routes>
+                </AuthGate>
+              }
+            />
           </Routes>
         </main>
       </div>

@@ -8,5 +8,8 @@
     "maturity": { "stable": "Stabil", "beta": "Beta", "experimental": "Experimental" },
     "loading": "Wird geladen…",
     "error": "Die Engine ist nicht erreichbar."
-  }
+  },
+  "auth": {"loading":"Wird geladen…","error":"Die Engine ist nicht erreichbar."},
+  "welcome": {"title":"Willkommen"},
+  "login": {"title":"Anmelden"}
 }

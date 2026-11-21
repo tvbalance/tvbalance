@@ -8,5 +8,8 @@
     "maturity": { "stable": "Stable", "beta": "Beta", "experimental": "Experimental" },
     "loading": "Loading…",
     "error": "Cannot reach the Engine."
-  }
+  },
+  "auth": {"loading":"Loading…","error":"Cannot reach the Engine."},
+  "welcome": {"title":"Welcome"},
+  "login": {"title":"Sign in"}
 }

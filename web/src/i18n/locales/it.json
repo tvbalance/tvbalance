@@ -8,5 +8,8 @@
     "maturity": { "stable": "Stabile", "beta": "Beta", "experimental": "Experimental" },
     "loading": "Caricamento…",
     "error": "Impossibile raggiungere l'Engine."
-  }
+  },
+  "auth": {"loading":"Caricamento…","error":"Impossibile raggiungere il motore."},
+  "welcome": {"title":"Benvenuto"},
+  "login": {"title":"Accedi"}
 }

@@ -1,11 +1,20 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "./App";
 import "./i18n";
+import { failure, FakeSocket, stubApi } from "./test/fakes";
 
 const INFO = { version: "0.0.1", api_version: "1" };
+const ME = {
+  kind: "admin",
+  name: "Admin",
+  full_admin: true,
+  scopes: ["read", "control", "admin"],
+  session_id: "s",
+  csrf_token: "csrf",
+};
 
 function renderApp() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -16,17 +25,48 @@ function renderApp() {
   );
 }
 
+beforeEach(() => {
+  window.location.hash = "";
+  FakeSocket.instances = [];
+  vi.stubGlobal("WebSocket", FakeSocket);
+});
 afterEach(() => vi.unstubAllGlobals());
 
-describe("System page", () => {
-  it("shows engine info using a relative API URL", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => INFO });
-    vi.stubGlobal("fetch", fetchMock);
+describe("auth gate", () => {
+  it("shows the app to a signed-in caller using relative API URLs", async () => {
+    const fetchMock = stubApi({
+      "GET auth/state": { setup_required: false },
+      "GET auth/me": ME,
+      "GET info": INFO,
+    });
     renderApp();
     expect(await screen.findByText("0.0.1")).toBeInTheDocument();
-    const url = fetchMock.mock.calls[0][0] as string;
-    expect(url).toBe("api/v1/info");
-    expect(url.startsWith("/")).toBe(false);
+    for (const [url] of fetchMock.mock.calls as [string][]) {
+      expect(url.startsWith("/")).toBe(false);
+    }
+    expect(FakeSocket.instances).toHaveLength(1);
+    expect(FakeSocket.instances[0].url).toMatch(/^ws:\/\/.*\/api\/v1\/events\/ws$/);
+  });
+
+  it("sends first-run visitors to the welcome flow", async () => {
+    stubApi({
+      "GET auth/state": { setup_required: true },
+      "GET auth/me": failure(401, "setup_required"),
+    });
+    renderApp();
+    expect(await screen.findByRole("heading", { name: "Welcome" })).toBeInTheDocument();
+    expect(window.location.hash).toBe("#/welcome");
+    expect(FakeSocket.instances).toHaveLength(0);
+  });
+
+  it("sends anonymous visitors to sign-in", async () => {
+    stubApi({
+      "GET auth/state": { setup_required: false },
+      "GET auth/me": failure(401, "not_authenticated"),
+    });
+    renderApp();
+    expect(await screen.findByRole("heading", { name: "Sign in" })).toBeInTheDocument();
+    expect(window.location.hash).toBe("#/login");
   });
 
   it("reports an unreachable engine", async () => {
