@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import logging
 import uuid
 from collections.abc import Iterator
@@ -299,6 +300,29 @@ class SqliteSettingsStore:
             await conn.execute(stmt)
 
 
+_SECRET_PREFIX = "secret:"
+
+
+class SqliteSecretSettingsStore:
+    """Secrets sit in the settings table under a ``secret:`` key, sealed and base64 encoded."""
+
+    def __init__(self, settings: SqliteSettingsStore, box: SecretBox) -> None:
+        self._settings, self._box = settings, box
+
+    async def get(self, key: str) -> str | None:
+        stored = await self._settings.get(_SECRET_PREFIX + key)
+        if not isinstance(stored, str):
+            return None
+        try:
+            return self._box.decrypt(base64.b64decode(stored, validate=True)).decode()
+        except (SecretError, ValueError):
+            return None
+
+    async def set(self, key: str, value: str) -> None:
+        sealed = self._box.encrypt(value.encode())
+        await self._settings.set(_SECRET_PREFIX + key, base64.b64encode(sealed).decode("ascii"))
+
+
 class SqliteEnforcementStateStore:
     def __init__(self, engine: AsyncEngine, clock: Clock) -> None:
         self._engine, self._clock = engine, clock
@@ -511,6 +535,7 @@ class SqliteStorage:
         self.overrides = SqliteOverrideStore(engine)
         self.events = SqliteEventLog(engine)
         self.settings = SqliteSettingsStore(engine)
+        self.secrets = SqliteSecretSettingsStore(self.settings, box)
         self.enforcement = SqliteEnforcementStateStore(engine, clock)
         self.auth = SqliteAuthStore(engine, clock)
 

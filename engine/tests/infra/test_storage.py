@@ -333,6 +333,28 @@ async def test_settings_default_overwrite_and_json_values(storage: Storage) -> N
     assert await storage.settings.get("region") == {"country": "IT", "tz": "Europe/Rome"}
 
 
+async def test_secret_settings_are_sealed_on_disk(config: EngineConfig, clock: FixedClock) -> None:
+    store = await open_storage(config, clock)
+    try:
+        assert await store.secrets.get("ha_token") is None
+        await store.secrets.set("ha_token", SECRET)
+        await store.secrets.set("ha_token", SECRET + "-2")
+        assert await store.secrets.get("ha_token") == SECRET + "-2"
+    finally:
+        await store.close()
+    assert SECRET.encode() not in (config.data_dir / "tvbalance.db").read_bytes()
+    again = await open_storage(config, clock)
+    try:
+        assert await again.secrets.get("ha_token") == SECRET + "-2"
+    finally:
+        await again.close()
+
+
+async def test_an_unreadable_secret_setting_reads_as_missing(storage: Storage) -> None:
+    await storage.settings.set("secret:ha_token", "not-a-sealed-value")
+    assert await storage.secrets.get("ha_token") is None
+
+
 # --- enforcement state ----------------------------------------------------------------------
 
 STATE = EnforcementState(

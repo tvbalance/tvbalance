@@ -149,6 +149,16 @@ class SettingsStore(Protocol):
     async def set(self, key: str, value: Any) -> None: ...
 
 
+class SecretSettingsStore(Protocol):
+    """Small text secrets (for example a token handed to another system), sealed at rest."""
+
+    async def get(self, key: str) -> str | None:
+        """A missing or unreadable secret is None."""
+        ...
+
+    async def set(self, key: str, value: str) -> None: ...
+
+
 class EnforcementStateStore(Protocol):
     async def load(self, tv_id: str) -> EnforcementState:
         """A TV without saved state, or with an unreadable one, starts from a fresh state."""
@@ -237,6 +247,9 @@ class Storage(Protocol):
 
     @property
     def settings(self) -> SettingsStore: ...
+
+    @property
+    def secrets(self) -> SecretSettingsStore: ...
 
     @property
     def enforcement(self) -> EnforcementStateStore: ...
