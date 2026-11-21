@@ -23,7 +23,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M6 | Web UI: onboarding, rules, dashboard, settings (done, see M6-web.md and user-guide/web-ui.md) | M5 |
 | M7 | Discovery and guided pairing wizard (done, see M7-pairing.md and architecture/api.md) | M4, M5 |
 | M8 | Full Home Assistant integration: entities, admin-only services, events, blueprints (done, see M8-home-assistant.md) | M5 |
-| M9 | Add-on release, Supervisor discovery, ghcr publishing | M5 |
+| M9 | Add-on release, Supervisor discovery, ghcr/PyPI/HACS publishing (in progress, see M9-addon-release.md) | M5, M8 |
 | M10 | Web Push notifications | M5, M6 |
 | M11 | Licensing and entitlements, checkout | M2 |
 | M12 | Roku adapter (feasibility spike first) | skeleton |
@@ -32,6 +32,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M15 | EPG catalog and channel matching (Pro, private repository) | M11 |
 | M16 | Profiles and calendar, advanced budgets, reports (Pro) | M1, M11 |
 | M17 | Documentation site and user guide in five languages | any |
+| M18 | HTTPS on the LAN with a locally managed certificate | M5, M6, M8 |
 
 ## Decisions that deviate from the first skeleton plan
 
