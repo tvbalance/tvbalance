@@ -23,7 +23,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M6 | Web UI: onboarding, rules, dashboard, settings (done, see M6-web.md and user-guide/web-ui.md) | M5 |
 | M7 | Discovery and guided pairing wizard (done, see M7-pairing.md and architecture/api.md) | M4, M5 |
 | M8 | Full Home Assistant integration: entities, admin-only services, events, blueprints (done, see M8-home-assistant.md) | M5 |
-| M9 | Add-on release, Supervisor discovery, ghcr/PyPI/HACS publishing (in progress, see M9-addon-release.md) | M5, M8 |
+| M9 | Add-on release, Supervisor discovery, ghcr/PyPI/HACS publishing (done, see M9-addon-release.md and operations/release.md) | M5, M8 |
 | M10 | Web Push notifications | M5, M6 |
 | M11 | Licensing and entitlements, checkout | M2 |
 | M12 | Roku adapter (feasibility spike first) | skeleton |
@@ -38,7 +38,7 @@ Modules are implemented one at a time, test first, with small commits.
 
 - The shared image uses `python:3.13-slim` instead of the Home Assistant base images, so the same image serves
   the Add-on and standalone Docker, for amd64 and arm64.
-- The Add-on does not declare Supervisor `discovery` yet; it needs a matching integration flow (M8/M9).
+- The Add-on announces itself through Supervisor `discovery` (M9); the integration offers a confirm step.
 - shadcn/ui components are added per need during M6; the skeleton only ships Tailwind and a class-name helper.
 - TypeScript is pinned to 5.9 because `openapi-typescript` does not support 6 or 7 yet.
 - Home Assistant tests need a C toolchain on Windows, so locally they run in a Linux container

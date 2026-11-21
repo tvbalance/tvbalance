@@ -5,9 +5,19 @@ automations grant or take away TV time.
 
 ## Set up
 
+### With the Add-on (recommended)
+
+Install the TVBalance Add-on and start it. Home Assistant shows a **TVBalance** notification under
+**Settings → Devices & services**: choose **Configure** and confirm. The Add-on creates and keeps the API token for
+you; if you revoke it, restart the Add-on and Home Assistant picks up the new one.
+
+### With a standalone Engine
+
 1. In the TVBalance web UI, open **Settings → API tokens** and create a token with the **read** and **control**
    scopes. Add **admin** only if you want the `tvbalance.set_monitoring` service. The secret is shown once.
-2. Copy `custom_components/tvbalance` into your Home Assistant `config/custom_components` folder and restart.
+2. Install the integration with HACS (add `https://github.com/tvbalance/tvbalance-ha` as a custom repository,
+   category Integration), or copy `custom_components/tvbalance` into your Home Assistant `config/custom_components`
+   folder. Restart Home Assistant.
 3. **Settings → Devices & services → Add integration → TVBalance**. Enter the Engine URL and the token.
 
 If the token is revoked or expires, Home Assistant asks you for a new one (a repair notice appears; choose

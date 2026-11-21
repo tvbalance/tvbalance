@@ -1,6 +1,6 @@
 # M9: Add-on release, Supervisor discovery, publishing
 
-Status: in progress.
+Status: done. Release steps that need the maintainers are in `docs/operations/release.md`.
 
 ## Goal
 Make the product installable the Home Assistant way: the Add-on announces itself to Home Assistant (no URL or token
