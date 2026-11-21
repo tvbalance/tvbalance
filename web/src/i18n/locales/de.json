@@ -386,5 +386,35 @@
       "push_updates": "Live-Updates"
     },
     "pairAgain": "Erneut koppeln"
+  },
+  "push": {
+    "title": "Benachrichtigungen",
+    "help": "Erhalte auf diesem Gerät eine Benachrichtigung, wenn etwas deine Aufmerksamkeit braucht.",
+    "insecure": "Benachrichtigungen brauchen eine sichere Verbindung (HTTPS). Öffne TVBalance über Home Assistant per Ingress mit HTTPS oder über localhost.",
+    "unsupported": "Dieser Browser kann keine Push-Benachrichtigungen anzeigen. Auf iPhone und iPad füge TVBalance zuerst zum Home-Bildschirm hinzu.",
+    "denied": "Benachrichtigungen sind für diese Website blockiert. Erlaube sie in den Website-Einstellungen des Browsers und lade neu.",
+    "enable": "Für dieses Gerät einschalten",
+    "disable": "Für dieses Gerät ausschalten",
+    "test": "Testbenachrichtigung senden",
+    "enabled": "Benachrichtigungen sind für dieses Gerät eingeschaltet.",
+    "events": "Benachrichtige mich bei",
+    "otherDevices": "Andere Geräte",
+    "remove": "Entfernen",
+    "removeDevice": "{{device}} entfernen",
+    "unknownDevice": "Unbekanntes Gerät",
+    "lastSent": "Zuletzt gesendet {{when}}",
+    "neverSent": "Noch nichts gesendet",
+    "on": "Benachrichtigungen eingeschaltet",
+    "off": "Benachrichtigungen ausgeschaltet",
+    "removed": "Gerät entfernt",
+    "testDelivered": "Testbenachrichtigung gesendet",
+    "testGone": "Dieses Gerät ist nicht mehr registriert. Schalte die Benachrichtigungen erneut ein.",
+    "testFailed": "Der Push-Dienst ist nicht erreichbar. Versuche es später erneut.",
+    "event": {
+      "pairing_lost": "Der Fernseher muss neu gekoppelt werden",
+      "tv_unreachable": "Der Fernseher ist nicht erreichbar",
+      "blocked": "Ein Inhalt wurde gesperrt",
+      "time_warning": "Die Fernsehzeit ist fast zu Ende"
+    }
   }
 }

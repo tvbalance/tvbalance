@@ -14,6 +14,8 @@ export type EngineEvent = Schemas["EventOut"];
 export type Settings = Schemas["SettingsOut"];
 export type Session = Schemas["SessionOut"];
 export type Token = Schemas["TokenOut"];
+export type PushDevice = Schemas["PushSubscriptionOut"];
+export type PushEvent = PushDevice["events"][number];
 export type Inventory = Schemas["InventoryOut"];
 export type Adapter = Schemas["AdapterOut"];
 export type FoundTv = Schemas["FoundTvOut"];
@@ -30,6 +32,8 @@ export const keys = {
   settings: ["settings"] as const,
   sessions: ["auth", "sessions"] as const,
   tokens: ["auth", "tokens"] as const,
+  push: ["push"] as const,
+  pushDevices: (endpoint: string | null) => ["push", "devices", endpoint] as const,
   inventory: (tvId: string) => ["inventory", tvId] as const,
   adapters: ["adapters"] as const,
   discovery: ["discovery"] as const,
@@ -152,5 +156,17 @@ export function useAdapters() {
   return useQuery({
     queryKey: keys.adapters,
     queryFn: ({ signal }) => api.get<Adapter[]>("adapters", signal),
+  });
+}
+
+export function usePushDevices(endpoint: string | null, enabled = true) {
+  return useQuery({
+    queryKey: keys.pushDevices(endpoint),
+    queryFn: ({ signal }) =>
+      api.get<PushDevice[]>(
+        `push/subscriptions${endpoint ? `?endpoint=${encodeURIComponent(endpoint)}` : ""}`,
+        signal,
+      ),
+    enabled,
   });
 }

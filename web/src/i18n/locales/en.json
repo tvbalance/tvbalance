@@ -386,5 +386,35 @@
       "push_updates": "Live updates"
     },
     "pairAgain": "Pair again"
+  },
+  "push": {
+    "title": "Notifications",
+    "help": "Get a notification on this device when something needs your attention.",
+    "insecure": "Notifications need a secure (HTTPS) connection. Open TVBalance through Home Assistant's Ingress over HTTPS, or from localhost.",
+    "unsupported": "This browser can't show push notifications. On iPhone and iPad, add TVBalance to the Home Screen first.",
+    "denied": "Notifications are blocked for this site. Allow them in your browser's site settings, then reload.",
+    "enable": "Turn on for this device",
+    "disable": "Turn off for this device",
+    "test": "Send a test notification",
+    "enabled": "Notifications are on for this device.",
+    "events": "Notify me about",
+    "otherDevices": "Other devices",
+    "remove": "Remove",
+    "removeDevice": "Remove {{device}}",
+    "unknownDevice": "Unknown device",
+    "lastSent": "Last sent {{when}}",
+    "neverSent": "Nothing sent yet",
+    "on": "Notifications turned on",
+    "off": "Notifications turned off",
+    "removed": "Device removed",
+    "testDelivered": "Test notification sent",
+    "testGone": "This device is no longer registered. Turn notifications on again.",
+    "testFailed": "The push service could not be reached. Try again later.",
+    "event": {
+      "pairing_lost": "The TV needs to be paired again",
+      "tv_unreachable": "The TV can't be reached",
+      "blocked": "Content was blocked",
+      "time_warning": "TV time is almost over"
+    }
   }
 }

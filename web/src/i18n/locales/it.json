@@ -386,5 +386,35 @@
       "push_updates": "Aggiornamenti in tempo reale"
     },
     "pairAgain": "Associa di nuovo"
+  },
+  "push": {
+    "title": "Notifiche",
+    "help": "Ricevi una notifica su questo dispositivo quando serve la tua attenzione.",
+    "insecure": "Le notifiche richiedono una connessione sicura (HTTPS). Apri TVBalance da Home Assistant tramite Ingress in HTTPS, oppure da localhost.",
+    "unsupported": "Questo browser non può mostrare notifiche push. Su iPhone e iPad aggiungi prima TVBalance alla schermata Home.",
+    "denied": "Le notifiche sono bloccate per questo sito. Consentile dalle impostazioni del sito nel browser, poi ricarica.",
+    "enable": "Attiva su questo dispositivo",
+    "disable": "Disattiva su questo dispositivo",
+    "test": "Invia una notifica di prova",
+    "enabled": "Le notifiche sono attive su questo dispositivo.",
+    "events": "Avvisami quando",
+    "otherDevices": "Altri dispositivi",
+    "remove": "Rimuovi",
+    "removeDevice": "Rimuovi {{device}}",
+    "unknownDevice": "Dispositivo sconosciuto",
+    "lastSent": "Ultimo invio {{when}}",
+    "neverSent": "Ancora nulla inviato",
+    "on": "Notifiche attivate",
+    "off": "Notifiche disattivate",
+    "removed": "Dispositivo rimosso",
+    "testDelivered": "Notifica di prova inviata",
+    "testGone": "Questo dispositivo non è più registrato. Riattiva le notifiche.",
+    "testFailed": "Il servizio push non è raggiungibile. Riprova più tardi.",
+    "event": {
+      "pairing_lost": "La TV va associata di nuovo",
+      "tv_unreachable": "La TV non è raggiungibile",
+      "blocked": "Un contenuto è stato bloccato",
+      "time_warning": "Il tempo di TV sta per finire"
+    }
   }
 }

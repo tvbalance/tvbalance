@@ -386,5 +386,35 @@
       "push_updates": "Mises à jour en direct"
     },
     "pairAgain": "Associer de nouveau"
+  },
+  "push": {
+    "title": "Notifications",
+    "help": "Recevez une notification sur cet appareil quand quelque chose demande votre attention.",
+    "insecure": "Les notifications nécessitent une connexion sécurisée (HTTPS). Ouvrez TVBalance via l'Ingress de Home Assistant en HTTPS, ou depuis localhost.",
+    "unsupported": "Ce navigateur ne peut pas afficher de notifications push. Sur iPhone et iPad, ajoutez d'abord TVBalance à l'écran d'accueil.",
+    "denied": "Les notifications sont bloquées pour ce site. Autorisez-les dans les paramètres du site du navigateur, puis rechargez.",
+    "enable": "Activer sur cet appareil",
+    "disable": "Désactiver sur cet appareil",
+    "test": "Envoyer une notification de test",
+    "enabled": "Les notifications sont activées sur cet appareil.",
+    "events": "Me prévenir quand",
+    "otherDevices": "Autres appareils",
+    "remove": "Retirer",
+    "removeDevice": "Retirer {{device}}",
+    "unknownDevice": "Appareil inconnu",
+    "lastSent": "Dernier envoi {{when}}",
+    "neverSent": "Rien envoyé pour l'instant",
+    "on": "Notifications activées",
+    "off": "Notifications désactivées",
+    "removed": "Appareil retiré",
+    "testDelivered": "Notification de test envoyée",
+    "testGone": "Cet appareil n'est plus enregistré. Réactivez les notifications.",
+    "testFailed": "Le service push est injoignable. Réessayez plus tard.",
+    "event": {
+      "pairing_lost": "La télé doit être associée à nouveau",
+      "tv_unreachable": "La télé est injoignable",
+      "blocked": "Un contenu a été bloqué",
+      "time_warning": "Le temps de télé est presque écoulé"
+    }
   }
 }
