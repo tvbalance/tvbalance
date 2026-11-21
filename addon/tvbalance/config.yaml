@@ -14,10 +14,7 @@ ingress: true
 ingress_port: 8765
 panel_icon: mdi:television-play
 panel_title: TVBalance
-watchdog: http://[HOST]:[PORT:8765]/api/v1/health
 # The Supervisor API is used to announce the Engine to Home Assistant (integration discovery).
 hassio_api: true
 discovery:
   - tvbalance
-startup: application
-boot: auto
