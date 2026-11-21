@@ -6,6 +6,7 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, time, timedelta
+from time import monotonic, sleep
 from typing import Any
 
 from fastapi.testclient import TestClient
@@ -56,11 +57,13 @@ def sign_in_as_admin(client: TestClient, password: str = ADMIN_PASSWORD) -> None
     client.headers[CSRF_HEADER] = response.json()["csrf_token"]
 
 
-def seed_tv(client: TestClient, adapter: str = "fake", name: str = "Living room") -> str:
+def seed_tv(
+    client: TestClient, adapter: str = "fake", name: str = "Living room", host: str = "tv.local"
+) -> str:
     """Pair a TV straight in the storage of the running app (the API has no pairing yet)."""
     storage = client.app.state.storage  # type: ignore[attr-defined]
     assert client.portal is not None
-    record = client.portal.call(storage.tvs.add, adapter, name, "tv.local", {"client_key": "k"})
+    record = client.portal.call(storage.tvs.add, adapter, name, host, {"client_key": "k"})
     return str(record.id)
 
 
@@ -139,3 +142,15 @@ def kinds(queue: asyncio.Queue[BusEvent]) -> list[str]:
     while not queue.empty():
         found.append(queue.get_nowait().type)
     return found
+
+
+def wait_connected(client: TestClient, tv_id: str) -> None:
+    assert client.portal is not None
+    client.portal.call(client.app.state.supervisor.refresh)  # type: ignore[attr-defined]
+    deadline = monotonic() + 3
+    while monotonic() < deadline:
+        status = client.get(f"/api/v1/tvs/{tv_id}").json()["status"]
+        if status is not None and status["connected"]:
+            return
+        sleep(0.02)
+    raise AssertionError("the TV never connected")

@@ -1,9 +1,17 @@
-import time
 from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-from support import FAST, FakeClock, ScriptedTV, plugin_for, seed_tv, sign_in_as_admin, watching
+from support import (
+    FAST,
+    FakeClock,
+    ScriptedTV,
+    plugin_for,
+    seed_tv,
+    sign_in_as_admin,
+    wait_connected,
+    watching,
+)
 
 from tvbalance.api.app import create_app
 from tvbalance.config import EngineConfig
@@ -44,18 +52,6 @@ def tv() -> ScriptedTV:
 @pytest.fixture
 def client(engine_config: EngineConfig, clock: FakeClock, tv: ScriptedTV) -> Iterator[TestClient]:
     yield from make_client(engine_config, clock, tv)
-
-
-def wait_connected(client: TestClient, tv_id: str) -> None:
-    assert client.portal is not None
-    client.portal.call(client.app.state.supervisor.refresh)  # type: ignore[attr-defined]
-    deadline = time.monotonic() + 3
-    while time.monotonic() < deadline:
-        status = client.get(f"/api/v1/tvs/{tv_id}").json()["status"]
-        if status is not None and status["connected"]:
-            return
-        time.sleep(0.02)
-    raise AssertionError("the TV never connected")
 
 
 def test_inventory_lists_what_the_tv_offers(client: TestClient) -> None:

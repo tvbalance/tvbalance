@@ -3139,6 +3139,104 @@
         ]
       }
     },
+    "/api/v1/tvs/{tv_id}/apps/{app_id}/icon": {
+      "get": {
+        "description": "The app's icon, fetched from the TV: the browser cannot reach the TV's own address.",
+        "operationId": "app_icon_api_v1_tvs__tv_id__apps__app_id__icon_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "app_id",
+            "required": true,
+            "schema": {
+              "title": "App Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "image/*": {}
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "App Icon",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
     "/api/v1/tvs/{tv_id}/bonus": {
       "post": {
         "operationId": "grant_bonus_api_v1_tvs__tv_id__bonus_post",
