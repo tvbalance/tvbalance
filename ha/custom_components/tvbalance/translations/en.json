@@ -47,6 +47,27 @@
       "watched_today": { "name": "Watched today" },
       "time_left": { "name": "Time left today" }
     },
+    "event": {
+      "activity": {
+        "name": "Activity",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "time_warning": "Time warning",
+              "blocked": "Blocked",
+              "redirected": "Redirected",
+              "powered_off": "Switched off",
+              "enforcement_paused": "Rules paused",
+              "enforcement_unavailable": "Rules cannot be applied",
+              "tv_unreachable": "TV unreachable",
+              "tv_reachable": "TV reachable again",
+              "pairing_lost": "Pairing lost",
+              "tv_paired": "TV paired"
+            }
+          }
+        }
+      }
+    },
     "binary_sensor": {
       "blocked": { "name": "Blocked" },
       "connected": { "name": "Connected" },

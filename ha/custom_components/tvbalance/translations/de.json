@@ -47,6 +47,27 @@
       "watched_today": { "name": "Heute gesehen" },
       "time_left": { "name": "Verbleibende Zeit heute" }
     },
+    "event": {
+      "activity": {
+        "name": "Aktivität",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "time_warning": "Zeitwarnung",
+              "blocked": "Gesperrt",
+              "redirected": "Umgeleitet",
+              "powered_off": "Ausgeschaltet",
+              "enforcement_paused": "Regeln pausiert",
+              "enforcement_unavailable": "Regeln nicht anwendbar",
+              "tv_unreachable": "Fernseher nicht erreichbar",
+              "tv_reachable": "Fernseher wieder erreichbar",
+              "pairing_lost": "Kopplung verloren",
+              "tv_paired": "Fernseher gekoppelt"
+            }
+          }
+        }
+      }
+    },
     "binary_sensor": {
       "blocked": { "name": "Gesperrt" },
       "connected": { "name": "Verbunden" },

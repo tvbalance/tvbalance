@@ -13,6 +13,7 @@ from tvbalance_client.client import (
     TVBalanceConnectionError,
     TVBalanceError,
     TvStatus,
+    parse_status,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "TVBalanceError",
     "Tv",
     "TvStatus",
+    "parse_status",
 ]

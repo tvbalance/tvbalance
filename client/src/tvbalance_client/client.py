@@ -125,6 +125,13 @@ def _status(raw: dict[str, Any] | None) -> TvStatus | None:
     )
 
 
+def parse_status(raw: dict[str, Any]) -> TvStatus:
+    """A TV's status as the Engine sends it, in the API and in ``status`` events."""
+    status = _status(raw)
+    assert status is not None
+    return status
+
+
 def _tv(raw: dict[str, Any]) -> Tv:
     return Tv(
         id=raw["id"],

@@ -47,6 +47,27 @@
       "watched_today": { "name": "Visto oggi" },
       "time_left": { "name": "Tempo rimasto oggi" }
     },
+    "event": {
+      "activity": {
+        "name": "Attività",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "time_warning": "Avviso di tempo",
+              "blocked": "Bloccata",
+              "redirected": "Reindirizzata",
+              "powered_off": "Spenta",
+              "enforcement_paused": "Regole in pausa",
+              "enforcement_unavailable": "Regole non applicabili",
+              "tv_unreachable": "TV non raggiungibile",
+              "tv_reachable": "TV di nuovo raggiungibile",
+              "pairing_lost": "Associazione persa",
+              "tv_paired": "TV associata"
+            }
+          }
+        }
+      }
+    },
     "binary_sensor": {
       "blocked": { "name": "Bloccata" },
       "connected": { "name": "Connessa" },

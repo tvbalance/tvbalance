@@ -9,6 +9,7 @@ from tvbalance_client import (
     TVBalanceClient,
     TVBalanceConnectionError,
     TVBalanceError,
+    parse_status,
 )
 
 
@@ -140,6 +141,7 @@ async def test_events_start_with_the_status_of_every_tv(
         await stream.aclose()
     assert first.type == "status" and first.tv_id == tv_id
     assert "decision" in first.payload
+    assert parse_status(first.payload).connected in (True, False)
 
 
 async def test_events_refuse_anonymous_listeners(engine_url: str) -> None:
