@@ -20,6 +20,8 @@ export type Inventory = Schemas["InventoryOut"];
 export type Adapter = Schemas["AdapterOut"];
 export type FoundTv = Schemas["FoundTvOut"];
 export type Pairing = Schemas["PairingOut"];
+export type Info = Schemas["InfoResponse"];
+export type TlsStatus = Schemas["TlsStatusOut"];
 
 export const keys = {
   state: ["auth", "state"] as const,
@@ -30,6 +32,8 @@ export const keys = {
   events: (tvId: string | null, limit: number) => ["events", tvId, limit] as const,
   eventsAll: ["events"] as const,
   settings: ["settings"] as const,
+  info: ["info"] as const,
+  tls: ["tls"] as const,
   sessions: ["auth", "sessions"] as const,
   tokens: ["auth", "tokens"] as const,
   push: ["push"] as const,
@@ -94,6 +98,23 @@ export function useEvents(tvId: string | null, limit = 50) {
   return useQuery({
     queryKey: keys.events(tvId, limit),
     queryFn: ({ signal }) => api.get<EngineEvent[]>(`events?${query}`, signal),
+  });
+}
+
+/** Public facts about the Engine, among them where HTTPS listens. */
+export function useInfo() {
+  return useQuery({
+    queryKey: keys.info,
+    queryFn: ({ signal }) => api.get<Info>("info", signal),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useTls(enabled = true) {
+  return useQuery({
+    queryKey: keys.tls,
+    queryFn: ({ signal }) => api.get<TlsStatus>("tls", signal),
+    enabled,
   });
 }
 

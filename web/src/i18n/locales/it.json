@@ -415,6 +415,50 @@
       "tv_unreachable": "La TV non è raggiungibile",
       "blocked": "Un contenuto è stato bloccato",
       "time_warning": "Il tempo di TV sta per finire"
-    }
+    },
+    "secureAddress": "Apri l'indirizzo sicuro per attivare le notifiche."
+  },
+  "https": {
+    "banner": "Questa pagina non è cifrata. Usa l'indirizzo sicuro per proteggere la tua password.",
+    "open": "Apri l'indirizzo sicuro",
+    "dismiss": "Chiudi"
+  },
+  "secure": {
+    "title": "Connessione sicura",
+    "help": "TVBalance può rispondere in HTTPS sulla tua rete domestica con un certificato che crea e rinnova da solo.",
+    "on": "HTTPS attivo",
+    "off": "HTTPS non attivo",
+    "offNote": "HTTPS è disattivato. Attivalo nelle impostazioni dell'add-on o del motore.",
+    "addresses": "Indirizzi sicuri",
+    "expires": "Valido fino al {{date}}",
+    "skipped": "Non inclusi nel certificato (fuori dai nomi locali consentiti): {{names}}",
+    "fingerprint": "Impronta del certificato (SHA-256)",
+    "caHelp": "Installa il certificato su ogni dispositivo che apre TVBalance, poi confronta l'impronta qui sopra con quella mostrata dal dispositivo.",
+    "downloadCa": "Scarica il certificato",
+    "downloadProfile": "Profilo per iPhone e iPad",
+    "platform": {
+      "ios": {
+        "name": "iPhone e iPad",
+        "steps": "Apri il profilo, consentilo in Impostazioni, installalo, poi attivalo in Impostazioni > Generali > Info > Attendibilità certificati."
+      },
+      "android": {
+        "name": "Android",
+        "steps": "Apri Impostazioni, cerca \"Certificato CA\", scegli Installa comunque e seleziona il file scaricato."
+      },
+      "windows": {
+        "name": "Windows",
+        "steps": "Apri il file, scegli Installa certificato, Computer locale, e mettilo in Autorità di certificazione radice attendibili."
+      },
+      "mac": {
+        "name": "macOS",
+        "steps": "Apri il file in Accesso Portachiavi, poi imposta Fidati sempre per questo certificato."
+      }
+    },
+    "rotate": "Crea un nuovo certificato",
+    "rotateTitle": "Creare un nuovo certificato?",
+    "rotateHelp": "I dispositivi che si fidavano del vecchio certificato dovranno installare il nuovo, e l'integrazione Home Assistant chiederà di confermarlo di nuovo.",
+    "rotateConfirm": "Crea",
+    "rotated": "Il nuovo certificato è pronto",
+    "customNote": "TVBalance usa il tuo certificato. I dispositivi devono già considerarlo attendibile."
   }
 }

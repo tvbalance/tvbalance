@@ -4,6 +4,7 @@ import { NavLink, Outlet } from "react-router-dom";
 
 import { useSettings } from "../api/hooks";
 import i18n from "../i18n";
+import { HttpsBanner } from "./HttpsBanner";
 import { cn } from "../lib";
 
 const ITEMS = [
@@ -55,6 +56,7 @@ export function Layout() {
         </nav>
       </div>
       <main className="px-4 pb-24 pt-4 md:px-0 md:pb-0 md:pt-0">
+        <HttpsBanner />
         <Outlet />
       </main>
     </div>

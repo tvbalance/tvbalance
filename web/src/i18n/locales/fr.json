@@ -415,6 +415,50 @@
       "tv_unreachable": "La télé est injoignable",
       "blocked": "Un contenu a été bloqué",
       "time_warning": "Le temps de télé est presque écoulé"
-    }
+    },
+    "secureAddress": "Ouvrez l'adresse sécurisée pour activer les notifications."
+  },
+  "https": {
+    "banner": "Cette page n'est pas chiffrée. Utilisez l'adresse sécurisée pour garder votre mot de passe privé.",
+    "open": "Ouvrir l'adresse sécurisée",
+    "dismiss": "Fermer"
+  },
+  "secure": {
+    "title": "Connexion sécurisée",
+    "help": "TVBalance peut répondre en HTTPS sur votre réseau domestique avec un certificat qu'il crée et renouvelle seul.",
+    "on": "HTTPS actif",
+    "off": "HTTPS inactif",
+    "offNote": "HTTPS est désactivé. Activez-le dans les réglages du module complémentaire ou du moteur.",
+    "addresses": "Adresses sécurisées",
+    "expires": "Valide jusqu'au {{date}}",
+    "skipped": "Absents du certificat (hors des noms locaux autorisés) : {{names}}",
+    "fingerprint": "Empreinte du certificat (SHA-256)",
+    "caHelp": "Installez le certificat sur chaque appareil qui ouvre TVBalance, puis comparez l'empreinte ci-dessus avec celle affichée par l'appareil.",
+    "downloadCa": "Télécharger le certificat",
+    "downloadProfile": "Profil pour iPhone et iPad",
+    "platform": {
+      "ios": {
+        "name": "iPhone et iPad",
+        "steps": "Ouvrez le profil, autorisez-le dans Réglages, installez-le, puis activez-le dans Réglages > Général > Informations > Réglages de confiance des certificats."
+      },
+      "android": {
+        "name": "Android",
+        "steps": "Ouvrez Paramètres, cherchez \"Certificat CA\", choisissez Installer quand même puis le fichier téléchargé."
+      },
+      "windows": {
+        "name": "Windows",
+        "steps": "Ouvrez le fichier, choisissez Installer le certificat, Ordinateur local, et placez-le dans Autorités de certification racines de confiance."
+      },
+      "mac": {
+        "name": "macOS",
+        "steps": "Ouvrez le fichier dans Trousseau d'accès, puis réglez la confiance sur Toujours faire confiance."
+      }
+    },
+    "rotate": "Créer un nouveau certificat",
+    "rotateTitle": "Créer un nouveau certificat ?",
+    "rotateHelp": "Les appareils qui faisaient confiance à l'ancien certificat devront installer le nouveau, et l'intégration Home Assistant vous demandera de le confirmer de nouveau.",
+    "rotateConfirm": "Créer",
+    "rotated": "Un nouveau certificat est prêt",
+    "customNote": "TVBalance utilise votre propre certificat. Les appareils doivent déjà lui faire confiance."
   }
 }

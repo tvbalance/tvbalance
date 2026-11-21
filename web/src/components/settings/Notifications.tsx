@@ -2,8 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 import { errorMessage } from "../../api/errors";
-import { keys, usePushDevices, type PushDevice, type PushEvent } from "../../api/hooks";
+import { keys, useInfo, usePushDevices, type PushDevice, type PushEvent } from "../../api/hooks";
 import { api } from "../../api/http";
+import { secureAddress } from "../../https";
 import { currentLanguage } from "../../i18n";
 import {
   appUrl,
@@ -24,6 +25,7 @@ export function Notifications() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const support = pushSupport();
+  const secure = secureAddress(window.location, useInfo().data?.https_port);
   const blocked = support === "ok" && permission() === "denied";
   const usable = support === "ok" && !blocked;
 
@@ -103,6 +105,13 @@ export function Notifications() {
       <h2 className="text-lg font-semibold">{t("push.title")}</h2>
       <p className="text-sm text-muted">{t("push.help")}</p>
       {support === "insecure" ? <p className="text-sm">{t("push.insecure")}</p> : null}
+      {support === "insecure" && secure ? (
+        <p className="text-sm">
+          <a href={secure} className="text-brand underline">
+            {t("push.secureAddress")}
+          </a>
+        </p>
+      ) : null}
       {support === "unsupported" ? <p className="text-sm">{t("push.unsupported")}</p> : null}
       {blocked ? <p className="text-sm">{t("push.denied")}</p> : null}
 

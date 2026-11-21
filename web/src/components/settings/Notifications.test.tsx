@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { setCsrfToken } from "../../api/http";
 import i18n from "../../i18n";
+import { secureAddress } from "../../https";
 import * as client from "../../push-client";
 import { stubApi } from "../../test/fakes";
 import { ToastProvider } from "../ui/toast";
@@ -18,6 +19,8 @@ vi.mock("../../push-client", async (original) => ({
   subscribeBrowser: vi.fn(),
   appUrl: vi.fn(() => "https://ha.local/app/"),
 }));
+
+vi.mock("../../https", () => ({ secureAddress: vi.fn(() => null) }));
 
 const ENDPOINT = "https://push.example.net/send/abc";
 const ALL = ["blocked", "pairing_lost", "time_warning", "tv_unreachable"];
@@ -75,6 +78,16 @@ describe("Notifications", () => {
     renderCard();
     expect(await screen.findByText(/secure \(HTTPS\) connection/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Turn on for this device" })).not.toBeInTheDocument();
+  });
+
+  it("links to the secure address when the Engine offers one", async () => {
+    vi.mocked(client.pushSupport).mockReturnValue("insecure");
+    vi.mocked(secureAddress).mockReturnValue("https://tvbalance.local:8766/settings");
+    renderCard({ "GET info": { version: "1", api_version: "1", https_port: 8766 } });
+    expect(await screen.findByRole("link", { name: /secure address/i })).toHaveAttribute(
+      "href",
+      "https://tvbalance.local:8766/settings",
+    );
   });
 
   it("tells an unsupported browser apart", async () => {

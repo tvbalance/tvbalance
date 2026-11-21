@@ -11,6 +11,16 @@ const VARIANTS: Record<Variant, string> = {
   ghost: "text-ink hover:bg-page",
 };
 
+/** The look of a button, for links that should read as one. */
+export function buttonClasses(variant: Variant = "primary", className?: string): string {
+  return cn(
+    "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+    VARIANTS[variant],
+    className,
+  );
+}
+
 export function Button({
   variant = "primary",
   className,
@@ -18,15 +28,6 @@ export function Button({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
   return (
-    <button
-      type={type}
-      className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        VARIANTS[variant],
-        className,
-      )}
-      {...props}
-    />
+    <button type={type} className={buttonClasses(variant, className)} {...props} />
   );
 }

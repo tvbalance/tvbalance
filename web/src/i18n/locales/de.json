@@ -415,6 +415,50 @@
       "tv_unreachable": "Der Fernseher ist nicht erreichbar",
       "blocked": "Ein Inhalt wurde gesperrt",
       "time_warning": "Die Fernsehzeit ist fast zu Ende"
-    }
+    },
+    "secureAddress": "Öffne die sichere Adresse, um Benachrichtigungen einzuschalten."
+  },
+  "https": {
+    "banner": "Diese Seite ist nicht verschlüsselt. Nutze die sichere Adresse, damit dein Passwort privat bleibt.",
+    "open": "Sichere Adresse öffnen",
+    "dismiss": "Schließen"
+  },
+  "secure": {
+    "title": "Sichere Verbindung",
+    "help": "TVBalance kann in deinem Heimnetz per HTTPS antworten, mit einem Zertifikat, das es selbst erstellt und erneuert.",
+    "on": "HTTPS ist aktiv",
+    "off": "HTTPS ist nicht aktiv",
+    "offNote": "HTTPS ist ausgeschaltet. Schalte es in den Einstellungen des Add-ons oder der Engine ein.",
+    "addresses": "Sichere Adressen",
+    "expires": "Gültig bis {{date}}",
+    "skipped": "Nicht im Zertifikat enthalten (außerhalb der erlaubten lokalen Namen): {{names}}",
+    "fingerprint": "Fingerabdruck des Zertifikats (SHA-256)",
+    "caHelp": "Installiere das Zertifikat auf jedem Gerät, das TVBalance öffnet, und vergleiche dann den Fingerabdruck oben mit dem auf dem Gerät.",
+    "downloadCa": "Zertifikat herunterladen",
+    "downloadProfile": "Profil für iPhone und iPad",
+    "platform": {
+      "ios": {
+        "name": "iPhone und iPad",
+        "steps": "Öffne das Profil, erlaube es in den Einstellungen, installiere es und aktiviere es unter Einstellungen > Allgemein > Info > Zertifikatsvertrauenseinstellungen."
+      },
+      "android": {
+        "name": "Android",
+        "steps": "Öffne die Einstellungen, suche nach \"CA-Zertifikat\", wähle Trotzdem installieren und die heruntergeladene Datei."
+      },
+      "windows": {
+        "name": "Windows",
+        "steps": "Öffne die Datei, wähle Zertifikat installieren, Lokaler Computer, und lege es in Vertrauenswürdige Stammzertifizierungsstellen ab."
+      },
+      "mac": {
+        "name": "macOS",
+        "steps": "Öffne die Datei in der Schlüsselbundverwaltung und setze Vertrauen auf Immer vertrauen."
+      }
+    },
+    "rotate": "Neues Zertifikat erstellen",
+    "rotateTitle": "Neues Zertifikat erstellen?",
+    "rotateHelp": "Geräte, die dem alten Zertifikat vertraut haben, müssen das neue installieren, und die Home-Assistant-Integration bittet dich, es erneut zu bestätigen.",
+    "rotateConfirm": "Erstellen",
+    "rotated": "Ein neues Zertifikat ist bereit",
+    "customNote": "TVBalance nutzt dein eigenes Zertifikat. Die Geräte müssen ihm bereits vertrauen."
   }
 }

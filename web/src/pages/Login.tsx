@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { errorMessage } from "../api/errors";
 import { keys, useAuthState, useMe, type Me } from "../api/hooks";
 import { request, setCsrfToken } from "../api/http";
+import { HttpsBanner } from "../components/HttpsBanner";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Field, Input } from "../components/ui/field";
@@ -87,6 +88,7 @@ export function Login() {
         <h1 className="text-2xl font-bold">{t("login.title")}</h1>
         <p className="text-muted">{t("login.intro")}</p>
       </header>
+      <HttpsBanner />
       <Card>
         <Tabs
           label={t("login.methods")}
