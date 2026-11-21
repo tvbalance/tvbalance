@@ -522,7 +522,7 @@ export interface paths {
         };
         /**
          * Ca Certificate
-         * @description Public: it is a certificate, not a secret. The settings page shows its fingerprint to compare.
+         * @description Public: a certificate is not a secret; Settings shows its fingerprint to compare.
          */
         get: operations["ca_certificate_api_v1_tls_ca_crt_get"];
         put?: never;
