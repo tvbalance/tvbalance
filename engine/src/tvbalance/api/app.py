@@ -32,6 +32,7 @@ from tvbalance.app.notifications import PushNotifier, load_vapid_keys
 from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
+from tvbalance.app.tls import TlsManager
 from tvbalance.config import EngineConfig
 from tvbalance.infra.clock import SystemClock
 from tvbalance.infra.db.repositories import open_storage
@@ -92,11 +93,14 @@ def create_app(
         if config.supervisor_token:
             discovery = HomeAssistantDiscovery(auth_, storage.secrets, config)
         app.state.ha_discovery = discovery
+        tls_manager = app.state.tls = TlsManager(storage.secrets, config, clock_)
+        await tls_manager.prepare()
         app.state.vapid_keys = await load_vapid_keys(storage.secrets)
         sender = WebPushSender(app.state.vapid_keys)
         notifier = app.state.push = PushNotifier(storage, app.state.events, sender, clock_)
         try:
             await notifier.start()
+            tls_manager.start()
             await app.state.supervisor.start()
             if discovery:
                 discovery.start()
@@ -106,6 +110,7 @@ def create_app(
                 await discovery.stop()
             await app.state.pairing.stop()
             await app.state.supervisor.stop()
+            await tls_manager.stop()
             await notifier.stop()
             await sender.close()
             await storage.close()

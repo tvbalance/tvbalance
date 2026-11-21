@@ -69,3 +69,20 @@ def test_discovery_starts_and_stops_with_the_app_inside_an_addon(tmp_path: Path)
     with TestClient(app) as client:
         assert client.get("/api/v1/health").json() == {"status": "ok"}
         assert app.state.ha_discovery is not None
+
+
+def test_the_local_certificate_is_prepared_at_startup(tmp_path: Path) -> None:
+    config = EngineConfig(data_dir=tmp_path / "data")
+    app = create_app(plugins={}, config=config)
+    with TestClient(app):
+        status = app.state.tls.status()
+        assert status.active and status.mode == "auto"
+        assert (config.data_dir / "tls" / "server.crt").is_file()
+
+
+def test_https_can_be_switched_off(tmp_path: Path) -> None:
+    config = EngineConfig(data_dir=tmp_path / "data", tls_mode="off")
+    app = create_app(plugins={}, config=config)
+    with TestClient(app):
+        assert not app.state.tls.status().active
+        assert not (config.data_dir / "tls").exists()
