@@ -52,7 +52,8 @@
     "label": "Hauptmenü",
     "dashboard": "Übersicht",
     "system": "System",
-    "rules": "Regeln"
+    "rules": "Regeln",
+    "activity": "Aktivität"
   },
   "dashboard": {
     "title": "Übersicht",
@@ -231,5 +232,44 @@
       "message_repeat": "Meldung wiederholen alle (Sekunden)",
       "message_repeatHelp": "Wie oft die Bildschirmmeldung erneut erscheint."
     }
+  },
+  "activity": {
+    "title": "Aktivität",
+    "filter": "Anzeigen",
+    "allTvs": "Alle Fernseher",
+    "noTvs": "Noch keine Fernseher.",
+    "usage": "Gesehene Minuten, letzte 7 Tage",
+    "dayUsage": "{{day}}: {{minutes}} Minuten",
+    "log": "Letzte Ereignisse",
+    "noEvents": "Noch ist nichts passiert.",
+    "more": "Mehr anzeigen",
+    "event": {
+      "time_warning": "Warnung: noch {{minutes}} Min., bis {{limit}}",
+      "blocked": "Gesperrt: {{reason}}",
+      "redirected": "Der Fernseher wurde an einen sicheren Ort geschickt",
+      "powered_off": "Der Fernseher wurde ausgeschaltet",
+      "enforcement_paused": "Sperren nach wiederholtem Ausschalten pausiert",
+      "enforcement_unavailable": "Regeln konnten nicht durchgesetzt werden: {{reason}}",
+      "tv_reachable": "Der Fernseher ist wieder erreichbar",
+      "tv_unreachable": "Der Fernseher ist nicht erreichbar",
+      "pairing_lost": "Der Fernseher muss neu gekoppelt werden"
+    }
+  },
+  "tvDetail": {
+    "back": "Zurück zur Übersicht",
+    "name": "Name",
+    "rename": "Umbenennen",
+    "rules": "Regelsatz",
+    "rulesHelp": "Die Regeln, denen dieser Fernseher folgt.",
+    "noRules": "Keine Regeln (nichts ist begrenzt)",
+    "enabled": "Diesen Fernseher überwachen",
+    "enabledHelp": "Wenn aus, lässt die Engine den Fernseher in Ruhe.",
+    "saved": "Fernseher aktualisiert",
+    "recent": "Letzte Ereignisse",
+    "allActivity": "Gesamte Aktivität ansehen",
+    "remove": "Diesen Fernseher entfernen",
+    "removeTitle": "{{name}} entfernen?",
+    "removeHelp": "Der Fernseher wird nicht mehr überwacht.",
+    "confirmRemove": "Fernseher entfernen"
   }
 }

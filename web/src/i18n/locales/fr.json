@@ -52,7 +52,8 @@
     "label": "Principal",
     "dashboard": "Tableau de bord",
     "system": "Système",
-    "rules": "Règles"
+    "rules": "Règles",
+    "activity": "Activité"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -231,5 +232,44 @@
       "message_repeat": "Répéter le message toutes les (secondes)",
       "message_repeatHelp": "Fréquence de réaffichage du message à l'écran."
     }
+  },
+  "activity": {
+    "title": "Activité",
+    "filter": "Afficher",
+    "allTvs": "Tous les téléviseurs",
+    "noTvs": "Aucun téléviseur pour l'instant.",
+    "usage": "Minutes regardées, 7 derniers jours",
+    "dayUsage": "{{day}} : {{minutes}} minutes",
+    "log": "Événements récents",
+    "noEvents": "Rien ne s'est encore passé.",
+    "more": "Afficher plus",
+    "event": {
+      "time_warning": "Avertissement : {{minutes}} min restantes avant que {{limit}}",
+      "blocked": "Bloqué : {{reason}}",
+      "redirected": "Le téléviseur a été renvoyé vers un endroit sûr",
+      "powered_off": "Le téléviseur a été éteint",
+      "enforcement_paused": "Blocages suspendus après des extinctions répétées",
+      "enforcement_unavailable": "Impossible d'appliquer les règles : {{reason}}",
+      "tv_reachable": "Le téléviseur est de nouveau joignable",
+      "tv_unreachable": "Le téléviseur est injoignable",
+      "pairing_lost": "Le téléviseur doit être réassocié"
+    }
+  },
+  "tvDetail": {
+    "back": "Retour au tableau de bord",
+    "name": "Nom",
+    "rename": "Renommer",
+    "rules": "Jeu de règles",
+    "rulesHelp": "Les règles que suit ce téléviseur.",
+    "noRules": "Aucune règle (rien n'est limité)",
+    "enabled": "Surveiller ce téléviseur",
+    "enabledHelp": "Désactivé, le moteur laisse le téléviseur tranquille.",
+    "saved": "Téléviseur mis à jour",
+    "recent": "Derniers événements",
+    "allActivity": "Voir toute l'activité",
+    "remove": "Retirer ce téléviseur",
+    "removeTitle": "Retirer {{name}} ?",
+    "removeHelp": "Le téléviseur n'est plus surveillé.",
+    "confirmRemove": "Retirer le téléviseur"
   }
 }

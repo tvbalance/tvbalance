@@ -52,7 +52,8 @@
     "label": "Principale",
     "dashboard": "Pannello",
     "system": "Sistema",
-    "rules": "Regole"
+    "rules": "Regole",
+    "activity": "Attività"
   },
   "dashboard": {
     "title": "Pannello",
@@ -231,5 +232,44 @@
       "message_repeat": "Ripeti il messaggio ogni (secondi)",
       "message_repeatHelp": "Ogni quanto il messaggio a schermo riappare."
     }
+  },
+  "activity": {
+    "title": "Attività",
+    "filter": "Mostra",
+    "allTvs": "Tutte le TV",
+    "noTvs": "Ancora nessuna TV.",
+    "usage": "Minuti guardati, ultimi 7 giorni",
+    "dayUsage": "{{day}}: {{minutes}} minuti",
+    "log": "Eventi recenti",
+    "noEvents": "Non è ancora successo nulla.",
+    "more": "Mostra altro",
+    "event": {
+      "time_warning": "Avviso: mancano {{minutes}} min a quando {{limit}}",
+      "blocked": "Bloccato: {{reason}}",
+      "redirected": "La TV è stata portata in un posto sicuro",
+      "powered_off": "La TV è stata spenta",
+      "enforcement_paused": "Blocchi in pausa dopo spegnimenti ripetuti",
+      "enforcement_unavailable": "Impossibile applicare le regole: {{reason}}",
+      "tv_reachable": "La TV è di nuovo raggiungibile",
+      "tv_unreachable": "La TV non è raggiungibile",
+      "pairing_lost": "La TV va riaccoppiata"
+    }
+  },
+  "tvDetail": {
+    "back": "Torna alla dashboard",
+    "name": "Nome",
+    "rename": "Rinomina",
+    "rules": "Set di regole",
+    "rulesHelp": "Le regole che questa TV segue.",
+    "noRules": "Nessuna regola (nulla è limitato)",
+    "enabled": "Controlla questa TV",
+    "enabledHelp": "Se spento, il motore lascia stare la TV.",
+    "saved": "TV aggiornata",
+    "recent": "Ultimi eventi",
+    "allActivity": "Vedi tutta l'attività",
+    "remove": "Rimuovi questa TV",
+    "removeTitle": "Rimuovere {{name}}?",
+    "removeHelp": "La TV non sarà più controllata.",
+    "confirmRemove": "Rimuovi TV"
   }
 }

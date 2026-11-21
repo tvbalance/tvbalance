@@ -52,7 +52,8 @@
     "label": "Main",
     "dashboard": "Dashboard",
     "system": "System",
-    "rules": "Rules"
+    "rules": "Rules",
+    "activity": "Activity"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -231,5 +232,44 @@
       "message_repeat": "Repeat message every (seconds)",
       "message_repeatHelp": "How often the on-screen message is shown again."
     }
+  },
+  "activity": {
+    "title": "Activity",
+    "filter": "Show",
+    "allTvs": "All TVs",
+    "noTvs": "No TVs yet.",
+    "usage": "Minutes watched, last 7 days",
+    "dayUsage": "{{day}}: {{minutes}} minutes",
+    "log": "Recent events",
+    "noEvents": "Nothing has happened yet.",
+    "more": "Show more",
+    "event": {
+      "time_warning": "Warning: {{minutes}} min left before {{limit}}",
+      "blocked": "Blocked: {{reason}}",
+      "redirected": "The TV was sent to a safe place",
+      "powered_off": "The TV was switched off",
+      "enforcement_paused": "Blocking paused after repeated switch-offs",
+      "enforcement_unavailable": "Could not enforce the rules: {{reason}}",
+      "tv_reachable": "The TV is reachable again",
+      "tv_unreachable": "The TV can't be reached",
+      "pairing_lost": "The TV needs to be paired again"
+    }
+  },
+  "tvDetail": {
+    "back": "Back to the dashboard",
+    "name": "Name",
+    "rename": "Rename",
+    "rules": "Rule set",
+    "rulesHelp": "The rules this TV follows.",
+    "noRules": "No rules (nothing is limited)",
+    "enabled": "Monitor this TV",
+    "enabledHelp": "When off, the Engine leaves the TV alone.",
+    "saved": "TV updated",
+    "recent": "Latest events",
+    "allActivity": "See all activity",
+    "remove": "Remove this TV",
+    "removeTitle": "Remove {{name}}?",
+    "removeHelp": "The TV is no longer monitored.",
+    "confirmRemove": "Remove TV"
   }
 }

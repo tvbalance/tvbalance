@@ -52,7 +52,8 @@
     "label": "Principal",
     "dashboard": "Panel",
     "system": "Sistema",
-    "rules": "Reglas"
+    "rules": "Reglas",
+    "activity": "Actividad"
   },
   "dashboard": {
     "title": "Panel",
@@ -231,5 +232,44 @@
       "message_repeat": "Repetir el mensaje cada (segundos)",
       "message_repeatHelp": "Cada cuánto vuelve a aparecer el mensaje en pantalla."
     }
+  },
+  "activity": {
+    "title": "Actividad",
+    "filter": "Mostrar",
+    "allTvs": "Todos los televisores",
+    "noTvs": "Aún no hay televisores.",
+    "usage": "Minutos vistos, últimos 7 días",
+    "dayUsage": "{{day}}: {{minutes}} minutos",
+    "log": "Eventos recientes",
+    "noEvents": "Todavía no ha pasado nada.",
+    "more": "Mostrar más",
+    "event": {
+      "time_warning": "Aviso: quedan {{minutes}} min antes de que {{limit}}",
+      "blocked": "Bloqueado: {{reason}}",
+      "redirected": "El televisor fue enviado a un lugar seguro",
+      "powered_off": "Se apagó el televisor",
+      "enforcement_paused": "Bloqueos en pausa tras apagados repetidos",
+      "enforcement_unavailable": "No se pudieron aplicar las reglas: {{reason}}",
+      "tv_reachable": "El televisor vuelve a estar disponible",
+      "tv_unreachable": "No se puede contactar con el televisor",
+      "pairing_lost": "Hay que volver a emparejar el televisor"
+    }
+  },
+  "tvDetail": {
+    "back": "Volver al panel",
+    "name": "Nombre",
+    "rename": "Renombrar",
+    "rules": "Conjunto de reglas",
+    "rulesHelp": "Las reglas que sigue este televisor.",
+    "noRules": "Sin reglas (nada se limita)",
+    "enabled": "Supervisar este televisor",
+    "enabledHelp": "Desactivado, el motor deja el televisor en paz.",
+    "saved": "Televisor actualizado",
+    "recent": "Últimos eventos",
+    "allActivity": "Ver toda la actividad",
+    "remove": "Quitar este televisor",
+    "removeTitle": "¿Quitar {{name}}?",
+    "removeHelp": "El televisor deja de supervisarse.",
+    "confirmRemove": "Quitar televisor"
   }
 }
