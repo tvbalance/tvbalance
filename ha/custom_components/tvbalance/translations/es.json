@@ -4,11 +4,15 @@
       "user": {
         "title": "Conectar con TVBalance",
         "description": "Introduce la dirección de tu TVBalance Engine (puerto predeterminado 8765).",
-        "data": { "url": "URL del Engine", "token": "Token de API (opcional)" }
+        "data": {
+          "url": "URL del Engine",
+          "token": "Token de API"
+        }
       }
     },
     "error": {
       "cannot_connect": "No se puede conectar con TVBalance Engine.",
+      "invalid_auth": "El Engine rechazó el token de API.",
       "invalid_response": "El servidor responde, pero no parece un TVBalance Engine."
     },
     "abort": {

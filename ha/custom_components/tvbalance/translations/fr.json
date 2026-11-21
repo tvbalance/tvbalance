@@ -4,11 +4,15 @@
       "user": {
         "title": "Connecter TVBalance",
         "description": "Saisissez l'adresse de votre TVBalance Engine (port par défaut 8765).",
-        "data": { "url": "URL de l'Engine", "token": "Jeton API (facultatif)" }
+        "data": {
+          "url": "URL de l'Engine",
+          "token": "Jeton API"
+        }
       }
     },
     "error": {
       "cannot_connect": "Impossible de joindre le TVBalance Engine.",
+      "invalid_auth": "L'Engine a refusé le jeton d'API.",
       "invalid_response": "Le serveur répond, mais ne semble pas être un TVBalance Engine."
     },
     "abort": {

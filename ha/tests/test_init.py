@@ -8,7 +8,7 @@ from pytest_homeassistant_custom_component.components.diagnostics import (
 )
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 
-from .test_config_flow import INFO, URL
+from .test_config_flow import ADAPTERS, INFO, URL
 
 
 def _entry() -> MockConfigEntry:
@@ -41,6 +41,7 @@ async def test_diagnostics_redact_the_token(
 ) -> None:
     aioclient_mock.get(f"{URL}/api/v1/health", json={"status": "ok"})
     aioclient_mock.get(f"{URL}/api/v1/info", json=INFO)
+    aioclient_mock.get(f"{URL}/api/v1/adapters", json=ADAPTERS)
     entry = _entry()
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)

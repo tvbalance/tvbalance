@@ -4,11 +4,15 @@
       "user": {
         "title": "Mit TVBalance verbinden",
         "description": "Gib die Adresse deiner TVBalance Engine ein (Standardport 8765).",
-        "data": { "url": "Engine-URL", "token": "API-Token (optional)" }
+        "data": {
+          "url": "Engine-URL",
+          "token": "API-Token"
+        }
       }
     },
     "error": {
       "cannot_connect": "Die TVBalance Engine ist nicht erreichbar.",
+      "invalid_auth": "Die Engine hat das API-Token abgelehnt.",
       "invalid_response": "Der Server antwortet, scheint aber keine TVBalance Engine zu sein."
     },
     "abort": {
