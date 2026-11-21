@@ -5,13 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import "./i18n";
 
-const INFO = {
-  version: "0.0.1",
-  api_version: "1",
-  adapters: [
-    { id: "webos", brand: "LG", display_name: "LG webOS", maturity: "stable", capabilities: [] },
-  ],
-};
+const INFO = { version: "0.0.1", api_version: "1" };
 
 function renderApp() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -29,7 +23,7 @@ describe("System page", () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => INFO });
     vi.stubGlobal("fetch", fetchMock);
     renderApp();
-    expect(await screen.findByText("LG webOS")).toBeInTheDocument();
+    expect(await screen.findByText("0.0.1")).toBeInTheDocument();
     const url = fetchMock.mock.calls[0][0] as string;
     expect(url).toBe("api/v1/info");
     expect(url.startsWith("/")).toBe(false);

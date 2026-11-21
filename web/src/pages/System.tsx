@@ -24,19 +24,6 @@ export function System() {
         <dt className="text-slate-500">{t("system.apiVersion")}</dt>
         <dd>{data.api_version}</dd>
       </dl>
-      <div>
-        <h3 className="font-medium">{t("system.adapters")}</h3>
-        <ul className="mt-2 space-y-1">
-          {data.adapters.map((a) => (
-            <li key={a.id} className="flex items-center gap-2">
-              <span>{a.display_name}</span>
-              <span className="rounded bg-slate-200 px-2 py-0.5 text-xs dark:bg-slate-800">
-                {t(`system.maturity.${a.maturity}`)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
     </section>
   );
 }

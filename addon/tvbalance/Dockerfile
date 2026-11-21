@@ -32,7 +32,7 @@ COPY --from=web /web/dist /app/web
 ENV PATH="/app/.venv/bin:$PATH" \
     TVBALANCE_WEB_DIR=/app/web \
     TVBALANCE_DATA_DIR=/data \
-    TVBALANCE_PORT=8765
+    TVBALANCE_PORT=8765     TVBALANCE_INGRESS_TRUSTED=172.30.32.2
 VOLUME /data
 EXPOSE 8765
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
