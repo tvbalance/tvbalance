@@ -40,12 +40,24 @@
           "not_monitored": "Non surveillée"
         }
       },
-      "app": { "name": "Application" },
-      "input": { "name": "Entrée" },
-      "channel": { "name": "Chaîne" },
-      "program": { "name": "Programme" },
-      "watched_today": { "name": "Regardé aujourd'hui" },
-      "time_left": { "name": "Temps restant aujourd'hui" }
+      "app": {
+        "name": "Application"
+      },
+      "input": {
+        "name": "Entrée"
+      },
+      "channel": {
+        "name": "Chaîne"
+      },
+      "program": {
+        "name": "Programme"
+      },
+      "watched_today": {
+        "name": "Regardé aujourd'hui"
+      },
+      "time_left": {
+        "name": "Temps restant aujourd'hui"
+      }
     },
     "event": {
       "activity": {
@@ -69,9 +81,127 @@
       }
     },
     "binary_sensor": {
-      "blocked": { "name": "Bloquée" },
-      "connected": { "name": "Connectée" },
-      "needs_pairing": { "name": "À associer" }
+      "blocked": {
+        "name": "Bloquée"
+      },
+      "connected": {
+        "name": "Connectée"
+      },
+      "needs_pairing": {
+        "name": "À associer"
+      }
+    },
+    "button": {
+      "pause": {
+        "name": "Pause de 30 minutes"
+      }
+    }
+  },
+  "services": {
+    "bonus": {
+      "name": "Accorder du temps en plus",
+      "description": "Ajoute des minutes au temps d'aujourd'hui. Nécessite un administrateur Home Assistant.",
+      "fields": {
+        "device_id": {
+          "name": "Télévision",
+          "description": "La télévision concernée."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "Pendant combien de temps, en minutes."
+        }
+      }
+    },
+    "allow": {
+      "name": "Autoriser la télévision",
+      "description": "Autorise la télévision malgré les règles pendant un moment. Nécessite un administrateur Home Assistant.",
+      "fields": {
+        "device_id": {
+          "name": "Télévision",
+          "description": "La télévision concernée."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "Pendant combien de temps, en minutes."
+        },
+        "until_midnight": {
+          "name": "Jusqu'à minuit",
+          "description": "Dure jusqu'à minuit au lieu d'un nombre de minutes."
+        }
+      }
+    },
+    "block": {
+      "name": "Bloquer la télévision",
+      "description": "Bloque la télévision malgré les règles pendant un moment. Nécessite un administrateur Home Assistant.",
+      "fields": {
+        "device_id": {
+          "name": "Télévision",
+          "description": "La télévision concernée."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "Pendant combien de temps, en minutes."
+        },
+        "until_midnight": {
+          "name": "Jusqu'à minuit",
+          "description": "Dure jusqu'à minuit au lieu d'un nombre de minutes."
+        }
+      }
+    },
+    "pause": {
+      "name": "Suspendre les règles",
+      "description": "Suspend l'application des règles pendant un moment. Nécessite un administrateur Home Assistant.",
+      "fields": {
+        "device_id": {
+          "name": "Télévision",
+          "description": "La télévision concernée."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "Pendant combien de temps, en minutes."
+        }
+      }
+    },
+    "clear_override": {
+      "name": "Revenir aux règles",
+      "description": "Annule une autorisation, un blocage ou une pause en cours. Nécessite un administrateur Home Assistant.",
+      "fields": {
+        "device_id": {
+          "name": "Télévision",
+          "description": "La télévision concernée."
+        }
+      }
+    },
+    "set_monitoring": {
+      "name": "Changer la surveillance",
+      "description": "Active ou désactive la surveillance de la télévision. Nécessite un administrateur Home Assistant et un jeton d'API avec la portée Administrer.",
+      "fields": {
+        "device_id": {
+          "name": "Télévision",
+          "description": "La télévision concernée."
+        },
+        "enabled": {
+          "name": "Surveillance",
+          "description": "Active ou désactive la surveillance."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "unknown_device": {
+      "message": "Cet appareil n'est pas une télévision TVBalance."
+    },
+    "entry_not_loaded": {
+      "message": "L'intégration TVBalance de cette télévision n'est pas chargée."
+    },
+    "choose_one_duration": {
+      "message": "Indiquez soit des minutes, soit jusqu'à minuit, pas les deux et pas aucun."
+    },
+    "not_allowed": {
+      "message": "L'Engine a refusé l'action : {error}. Vérifiez que le jeton d'API a la portée requise (Administrer est nécessaire pour changer la surveillance)."
+    },
+    "engine_error": {
+      "message": "L'Engine TVBalance signale un problème : {error}"
     }
   }
 }

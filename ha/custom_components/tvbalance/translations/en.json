@@ -40,12 +40,24 @@
           "not_monitored": "Not monitored"
         }
       },
-      "app": { "name": "App" },
-      "input": { "name": "Input" },
-      "channel": { "name": "Channel" },
-      "program": { "name": "Program" },
-      "watched_today": { "name": "Watched today" },
-      "time_left": { "name": "Time left today" }
+      "app": {
+        "name": "App"
+      },
+      "input": {
+        "name": "Input"
+      },
+      "channel": {
+        "name": "Channel"
+      },
+      "program": {
+        "name": "Program"
+      },
+      "watched_today": {
+        "name": "Watched today"
+      },
+      "time_left": {
+        "name": "Time left today"
+      }
     },
     "event": {
       "activity": {
@@ -69,9 +81,127 @@
       }
     },
     "binary_sensor": {
-      "blocked": { "name": "Blocked" },
-      "connected": { "name": "Connected" },
-      "needs_pairing": { "name": "Needs pairing" }
+      "blocked": {
+        "name": "Blocked"
+      },
+      "connected": {
+        "name": "Connected"
+      },
+      "needs_pairing": {
+        "name": "Needs pairing"
+      }
+    },
+    "button": {
+      "pause": {
+        "name": "Pause for 30 minutes"
+      }
+    }
+  },
+  "services": {
+    "bonus": {
+      "name": "Grant extra time",
+      "description": "Adds minutes to today's budget. Needs a Home Assistant administrator.",
+      "fields": {
+        "device_id": {
+          "name": "TV",
+          "description": "The TV to act on."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "How long, in minutes."
+        }
+      }
+    },
+    "allow": {
+      "name": "Allow the TV",
+      "description": "Allows the TV regardless of the rules for a while. Needs a Home Assistant administrator.",
+      "fields": {
+        "device_id": {
+          "name": "TV",
+          "description": "The TV to act on."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "How long, in minutes."
+        },
+        "until_midnight": {
+          "name": "Until midnight",
+          "description": "Last until midnight instead of a number of minutes."
+        }
+      }
+    },
+    "block": {
+      "name": "Block the TV",
+      "description": "Blocks the TV regardless of the rules for a while. Needs a Home Assistant administrator.",
+      "fields": {
+        "device_id": {
+          "name": "TV",
+          "description": "The TV to act on."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "How long, in minutes."
+        },
+        "until_midnight": {
+          "name": "Until midnight",
+          "description": "Last until midnight instead of a number of minutes."
+        }
+      }
+    },
+    "pause": {
+      "name": "Pause rules",
+      "description": "Stops enforcement for a while. Needs a Home Assistant administrator.",
+      "fields": {
+        "device_id": {
+          "name": "TV",
+          "description": "The TV to act on."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "How long, in minutes."
+        }
+      }
+    },
+    "clear_override": {
+      "name": "Back to the rules",
+      "description": "Cancels an active allow, block or pause. Needs a Home Assistant administrator.",
+      "fields": {
+        "device_id": {
+          "name": "TV",
+          "description": "The TV to act on."
+        }
+      }
+    },
+    "set_monitoring": {
+      "name": "Switch monitoring",
+      "description": "Turns monitoring of the TV on or off. Needs a Home Assistant administrator and an API token with the Administer scope.",
+      "fields": {
+        "device_id": {
+          "name": "TV",
+          "description": "The TV to act on."
+        },
+        "enabled": {
+          "name": "Monitoring",
+          "description": "Turn monitoring on or off."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "unknown_device": {
+      "message": "This device is not a TVBalance TV."
+    },
+    "entry_not_loaded": {
+      "message": "The TVBalance integration for this TV is not loaded."
+    },
+    "choose_one_duration": {
+      "message": "Give either minutes or until midnight, not both and not neither."
+    },
+    "not_allowed": {
+      "message": "The Engine refused this action: {error}. Check that the API token has the needed scope (Administer is needed to switch monitoring)."
+    },
+    "engine_error": {
+      "message": "The TVBalance Engine reported a problem: {error}"
     }
   }
 }

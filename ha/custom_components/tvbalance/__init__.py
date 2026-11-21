@@ -6,16 +6,31 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import ConfigType
 
 from tvbalance_client import TVBalanceClient, TVBalanceError
 
-from .const import CONF_TOKEN, CONF_URL
+from .const import CONF_TOKEN, CONF_URL, DOMAIN
 from .coordinator import TVBalanceCoordinator
+from .services import async_setup_services
 
 type TVBalanceConfigEntry = ConfigEntry[TVBalanceCoordinator]
 
-PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.SENSOR]
+PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
+    Platform.BUTTON,
+    Platform.EVENT,
+    Platform.SENSOR,
+]
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    async_setup_services(hass)
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: TVBalanceConfigEntry) -> bool:
