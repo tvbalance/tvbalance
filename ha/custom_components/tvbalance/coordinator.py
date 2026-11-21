@@ -122,7 +122,16 @@ class TVBalanceCoordinator(DataUpdateCoordinator[dict[str, Tv]]):
 
         device = None
         if tv is not None:
-            device = dr.async_get(self.hass).async_get_device(identifiers={(DOMAIN, tv.id)})
+            device = next(
+                (
+                    d
+                    for d in dr.async_entries_for_config_entry(
+                        dr.async_get(self.hass), self.config_entry.entry_id
+                    )
+                    if (DOMAIN, tv.id) in d.identifiers
+                ),
+                None,
+            )
         self.hass.bus.async_fire(
             EVENT_NAME,
             {

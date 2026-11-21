@@ -5,12 +5,11 @@ import pytest
 from custom_components.tvbalance.const import DOMAIN
 from homeassistant.core import Context, HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError, Unauthorized
-from homeassistant.helpers import device_registry as dr
 from pytest_homeassistant_custom_component.common import MockUser
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 
 from .test_config_flow import URL
-from .test_entities import make_tv, setup_engine, state_of
+from .test_entities import all_devices, make_tv, setup_engine, state_of
 
 OVERRIDE = {
     "allow": False,
@@ -23,7 +22,7 @@ TV = f"{URL}/api/v1/tvs/tv1"
 @pytest.fixture
 async def device_id(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> str:
     await setup_engine(hass, aioclient_mock, [make_tv()])
-    device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, "tv1")})
+    device = next(d for d in all_devices(hass) if (DOMAIN, "tv1") in d.identifiers)
     assert device
     aioclient_mock.post(f"{TV}/bonus", json={"day": "2026-01-01", "bonus_minutes": 15})
     aioclient_mock.post(f"{TV}/override", json=OVERRIDE)
