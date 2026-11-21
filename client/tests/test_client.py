@@ -69,6 +69,45 @@ async def test_tvs_are_listed_and_fetched(
     assert fetched.name == "Living room" and fetched.adapter_id == "fake"
 
 
+async def test_status_carries_input_channel_and_program(
+    engine_url: str, engine_token: str, engine_app: FastAPI
+) -> None:
+    tv_id = await seed_tv(engine_app)
+    await engine_app.state.supervisor.refresh()
+    async with TVBalanceClient(engine_url, engine_token) as client:
+        tv = await client.tv(tv_id)
+    assert tv.status is not None
+    assert tv.status.input_id is None or isinstance(tv.status.input_id, str)
+    assert tv.status.channel_id is None or isinstance(tv.status.channel_id, str)
+    assert tv.status.program_title is None or isinstance(tv.status.program_title, str)
+
+
+async def test_me_reports_the_token_scopes(
+    engine_url: str, mint_token: Callable[[list[str]], Awaitable[str]]
+) -> None:
+    token = await mint_token(["read", "control"])
+    async with TVBalanceClient(engine_url, token) as client:
+        me = await client.me()
+    assert me.kind == "token"
+    assert set(me.scopes) == {"read", "control"}
+
+
+async def test_update_tv_needs_the_admin_scope(
+    engine_url: str, engine_app: FastAPI, mint_token: Callable[[list[str]], Awaitable[str]]
+) -> None:
+    tv_id = await seed_tv(engine_app)
+    control = await mint_token(["read", "control"])
+    async with TVBalanceClient(engine_url, control) as client:
+        with pytest.raises(AuthenticationError) as refused:
+            await client.update_tv(tv_id, enabled=False)
+    assert refused.value.status == 403
+    admin = await mint_token(["read", "control", "admin"])
+    async with TVBalanceClient(engine_url, admin) as client:
+        off = await client.update_tv(tv_id, enabled=False, name="Den")
+        assert off.enabled is False and off.name == "Den"
+        assert (await client.update_tv(tv_id, enabled=True)).enabled is True
+
+
 async def test_unknown_tv_raises_not_found(engine_url: str, engine_token: str) -> None:
     async with TVBalanceClient(engine_url, engine_token) as client:
         with pytest.raises(TVBalanceError) as missing:

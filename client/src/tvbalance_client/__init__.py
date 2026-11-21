@@ -3,6 +3,7 @@
 from tvbalance_client.client import (
     AdapterSummary,
     AuthenticationError,
+    Caller,
     Decision,
     EngineInfo,
     Event,
@@ -17,6 +18,7 @@ from tvbalance_client.client import (
 __all__ = [
     "AdapterSummary",
     "AuthenticationError",
+    "Caller",
     "Decision",
     "EngineInfo",
     "Event",

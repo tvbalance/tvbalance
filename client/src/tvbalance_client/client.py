@@ -52,6 +52,7 @@ class Decision:
     kind: str  # "allow", "warn" or "block"
     reason: str | None  # why it is blocked
     minutes_left: int | None  # how long until a limit, when warning
+    limit: str | None = None  # what a warning is about, e.g. "daily_budget"
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +64,15 @@ class TvStatus:
     decision: Decision | None
     watched_seconds: int
     remaining_seconds: int | None  # None: no daily budget
+    input_id: str | None = None
+    channel_id: str | None = None
+    program_title: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class Caller:
+    kind: str  # "admin", "pin", "token" or "ingress"
+    scopes: tuple[str, ...]  # "read", "control", "admin"
 
 
 @dataclass(frozen=True, slots=True)
@@ -101,9 +111,17 @@ def _status(raw: dict[str, Any] | None) -> TvStatus | None:
         foreground_app=raw["foreground_app"],
         decision=None
         if decision is None
-        else Decision(decision["kind"], decision["reason"], decision["minutes_left"]),
+        else Decision(
+            decision["kind"],
+            decision["reason"],
+            decision["minutes_left"],
+            decision.get("limit"),
+        ),
         watched_seconds=raw["watched_seconds"],
         remaining_seconds=raw["remaining_seconds"],
+        input_id=raw.get("input_id"),
+        channel_id=raw.get("channel_id"),
+        program_title=raw.get("program_title"),
     )
 
 
@@ -204,6 +222,21 @@ class TVBalanceClient:
 
     async def tv(self, tv_id: str) -> Tv:
         return _tv(await self._request("GET", f"/api/v1/tvs/{tv_id}"))
+
+    async def update_tv(
+        self, tv_id: str, *, enabled: bool | None = None, name: str | None = None
+    ) -> Tv:
+        """Rename a TV or switch its monitoring on or off (needs the admin scope)."""
+        body: dict[str, Any] = {}
+        if enabled is not None:
+            body["enabled"] = enabled
+        if name is not None:
+            body["name"] = name
+        return _tv(await self._request("PATCH", f"/api/v1/tvs/{tv_id}", body))
+
+    async def me(self) -> Caller:
+        raw = await self._request("GET", "/api/v1/auth/me")
+        return Caller(kind=raw["kind"], scopes=tuple(raw["scopes"]))
 
     async def override(
         self,
