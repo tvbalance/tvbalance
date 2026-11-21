@@ -11,5 +11,7 @@
   },
   "auth": {"loading":"Loading…","error":"Cannot reach the Engine."},
   "welcome": {"title":"Welcome"},
-  "login": {"title":"Sign in"}
+  "login": {"title":"Sign in"},
+  "nav": {"label":"Main","dashboard":"Dashboard","system":"System"},
+  "dashboard": {"title":"Dashboard","empty":"No TV yet. Adding a TV is coming soon."}
 }

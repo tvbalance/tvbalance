@@ -11,5 +11,7 @@
   },
   "auth": {"loading":"Chargement…","error":"Impossible de joindre le moteur."},
   "welcome": {"title":"Bienvenue"},
-  "login": {"title":"Se connecter"}
+  "login": {"title":"Se connecter"},
+  "nav": {"label":"Principal","dashboard":"Tableau de bord","system":"Système"},
+  "dashboard": {"title":"Tableau de bord","empty":"Aucune TV pour le moment. L'ajout d'une TV arrive bientôt."}
 }

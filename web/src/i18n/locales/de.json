@@ -11,5 +11,7 @@
   },
   "auth": {"loading":"Wird geladen…","error":"Die Engine ist nicht erreichbar."},
   "welcome": {"title":"Willkommen"},
-  "login": {"title":"Anmelden"}
+  "login": {"title":"Anmelden"},
+  "nav": {"label":"Hauptmenü","dashboard":"Übersicht","system":"System"},
+  "dashboard": {"title":"Übersicht","empty":"Noch kein Fernseher. Das Hinzufügen kommt bald."}
 }

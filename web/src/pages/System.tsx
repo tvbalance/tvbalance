@@ -15,13 +15,13 @@ export function System() {
 
   return (
     <section aria-labelledby="system-title" className="space-y-4">
-      <h2 id="system-title" className="text-xl font-semibold">
+      <h1 id="system-title" className="text-2xl font-bold">
         {t("system.title")}
-      </h2>
+      </h1>
       <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
-        <dt className="text-slate-500">{t("system.version")}</dt>
+        <dt className="text-muted">{t("system.version")}</dt>
         <dd>{data.version}</dd>
-        <dt className="text-slate-500">{t("system.apiVersion")}</dt>
+        <dt className="text-muted">{t("system.apiVersion")}</dt>
         <dd>{data.api_version}</dd>
       </dl>
     </section>

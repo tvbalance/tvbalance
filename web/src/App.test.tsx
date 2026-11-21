@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "./App";
@@ -34,6 +35,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe("auth gate", () => {
   it("shows the app to a signed-in caller using relative API URLs", async () => {
+    window.location.hash = "#/system";
     const fetchMock = stubApi({
       "GET auth/state": { setup_required: false },
       "GET auth/me": ME,
@@ -73,5 +75,22 @@ describe("auth gate", () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("down")));
     renderApp();
     expect(await screen.findByRole("alert")).toBeInTheDocument();
+  });
+});
+
+describe("navigation", () => {
+  it("links the pages of the signed-in app", async () => {
+    stubApi({
+      "GET auth/state": { setup_required: false },
+      "GET auth/me": ME,
+      "GET tvs": [],
+      "GET info": INFO,
+    });
+    renderApp();
+    const nav = await screen.findByRole("navigation", { name: "Main" });
+    expect(within(nav).getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
+    expect(await screen.findByText(/No TV yet/)).toBeInTheDocument();
+    await userEvent.click(within(nav).getByRole("link", { name: "System" }));
+    expect(await screen.findByText("0.0.1")).toBeInTheDocument();
   });
 });

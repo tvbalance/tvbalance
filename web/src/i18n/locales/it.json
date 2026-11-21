@@ -11,5 +11,7 @@
   },
   "auth": {"loading":"Caricamento…","error":"Impossibile raggiungere il motore."},
   "welcome": {"title":"Benvenuto"},
-  "login": {"title":"Accedi"}
+  "login": {"title":"Accedi"},
+  "nav": {"label":"Principale","dashboard":"Pannello","system":"Sistema"},
+  "dashboard": {"title":"Pannello","empty":"Nessuna TV per ora. L'aggiunta di una TV arriverà presto."}
 }

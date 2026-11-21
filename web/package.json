@@ -11,6 +11,7 @@
     "gen:api": "openapi-typescript ../engine/openapi.json -o src/api/schema.d.ts"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.3.1",
     "@tanstack/react-query": "^5.107.1",
     "clsx": "^2.1.1",
     "i18next": "^27.1.3",

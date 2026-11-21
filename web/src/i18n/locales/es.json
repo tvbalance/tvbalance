@@ -11,5 +11,7 @@
   },
   "auth": {"loading":"Cargando…","error":"No se puede conectar con el motor."},
   "welcome": {"title":"Bienvenido"},
-  "login": {"title":"Iniciar sesión"}
+  "login": {"title":"Iniciar sesión"},
+  "nav": {"label":"Principal","dashboard":"Panel","system":"Sistema"},
+  "dashboard": {"title":"Panel","empty":"Aún no hay ninguna TV. Añadir una TV llegará pronto."}
 }
