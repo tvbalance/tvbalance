@@ -73,6 +73,11 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
 - **Auth management:** `GET /auth/me`, `POST /auth/logout`, `PUT /auth/password`,
   `PUT`/`DELETE /auth/pin`, `GET`/`DELETE /auth/sessions[/{id}]`,
   `GET`/`POST`/`DELETE /auth/tokens[/{id}]`.
+- **Web Push** (full admin only): `GET /push/key` (the VAPID public key a browser subscribes with),
+  `GET`/`POST /push/subscriptions`, `PATCH`/`DELETE /push/subscriptions/{id}` and
+  `POST /push/subscriptions/{id}/test`. A subscription lists the events it wants
+  (`pairing_lost`, `tv_unreachable`, `blocked`, `time_warning`); posting the same endpoint again
+  refreshes it. The endpoint itself is never returned.
 
 ## Live events: `GET /api/v1/events/ws`
 
