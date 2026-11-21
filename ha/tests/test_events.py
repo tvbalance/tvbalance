@@ -6,7 +6,6 @@ import pytest
 from custom_components.tvbalance import coordinator as coordinator_module
 from custom_components.tvbalance.const import DOMAIN, EVENT_NAME
 from homeassistant.core import Event, HomeAssistant
-from homeassistant.helpers import device_registry as dr
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import (
     async_capture_events,
@@ -18,7 +17,7 @@ from tvbalance_client import AuthenticationError, TVBalanceConnectionError
 
 from .conftest import EventStream
 from .test_config_flow import URL
-from .test_entities import make_tv, setup_engine, state_of
+from .test_entities import all_devices, make_tv, setup_engine, state_of
 
 
 async def poll(hass: HomeAssistant) -> None:
@@ -27,7 +26,7 @@ async def poll(hass: HomeAssistant) -> None:
 
 
 def devices(hass: HomeAssistant) -> set[str]:
-    return {d.name for d in dr.async_get(hass).devices.values() if d.name}
+    return {d.name for d in all_devices(hass) if d.name}
 
 
 async def test_a_status_message_updates_the_states_at_once(
@@ -68,7 +67,7 @@ async def test_an_engine_event_reaches_the_bus_and_the_event_entity(
     stream.push("time_warning", minutes_left=5)
     await hass.async_block_till_done()
 
-    (device,) = [d for d in dr.async_get(hass).devices.values() if d.name == "Living room"]
+    (device,) = [d for d in all_devices(hass) if d.name == "Living room"]
     (event,) = fired
     assert event.data == {
         "device_id": device.id,

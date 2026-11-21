@@ -56,10 +56,19 @@ async def setup_engine(
     return entry
 
 
+def all_devices(hass: HomeAssistant) -> list[dr.DeviceEntry]:
+    """Every TVBalance device (the registry's own mapping is deprecated in newer HA)."""
+    registry = dr.async_get(hass)
+    return [
+        device
+        for entry in hass.config_entries.async_entries(DOMAIN)
+        for device in dr.async_entries_for_config_entry(registry, entry.entry_id)
+    ]
+
+
 def state_of(hass: HomeAssistant, domain: str, key: str, device_name: str = "Living room"):
     """The state of the entity with this translation key on the named device."""
-    devices = dr.async_get(hass)
-    device = next(d for d in devices.devices.values() if d.name == device_name)
+    device = next(d for d in all_devices(hass) if d.name == device_name)
     for entity in er.async_entries_for_device(er.async_get(hass), device.id, True):
         if entity.domain == domain and entity.translation_key == key:
             return hass.states.get(entity.entity_id)
@@ -71,7 +80,7 @@ async def test_a_tv_becomes_a_device_with_sensors(
 ) -> None:
     await setup_engine(hass, aioclient_mock, [make_tv()])
 
-    (device,) = [d for d in dr.async_get(hass).devices.values() if d.name == "Living room"]
+    (device,) = [d for d in all_devices(hass) if d.name == "Living room"]
     assert device.identifiers == {(DOMAIN, "tv1")}
     assert device.manufacturer == "Fake" and device.model == "Fake TV"
     assert state_of(hass, "sensor", "status").state == "watching"
