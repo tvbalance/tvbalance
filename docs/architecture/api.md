@@ -48,7 +48,21 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
 ## Endpoints
 
 - **TVs:** `GET /tvs`, `GET /tvs/{id}` (record plus live status); `PATCH` and `DELETE /tvs/{id}`
-  need `admin`. Adding and pairing a TV is not in the API yet.
+  need `admin`. A TV is added by pairing it (below).
+- **Discovery and pairing** (`admin`; a PIN session is refused):
+  - `GET /discovery` searches the network with every installed adapter (a few seconds) and returns
+    `{adapter_id, adapter_name, host, name, model, already_added}`. Overlapping searches share one scan.
+  - `POST /pairings` starts a pairing and answers 201 `{id, state, adapter_id, host, tv_id,
+    expires_at}`. Send `adapter_id`, `host` (a host name or IP address, nothing else) and an optional
+    `name` to add a TV, or `tv_id` to pair a stored TV again. Errors: 404 (unknown adapter or TV), 409
+    `tv_exists` or `adapter_mismatch`, 422. A pairing already waiting on the same address is returned
+    as is.
+  - `GET /pairings/{id}`: `state` is `waiting_for_user`, `completed`, `failed` or `expired`; `tv_id`
+    is set once the TV is stored. The person has three minutes to accept on the TV; finished pairings
+    can be read for ten minutes.
+  - `DELETE /pairings/{id}` abandons it (204); a TV already stored stays.
+  - The TV and its key are stored when pairing completes. Events `tv_added` and `tv_paired` (a
+    stored TV paired again) go through the log and the WebSocket.
 - **Policies:** `GET /policies`, `GET /policies/{id}`; `POST /policies` and `PUT /policies/{id}`
   need `admin` and answer 422 with the domain's issue codes when the policy is invalid.
 - **Control** (`control` scope): `POST /tvs/{id}/override` (`allow`, then `minutes` or
