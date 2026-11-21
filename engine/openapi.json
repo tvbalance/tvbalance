@@ -36,6 +36,29 @@
         "title": "AdapterOut",
         "type": "object"
       },
+      "AppOut": {
+        "properties": {
+          "has_icon": {
+            "title": "Has Icon",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "has_icon"
+        ],
+        "title": "AppOut",
+        "type": "object"
+      },
       "AuthState": {
         "properties": {
           "setup_required": {
@@ -102,6 +125,36 @@
         ],
         "title": "Capability",
         "type": "string"
+      },
+      "ChannelOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "number"
+        ],
+        "title": "ChannelOut",
+        "type": "object"
       },
       "DecisionOut": {
         "properties": {
@@ -326,6 +379,56 @@
           "api_version"
         ],
         "title": "InfoResponse",
+        "type": "object"
+      },
+      "InputOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "InputOut",
+        "type": "object"
+      },
+      "InventoryOut": {
+        "properties": {
+          "apps": {
+            "items": {
+              "$ref": "#/components/schemas/AppOut"
+            },
+            "title": "Apps",
+            "type": "array"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ChannelOut"
+            },
+            "title": "Channels",
+            "type": "array"
+          },
+          "inputs": {
+            "items": {
+              "$ref": "#/components/schemas/InputOut"
+            },
+            "title": "Inputs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "apps",
+          "inputs",
+          "channels"
+        ],
+        "title": "InventoryOut",
         "type": "object"
       },
       "LoginRequest": {
@@ -3115,6 +3218,89 @@
         "summary": "Grant Bonus",
         "tags": [
           "control"
+        ]
+      }
+    },
+    "/api/v1/tvs/{tv_id}/inventory": {
+      "get": {
+        "description": "Cached for a few minutes. ``409 tv_offline`` while the TV is disabled or unreachable.",
+        "operationId": "inventory_api_v1_tvs__tv_id__inventory_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Inventory",
+        "tags": [
+          "inventory"
         ]
       }
     },

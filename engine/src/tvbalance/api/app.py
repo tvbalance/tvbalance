@@ -16,6 +16,7 @@ from tvbalance.api.routes import (
     auth,
     control,
     events_ws,
+    inventory,
     policies,
     settings,
     system,
@@ -87,6 +88,7 @@ def create_app(
     app.include_router(tvs.router)
     app.include_router(policies.router)
     app.include_router(control.router)
+    app.include_router(inventory.router)
     app.include_router(activity.router)
     app.include_router(settings.router)
     app.include_router(events_ws.router)

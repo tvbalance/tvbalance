@@ -10,13 +10,13 @@ import asyncio
 import logging
 from collections.abc import Callable
 from contextlib import suppress
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from tvbalance.app.events import EventBus, to_record
 from tvbalance.app.household import household_now
 from tvbalance.app.messages import localize
 from tvbalance.app.session import TVSession
-from tvbalance.app.status import SupervisorSettings, TvStatus
+from tvbalance.app.status import Inventory, SupervisorSettings, TvStatus
 from tvbalance.domain.budget import accrue, remaining_seconds
 from tvbalance.domain.enforcement import EnforcementState, step
 from tvbalance.domain.models import Decision, Observation, Policy, Power, Usage
@@ -28,6 +28,9 @@ from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.types import AdapterConfig, Capability
 
 log = logging.getLogger(__name__)
+
+
+INVENTORY_TTL = timedelta(minutes=5)
 
 
 def _nothing() -> None:
@@ -58,6 +61,7 @@ class TvWorker:
         self._last_obs: Observation | None = None
         self._outage_reported = False
         self._status = TvStatus(record.id)
+        self._inventory: tuple[datetime, Inventory] | None = None
 
     @property
     def status(self) -> TvStatus:
@@ -104,8 +108,33 @@ class TvWorker:
         loop = asyncio.get_running_loop()
         self._unsubscribe = on_change(lambda: loop.call_soon_threadsafe(self._wake.set))
 
+    async def inventory(self) -> Inventory:
+        """Apps, inputs and channels of the connected TV, listed at most every few minutes.
+
+        Raises ``TVError`` when there is no session or the TV fails to answer.
+        """
+        session = self._session
+        if session is None:
+            raise TVError("the TV is not connected")
+        now = self._clock.now()
+        if self._inventory is not None and now - self._inventory[0] < INVENTORY_TTL:
+            return self._inventory[1]
+        caps = self._plugin.info.capabilities
+        listed = Inventory(
+            apps=tuple(await session.list_apps()) if Capability.LIST_APPS in caps else (),
+            inputs=tuple(await session.list_inputs())
+            if caps & {Capability.CURRENT_INPUT, Capability.SET_INPUT}
+            else (),
+            channels=tuple(await session.list_channels())
+            if caps & {Capability.LIVE_CHANNEL, Capability.SET_CHANNEL}
+            else (),
+        )
+        self._inventory = (now, listed)
+        return listed
+
     async def _drop_session(self) -> None:
         session, self._session = self._session, None
+        self._inventory = None
         with suppress(Exception):
             self._unsubscribe()
         self._unsubscribe = _nothing

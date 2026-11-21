@@ -7,7 +7,7 @@ import logging
 from contextlib import suppress
 
 from tvbalance.app.events import EventBus
-from tvbalance.app.status import SupervisorSettings, TvStatus
+from tvbalance.app.status import Inventory, SupervisorSettings, TvStatus
 from tvbalance.app.worker import TvWorker
 from tvbalance.ports.services import Clock
 from tvbalance.ports.storage import Storage, TvRecord
@@ -56,6 +56,14 @@ class Supervisor:
         worker = self._workers.get(tv_id)
         if worker is not None:
             worker.nudge()
+
+    async def inventory(self, tv_id: str) -> Inventory | None:
+        """The TV's apps, inputs and channels; ``None`` when no worker watches it.
+
+        Raises ``TVError`` while the TV is not connected.
+        """
+        worker = self._workers.get(tv_id)
+        return None if worker is None else await worker.inventory()
 
     def status(self, tv_id: str) -> TvStatus | None:
         worker = self._workers.get(tv_id)
