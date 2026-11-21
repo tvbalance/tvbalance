@@ -17,6 +17,7 @@ from tvbalance.api.routes import (
     control,
     events_ws,
     inventory,
+    pairing,
     policies,
     settings,
     system,
@@ -25,6 +26,7 @@ from tvbalance.api.routes import (
 from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
+from tvbalance.app.pairing import DISCOVERY_TIMEOUT, PairingService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.config import EngineConfig
@@ -42,6 +44,7 @@ def create_app(
     config: EngineConfig | None = None,
     clock: Clock | None = None,
     supervisor_settings: SupervisorSettings | None = None,
+    discovery_timeout: float = DISCOVERY_TIMEOUT,
 ) -> FastAPI:
     """Build the app.
 
@@ -70,6 +73,7 @@ def create_app(
         app.state.supervisor = Supervisor(
             storage, registered, app.state.events, clock_, supervisor_settings
         )
+        app.state.pairing = PairingService(storage, registered, include_testing, discovery_timeout)
         try:
             await app.state.supervisor.start()
             yield
@@ -86,6 +90,7 @@ def create_app(
     app.include_router(system.router)
     app.include_router(auth.router)
     app.include_router(tvs.router)
+    app.include_router(pairing.router)
     app.include_router(policies.router)
     app.include_router(control.router)
     app.include_router(inventory.router)

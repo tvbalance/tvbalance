@@ -337,6 +337,51 @@
         "title": "EventOut",
         "type": "object"
       },
+      "FoundTvOut": {
+        "properties": {
+          "adapter_id": {
+            "title": "Adapter Id",
+            "type": "string"
+          },
+          "adapter_name": {
+            "title": "Adapter Name",
+            "type": "string"
+          },
+          "already_added": {
+            "title": "Already Added",
+            "type": "boolean"
+          },
+          "host": {
+            "title": "Host",
+            "type": "string"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_id",
+          "adapter_name",
+          "host",
+          "name",
+          "model",
+          "already_added"
+        ],
+        "title": "FoundTvOut",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2373,6 +2418,52 @@
         "summary": "Revoke Token",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/discovery": {
+      "get": {
+        "description": "Search the network with every installed adapter; takes a few seconds.",
+        "operationId": "discovery_api_v1_discovery_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FoundTvOut"
+                  },
+                  "title": "Response Discovery Api V1 Discovery Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Discovery",
+        "tags": [
+          "pairing"
         ]
       }
     },
