@@ -1,0 +1,50 @@
+blueprint:
+  name: TVBalance - bonus time from a button
+  description: >
+    Grant extra minutes to a TV when a physical button is pressed. Pick a button entity, or a sensor
+    or switch that changes state when pressed. The automation runs without a user, so it may call
+    the admin-only bonus service: protect the button, not the service.
+  domain: automation
+  author: TVBalance
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    tv:
+      name: TV
+      selector:
+        device:
+          integration: tvbalance
+    button:
+      name: Button
+      description: >
+        An event entity (a remote press), a button, or any entity whose state changes when pressed.
+      selector:
+        entity:
+    minutes:
+      name: Minutes to grant
+      default: 15
+      selector:
+        number:
+          min: 1
+          max: 240
+          unit_of_measurement: min
+          mode: box
+
+mode: single
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input button
+
+conditions:
+  - condition: template
+    value_template: >
+      {{ trigger.to_state is not none and trigger.to_state.state not in ['unavailable', 'unknown']
+         and trigger.from_state is not none and trigger.from_state.state != trigger.to_state.state }}
+
+actions:
+  - action: tvbalance.bonus
+    data:
+      device_id: !input tv
+      minutes: !input minutes

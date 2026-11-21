@@ -1,0 +1,60 @@
+blueprint:
+  name: TVBalance - flash a light when time is running out
+  description: >
+    When TVBalance warns that a TV's time is nearly up, flash a light in the chosen colour so the
+    room notices even if nobody is looking at the screen.
+  domain: automation
+  author: TVBalance
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    tv:
+      name: TV
+      selector:
+        device:
+          integration: tvbalance
+    light:
+      name: Light
+      selector:
+        entity:
+          domain: light
+    minutes:
+      name: Warn when this many minutes or fewer are left
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 60
+          unit_of_measurement: min
+          mode: box
+    color:
+      name: Colour
+      default: [255, 0, 0]
+      selector:
+        color_rgb:
+
+mode: single
+max_exceeded: silent
+
+variables:
+  warn_at: !input minutes
+
+triggers:
+  - trigger: event
+    event_type: tvbalance_event
+    event_data:
+      device_id: !input tv
+      type: time_warning
+
+conditions:
+  - condition: template
+    value_template: >
+      {{ trigger.event.data.payload.minutes_left | int(999) <= warn_at | int }}
+
+actions:
+  - action: light.turn_on
+    target:
+      entity_id: !input light
+    data:
+      rgb_color: !input color
+      flash: long

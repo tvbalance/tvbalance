@@ -1,0 +1,68 @@
+blueprint:
+  name: TVBalance - notify a parent
+  description: >
+    Send a notification when a TV is blocked, becomes unreachable, loses its pairing or any other
+    TVBalance event you pick. Works with the Home Assistant Companion app and any other notify service.
+  domain: automation
+  author: TVBalance
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    tv:
+      name: TV
+      selector:
+        device:
+          integration: tvbalance
+    notify_service:
+      name: Notification service
+      description: The notify action to call, for example notify.mobile_app_parent_phone.
+      selector:
+        text:
+    events:
+      name: Events to notify about
+      default: [blocked, tv_unreachable, pairing_lost]
+      selector:
+        select:
+          multiple: true
+          options:
+            - time_warning
+            - blocked
+            - redirected
+            - powered_off
+            - enforcement_paused
+            - enforcement_unavailable
+            - tv_unreachable
+            - tv_reachable
+            - pairing_lost
+            - tv_paired
+
+mode: queued
+max: 5
+
+variables:
+  chosen: !input events
+  service: !input notify_service
+
+triggers:
+  - trigger: event
+    event_type: tvbalance_event
+    event_data:
+      device_id: !input tv
+
+conditions:
+  - condition: template
+    value_template: "{{ trigger.event.data.type in chosen }}"
+
+actions:
+  - action: "{{ service }}"
+    data:
+      title: "{{ device_attr(trigger.event.data.device_id, 'name') }}"
+      message: >
+        {% set e = trigger.event.data %}
+        {% if e.type == 'time_warning' %}
+          {{ e.payload.minutes_left }} minutes left.
+        {% elif e.type == 'blocked' %}
+          Blocked ({{ e.payload.reason | default('rules') }}).
+        {% else %}
+          {{ e.type | replace('_', ' ') | capitalize }}.
+        {% endif %}
