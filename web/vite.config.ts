@@ -13,6 +13,10 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
+      // A custom worker adds Web Push handlers to the app-shell precache.
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       manifest: {
         name: "TVBalance",
         short_name: "TVBalance",
