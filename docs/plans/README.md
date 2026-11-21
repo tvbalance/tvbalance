@@ -19,7 +19,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M2 | Persistence, configuration, migrations (done, see M2-persistence.md) | skeleton |
 | M3 | Supervisor, enforcement loop, event bus (done, see M3-supervisor.md) | M1, M2 |
 | M4 | LG webOS adapter (done and verified on hardware, see M4-webos.md) | skeleton |
-| M5 | API v1, authentication, WebSocket events (planned, see M5-api.md) | M2, M3 |
+| M5 | API v1, authentication, WebSocket events (done, see M5-api.md and architecture/api.md) | M2, M3 |
 | M6 | Web UI: onboarding, rules, dashboard, settings | M5 |
 | M7 | Discovery and guided pairing wizard | M4, M5 |
 | M8 | Full Home Assistant integration: entities, admin-only services, events, blueprints | M5 |
