@@ -132,3 +132,19 @@ api_tokens = Table(
     Column("last_used_at", UtcDateTime, nullable=True),
     Column("revoked_at", UtcDateTime, nullable=True),
 )
+
+push_subscriptions = Table(
+    "push_subscriptions",
+    metadata,
+    Column("id", String(32), primary_key=True),
+    Column("endpoint", String, nullable=False, unique=True),
+    Column("p256dh", String, nullable=False),
+    Column("auth_sealed", LargeBinary, nullable=False),
+    Column("events", JSON, nullable=False),
+    Column("language", String, nullable=False),
+    Column("app_url", String, nullable=False),
+    Column("user_agent", String, nullable=False),
+    Column("created_at", UtcDateTime, nullable=False),
+    Column("last_sent_at", UtcDateTime, nullable=True),
+    Column("failures", Integer, nullable=False),
+)

@@ -72,6 +72,21 @@ class ApiTokenRecord:
     revoked_at: datetime | None
 
 
+@dataclass(frozen=True, slots=True)
+class PushSubscriptionRecord:
+    id: str
+    endpoint: str
+    p256dh: str
+    auth: str
+    events: frozenset[str]
+    language: str
+    app_url: str
+    user_agent: str
+    created_at: datetime
+    last_sent_at: datetime | None
+    failures: int
+
+
 class TvStore(Protocol):
     async def add(
         self,
@@ -157,6 +172,39 @@ class SecretSettingsStore(Protocol):
         ...
 
     async def set(self, key: str, value: str) -> None: ...
+
+
+class PushSubscriptionStore(Protocol):
+    """Browser Web Push subscriptions. The auth secret is sealed at rest."""
+
+    async def upsert(
+        self,
+        endpoint: str,
+        p256dh: str,
+        auth: str,
+        events: frozenset[str],
+        language: str,
+        app_url: str,
+        user_agent: str,
+    ) -> tuple[PushSubscriptionRecord, bool]:
+        """Create the subscription, or refresh the one with the same endpoint. True when created."""
+        ...
+
+    async def list(self) -> list[PushSubscriptionRecord]: ...
+
+    async def get(self, subscription_id: str) -> PushSubscriptionRecord | None: ...
+
+    async def update_events(self, subscription_id: str, events: frozenset[str]) -> bool: ...
+
+    async def delete(self, subscription_id: str) -> bool: ...
+
+    async def record_delivery(self, subscription_id: str) -> None:
+        """Stamp the last send time and clear the failure count."""
+        ...
+
+    async def record_failure(self, subscription_id: str) -> int:
+        """Count one more consecutive failure and return the total (0 for an unknown id)."""
+        ...
 
 
 class EnforcementStateStore(Protocol):
@@ -256,5 +304,8 @@ class Storage(Protocol):
 
     @property
     def auth(self) -> AuthStore: ...
+
+    @property
+    def push(self) -> PushSubscriptionStore: ...
 
     async def close(self) -> None: ...

@@ -31,6 +31,7 @@ from tvbalance.ports.storage import (
     ApiTokenRecord,
     NotFoundError,
     PolicyRecord,
+    PushSubscriptionRecord,
     SessionRecord,
     StoredEvent,
     TvRecord,
@@ -526,6 +527,119 @@ def _token_record(row: Row[Any]) -> ApiTokenRecord:
     )
 
 
+class SqlitePushSubscriptionStore:
+    def __init__(self, engine: AsyncEngine, box: SecretBox, clock: Clock) -> None:
+        self._engine, self._box, self._clock = engine, box, clock
+
+    def _record(self, row: Row[Any]) -> PushSubscriptionRecord:
+        return PushSubscriptionRecord(
+            id=row.id,
+            endpoint=row.endpoint,
+            p256dh=row.p256dh,
+            auth=self._box.decrypt(row.auth_sealed).decode(),
+            events=frozenset(row.events),
+            language=row.language,
+            app_url=row.app_url,
+            user_agent=row.user_agent,
+            created_at=row.created_at,
+            last_sent_at=row.last_sent_at,
+            failures=row.failures,
+        )
+
+    async def upsert(
+        self,
+        endpoint: str,
+        p256dh: str,
+        auth: str,
+        events: frozenset[str],
+        language: str,
+        app_url: str,
+        user_agent: str,
+    ) -> tuple[PushSubscriptionRecord, bool]:
+        table = tables.push_subscriptions
+        values = {
+            "p256dh": p256dh,
+            "auth_sealed": self._box.encrypt(auth.encode()),
+            "events": sorted(events),
+            "language": language,
+            "app_url": app_url,
+            "user_agent": user_agent,
+            "failures": 0,
+        }
+        async with self._engine.begin() as conn:
+            existing = (
+                await conn.execute(select(table.c.id).where(table.c.endpoint == endpoint))
+            ).scalar()
+            created = existing is None
+            subscription_id = existing or uuid.uuid4().hex
+            if created:
+                await conn.execute(
+                    table.insert().values(
+                        id=subscription_id,
+                        endpoint=endpoint,
+                        created_at=self._clock.now(),
+                        last_sent_at=None,
+                        **values,
+                    )
+                )
+            else:
+                await conn.execute(
+                    update(table).where(table.c.id == subscription_id).values(**values)
+                )
+            row = (await conn.execute(select(table).where(table.c.id == subscription_id))).one()
+        return self._record(row), created
+
+    async def list(self) -> list[PushSubscriptionRecord]:
+        table = tables.push_subscriptions
+        async with self._engine.connect() as conn:
+            rows = (
+                await conn.execute(select(table).order_by(table.c.created_at, table.c.id))
+            ).all()
+        return [self._record(row) for row in rows]
+
+    async def get(self, subscription_id: str) -> PushSubscriptionRecord | None:
+        table = tables.push_subscriptions
+        async with self._engine.connect() as conn:
+            row = (await conn.execute(select(table).where(table.c.id == subscription_id))).first()
+        return None if row is None else self._record(row)
+
+    async def update_events(self, subscription_id: str, events: frozenset[str]) -> bool:
+        table = tables.push_subscriptions
+        async with self._engine.begin() as conn:
+            result = await conn.execute(
+                update(table).where(table.c.id == subscription_id).values(events=sorted(events))
+            )
+        return result.rowcount > 0
+
+    async def delete(self, subscription_id: str) -> bool:
+        table = tables.push_subscriptions
+        async with self._engine.begin() as conn:
+            result = await conn.execute(delete(table).where(table.c.id == subscription_id))
+        return result.rowcount > 0
+
+    async def record_delivery(self, subscription_id: str) -> None:
+        table = tables.push_subscriptions
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                update(table)
+                .where(table.c.id == subscription_id)
+                .values(last_sent_at=self._clock.now(), failures=0)
+            )
+
+    async def record_failure(self, subscription_id: str) -> int:
+        table = tables.push_subscriptions
+        async with self._engine.begin() as conn:
+            await conn.execute(
+                update(table)
+                .where(table.c.id == subscription_id)
+                .values(failures=table.c.failures + 1)
+            )
+            failures = (
+                await conn.execute(select(table.c.failures).where(table.c.id == subscription_id))
+            ).scalar()
+        return failures or 0
+
+
 class SqliteStorage:
     def __init__(self, engine: AsyncEngine, box: SecretBox, clock: Clock) -> None:
         self._engine = engine
@@ -538,6 +652,7 @@ class SqliteStorage:
         self.secrets = SqliteSecretSettingsStore(self.settings, box)
         self.enforcement = SqliteEnforcementStateStore(engine, clock)
         self.auth = SqliteAuthStore(engine, clock)
+        self.push = SqlitePushSubscriptionStore(engine, box, clock)
 
     async def close(self) -> None:
         await self._engine.dispose()
