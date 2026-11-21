@@ -1,6 +1,6 @@
 # M10: Web Push notifications
 
-Status: in progress.
+Status: done. Real delivery from Ingress over HTTPS and on iOS (installed web app) still needs a manual check.
 
 ## Goal
 Spec F11 and F4: a parent who installed the web app gets a notification when something needs attention, with a link

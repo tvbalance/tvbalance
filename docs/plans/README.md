@@ -24,7 +24,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M7 | Discovery and guided pairing wizard (done, see M7-pairing.md and architecture/api.md) | M4, M5 |
 | M8 | Full Home Assistant integration: entities, admin-only services, events, blueprints (done, see M8-home-assistant.md) | M5 |
 | M9 | Add-on release, Supervisor discovery, ghcr/PyPI/HACS publishing (done, see M9-addon-release.md and operations/release.md) | M5, M8 |
-| M10 | Web Push notifications (in progress, see M10-web-push.md) | M5, M6 |
+| M10 | Web Push notifications (done, see M10-web-push.md and user-guide/web-ui.md) | M5, M6 |
 | M11 | Licensing and entitlements, checkout | M2 |
 | M12 | Roku adapter (feasibility spike first) | skeleton |
 | M13 | Google/Android TV adapter (feasibility spike first) | skeleton |
