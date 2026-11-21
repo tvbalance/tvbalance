@@ -38,8 +38,16 @@ class UnknownPairing(PairingError):
     code = "not_found"
 
 
+class UnknownTv(PairingError):
+    code = "not_found"
+
+
 class AlreadyAdded(PairingError):
     code = "tv_exists"
+
+
+class AdapterMismatch(PairingError):
+    code = "adapter_mismatch"
 
 
 class SessionState(StrEnum):
@@ -68,6 +76,7 @@ class PairingSession:
     expires_at: datetime
     flow: PairingFlow | None = None
     tv_id: str | None = None
+    existing: bool = False  # pairing a stored TV again, not adding one
     state: SessionState = SessionState.WAITING_FOR_USER
     finished_at: datetime | None = None
     task: asyncio.Task[None] | None = None
@@ -146,9 +155,26 @@ class PairingService:
 
     # -- pairing ----------------------------------------------------------------------------
 
-    async def start(self, adapter_id: str, host: str, name: str | None = None) -> PairingSession:
-        """Begin pairing a new TV; a pairing already waiting on this address is returned as is."""
+    async def start(
+        self,
+        adapter_id: str | None,
+        host: str | None,
+        name: str | None = None,
+        tv_id: str | None = None,
+    ) -> PairingSession:
+        """Begin pairing a new TV, or with ``tv_id`` a stored one again.
+
+        A pairing already waiting on the same address is returned as is.
+        """
         self._prune()
+        if tv_id is not None:
+            stored = await self._storage.tvs.get(tv_id)
+            if stored is None:
+                raise UnknownTv("TV not found")
+            if adapter_id not in (None, stored.adapter_id):
+                raise AdapterMismatch("this TV was added with another adapter")
+            adapter_id, host, name = stored.adapter_id, stored.host, stored.name
+        assert adapter_id is not None and host is not None
         plugin = self._plugins.get(adapter_id)
         if plugin is None:
             raise UnknownAdapter(f"adapter {adapter_id!r} is not installed")
@@ -159,15 +185,18 @@ class PairingService:
                 session.host.lower(),
             ) == (adapter_id, key):
                 return session
-        for record in await self._storage.tvs.list():
-            if (record.adapter_id, record.host.lower()) == (adapter_id, key):
-                raise AlreadyAdded("this TV is already added")
+        if tv_id is None:
+            for record in await self._storage.tvs.list():
+                if (record.adapter_id, record.host.lower()) == (adapter_id, key):
+                    raise AlreadyAdded("this TV is already added")
         session = PairingSession(
             id=secrets.token_urlsafe(12),
             adapter_id=adapter_id,
             host=host,
             name=name or plugin.info.display_name,
             expires_at=self._clock.now() + PAIRING_WINDOW,
+            tv_id=tv_id,
+            existing=tv_id is not None,
         )
         self._sessions[session.id] = session
         try:
@@ -187,14 +216,33 @@ class PairingService:
             raise UnknownPairing("pairing not found")
         return session
 
+    async def cancel(self, pairing_id: str) -> None:
+        """Abandon a pairing. A TV it already stored stays."""
+        session = self.get(pairing_id)
+        await self._abandon(session)
+        del self._sessions[pairing_id]
+
     async def stop(self) -> None:
-        tasks = [s.task for s in self._sessions.values() if s.task is not None]
-        for task in tasks:
+        for session in list(self._sessions.values()):
+            await self._abandon(session)
+        self._sessions.clear()
+
+    async def _abandon(self, session: PairingSession) -> None:
+        task, session.task = session.task, None
+        if task is not None and not task.done():
             task.cancel()
-        for task in tasks:
             with suppress(asyncio.CancelledError, Exception):
                 await task
-        self._sessions.clear()
+        if session.state is SessionState.WAITING_FOR_USER:
+            await self._cancel_flow(session)
+
+    @staticmethod
+    async def _cancel_flow(session: PairingSession) -> None:
+        """Adapters may offer ``cancel`` to stop asking the TV for confirmation."""
+        cancel = getattr(session.flow, "cancel", None)
+        if cancel is not None:
+            with suppress(Exception):
+                await cancel()
 
     async def _run(self, session: PairingSession) -> None:
         assert session.flow is not None
@@ -208,6 +256,7 @@ class PairingService:
                     self._finish(session, SessionState.FAILED)
                     return
                 if self._clock.now() >= session.expires_at:
+                    await self._cancel_flow(session)
                     self._finish(session, SessionState.EXPIRED)
                     return
                 await asyncio.sleep(self._poll_interval)
@@ -219,17 +268,19 @@ class PairingService:
 
     async def _complete(self, session: PairingSession) -> None:
         assert session.flow is not None
-        record = await self._storage.tvs.add(
-            session.adapter_id, session.name, session.host, session.flow.credentials()
-        )
-        session.tv_id = record.id
-        await self._supervisor.refresh(record.id)
-        await self._bus.publish(
-            record.id,
-            "tv_added",
-            {"name": record.name, "adapter_id": record.adapter_id},
-            self._clock.now(),
-        )
+        credentials = session.flow.credentials()
+        if session.tv_id is not None:
+            await self._storage.tvs.update_credentials(session.tv_id, credentials)
+            event, payload = "tv_paired", {}
+        else:
+            record = await self._storage.tvs.add(
+                session.adapter_id, session.name, session.host, credentials
+            )
+            session.tv_id = record.id
+            event = "tv_added"
+            payload = {"name": record.name, "adapter_id": record.adapter_id}
+        await self._supervisor.refresh(session.tv_id)
+        await self._bus.publish(session.tv_id, event, payload, self._clock.now())
         self._finish(session, SessionState.COMPLETED)
 
     def _finish(self, session: PairingSession, state: SessionState) -> None:

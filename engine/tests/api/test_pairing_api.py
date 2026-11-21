@@ -153,6 +153,113 @@ def test_an_unknown_pairing_is_not_found(client: TestClient) -> None:
     assert client.get("/api/v1/pairings/nope").status_code == 404
 
 
+@pytest.fixture
+def waiting() -> PairableTV:
+    return PairableTV(flow=ScriptedPairing([]))
+
+
+def test_a_pairing_nobody_accepts_expires(
+    engine_config: EngineConfig, waiting: PairableTV, clock: FakeClock
+) -> None:
+    for client in make_client(engine_config, waiting, clock):
+        started = begin(client).json()
+        clock.advance(minutes=4)
+        assert settle(client, started["id"])["state"] == "expired"
+        assert waiting.flow.cancelled
+        assert client.get("/api/v1/tvs").json() == []
+        assert begin(client).json()["id"] != started["id"]  # a new attempt is allowed
+
+
+def test_leaving_the_wizard_cancels_the_pairing(
+    engine_config: EngineConfig, waiting: PairableTV, clock: FakeClock
+) -> None:
+    for client in make_client(engine_config, waiting, clock):
+        started = begin(client).json()
+        assert client.delete(f"/api/v1/pairings/{started['id']}").status_code == 204
+        assert waiting.flow.cancelled
+        assert client.get(f"/api/v1/pairings/{started['id']}").status_code == 404
+        assert client.delete(f"/api/v1/pairings/{started['id']}").status_code == 404
+        assert client.get("/api/v1/tvs").json() == []
+
+
+def test_a_finished_pairing_can_be_dismissed_without_removing_the_tv(client: TestClient) -> None:
+    done = settle(client, begin(client).json()["id"])
+    assert client.delete(f"/api/v1/pairings/{done['id']}").status_code == 204
+    assert len(client.get("/api/v1/tvs").json()) == 1
+
+
+def test_stopping_the_engine_cancels_pending_pairings(
+    engine_config: EngineConfig, waiting: PairableTV, clock: FakeClock
+) -> None:
+    for client in make_client(engine_config, waiting, clock):
+        begin(client)
+    assert waiting.flow.cancelled
+
+
+def test_a_finished_pairing_is_forgotten_after_a_while(
+    client: TestClient, clock: FakeClock
+) -> None:
+    done = settle(client, begin(client).json()["id"])
+    clock.advance(minutes=11)
+    assert client.get(f"/api/v1/pairings/{done['id']}").status_code == 404
+    assert len(client.get("/api/v1/tvs").json()) == 1
+
+
+def stored_key(client: TestClient, tv_id: str) -> str:
+    storage = client.app.state.storage  # type: ignore[attr-defined]
+    assert client.portal is not None
+    record = client.portal.call(storage.tvs.get, tv_id)
+    return str(record.credentials["client_key"])
+
+
+def test_pairing_again_replaces_the_key_and_restarts_the_worker(
+    client: TestClient, tv: PairableTV
+) -> None:
+    tv_id = seed_tv(client)
+    assert stored_key(client, tv_id) == "k"
+
+    started = client.post("/api/v1/pairings", json={"adapter_id": "fake", "tv_id": tv_id})
+    assert started.status_code == 201 and started.json()["tv_id"] == tv_id
+    done = settle(client, started.json()["id"])
+
+    assert done["state"] == "completed" and done["tv_id"] == tv_id
+    assert stored_key(client, tv_id) == "paired-key"
+    assert len(client.get("/api/v1/tvs").json()) == 1
+    types = [e["type"] for e in client.get("/api/v1/events", params={"tv_id": tv_id}).json()]
+    assert "tv_paired" in types and "tv_added" not in types
+    deadline = monotonic() + 3
+    while tv.connect_calls == 0 and monotonic() < deadline:
+        sleep(0.01)
+    assert tv.connect_calls > 0
+
+
+def test_pairing_again_checks_the_tv_and_its_adapter(
+    engine_config: EngineConfig, tv: PairableTV, clock: FakeClock
+) -> None:
+    app = create_app(
+        plugins={"fake": plugin_for(tv), "other": plugin_for(tv, adapter_id="other")},
+        include_testing=True,
+        config=engine_config,
+        clock=clock,
+        supervisor_settings=FAST,
+        pairing_poll_interval=0.01,
+    )
+    with TestClient(app) as client:
+        sign_in_as_admin(client)
+        tv_id = seed_tv(client)
+        missing = client.post("/api/v1/pairings", json={"adapter_id": "fake", "tv_id": "nope"})
+        assert missing.status_code == 404
+        wrong = client.post("/api/v1/pairings", json={"adapter_id": "other", "tv_id": tv_id})
+        assert wrong.status_code == 409
+        assert wrong.json()["error"]["code"] == "adapter_mismatch"
+
+
+def test_a_new_pairing_needs_an_adapter_and_a_host(client: TestClient) -> None:
+    assert client.post("/api/v1/pairings", json={"adapter_id": "fake"}).status_code == 422
+    assert client.post("/api/v1/pairings", json={"host": "tv.local"}).status_code == 422
+    assert client.post("/api/v1/pairings", json={}).status_code == 422
+
+
 def test_pairing_needs_an_admin(engine_config: EngineConfig) -> None:
     app = create_app(plugins={}, config=engine_config)
     with TestClient(app) as anonymous:

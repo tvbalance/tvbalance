@@ -678,17 +678,31 @@
       },
       "PairingStart": {
         "additionalProperties": false,
-        "description": "What to pair: the adapter (brand) and the TV's host name or IP address, nothing else.",
+        "description": "What to pair: a new TV (its adapter and host) or, with ``tv_id``, a stored TV again.",
         "properties": {
           "adapter_id": {
-            "maxLength": 64,
-            "minLength": 1,
-            "title": "Adapter Id",
-            "type": "string"
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adapter Id"
           },
           "host": {
-            "title": "Host",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Host"
           },
           "name": {
             "anyOf": [
@@ -702,12 +716,21 @@
               }
             ],
             "title": "Name"
+          },
+          "tv_id": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tv Id"
           }
         },
-        "required": [
-          "adapter_id",
-          "host"
-        ],
         "title": "PairingStart",
         "type": "object"
       },
@@ -2703,7 +2726,7 @@
     },
     "/api/v1/pairings": {
       "post": {
-        "description": "Start pairing a TV: it asks its owner to accept, and the TV is stored once they do.",
+        "description": "Start pairing a TV: it asks its owner to accept, and the TV is stored once they do.\n\nWith ``tv_id`` a stored TV is paired again (its key was lost); its key is replaced.",
         "operationId": "start_pairing_api_v1_pairings_post",
         "requestBody": {
           "content": {
@@ -2774,6 +2797,70 @@
       }
     },
     "/api/v1/pairings/{pairing_id}": {
+      "delete": {
+        "description": "Abandon a pairing (the person left the wizard). A TV already stored stays.",
+        "operationId": "cancel_pairing_api_v1_pairings__pairing_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pairing_id",
+            "required": true,
+            "schema": {
+              "title": "Pairing Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Pairing",
+        "tags": [
+          "pairing"
+        ]
+      },
       "get": {
         "operationId": "get_pairing_api_v1_pairings__pairing_id__get",
         "parameters": [
