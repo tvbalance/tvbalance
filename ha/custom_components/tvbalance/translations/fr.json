@@ -9,6 +9,10 @@
           "token": "Jeton d'API"
         }
       },
+      "hassio_confirm": {
+        "title": "Configurer TVBalance",
+        "description": "Configurer le module complémentaire TVBalance trouvé dans Home Assistant ?"
+      },
       "reauth_confirm": {
         "title": "Se reconnecter à TVBalance",
         "description": "L'Engine à l'adresse {url} n'accepte plus le jeton d'API. Créez un nouveau jeton dans l'application web TVBalance et saisissez-le ici.",
@@ -24,7 +28,8 @@
     },
     "abort": {
       "already_configured": "Cet Engine est déjà configuré.",
-      "reauth_successful": "Le nouveau jeton d'API fonctionne."
+      "reauth_successful": "Le nouveau jeton d'API fonctionne.",
+      "invalid_discovery": "Les informations de TVBalance ne sont pas valides."
     }
   },
   "entity": {

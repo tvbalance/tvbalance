@@ -9,6 +9,10 @@
           "token": "API token"
         }
       },
+      "hassio_confirm": {
+        "title": "Set up TVBalance",
+        "description": "Set up the TVBalance Add-on found at its Home Assistant address?"
+      },
       "reauth_confirm": {
         "title": "Sign in to TVBalance again",
         "description": "The Engine at {url} no longer accepts the API token. Create a new token in the TVBalance web app and enter it here.",
@@ -24,7 +28,8 @@
     },
     "abort": {
       "already_configured": "This Engine is already configured.",
-      "reauth_successful": "The new API token is working."
+      "reauth_successful": "The new API token is working.",
+      "invalid_discovery": "The TVBalance information is not valid."
     }
   },
   "entity": {

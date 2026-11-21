@@ -8,6 +8,7 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.service_info.hassio import HassioServiceInfo
 
 from tvbalance_client import (
     AuthenticationError,
@@ -22,21 +23,29 @@ from .const import CONF_TOKEN, CONF_URL, DOMAIN
 class TVBalanceConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
+    _discovered: tuple[str, str] | None = None  # (url, token) announced by the Add-on
+
+    async def _check(self, url: str, token: str) -> str | None:
+        """Return the error key, or None when this Engine accepts the token."""
+        client = TVBalanceClient(url, token, session=async_get_clientsession(self.hass))
+        try:
+            await client.info()  # public: is this an Engine at all?
+            await client.tvs()  # authenticated: is the token accepted?
+        except TVBalanceConnectionError:
+            return "cannot_connect"
+        except AuthenticationError:
+            return "invalid_auth"
+        except TVBalanceError:
+            return "invalid_response"
+        return None
+
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors: dict[str, str] = {}
         if user_input is not None:
             url = user_input[CONF_URL].rstrip("/")
             token = user_input[CONF_TOKEN].strip()
-            client = TVBalanceClient(url, token, session=async_get_clientsession(self.hass))
-            try:
-                await client.info()  # public: is this an Engine at all?
-                await client.tvs()  # authenticated: is the token accepted?
-            except TVBalanceConnectionError:
-                errors["base"] = "cannot_connect"
-            except AuthenticationError:
-                errors["base"] = "invalid_auth"
-            except TVBalanceError:
-                errors["base"] = "invalid_response"
+            if error := await self._check(url, token):
+                errors["base"] = error
             else:
                 await self.async_set_unique_id(url)
                 self._abort_if_unique_id_configured()
@@ -50,6 +59,33 @@ class TVBalanceConfigFlow(ConfigFlow, domain=DOMAIN):
             data_schema=self.add_suggested_values_to_schema(schema, user_input),
             errors=errors,
         )
+
+    async def async_step_hassio(self, discovery_info: HassioServiceInfo) -> ConfigFlowResult:
+        config = discovery_info.config
+        host, port, token = config.get("host"), config.get("port"), config.get("token")
+        if not (host and port and token):
+            return self.async_abort(reason="invalid_discovery")
+        url = f"http://{host}:{port}"
+        await self.async_set_unique_id(url)
+        # A fresh token (the old one was revoked) refreshes the entry instead of asking again.
+        self._abort_if_unique_id_configured(updates={CONF_TOKEN: token}, reload_on_update=True)
+        self._discovered = (url, str(token))
+        return await self.async_step_hassio_confirm()
+
+    async def async_step_hassio_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        assert self._discovered is not None
+        url, token = self._discovered
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            if error := await self._check(url, token):
+                errors["base"] = error
+            else:
+                return self.async_create_entry(
+                    title="TVBalance (Add-on)", data={CONF_URL: url, CONF_TOKEN: token}
+                )
+        return self.async_show_form(step_id="hassio_confirm", errors=errors)
 
     async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> ConfigFlowResult:
         return await self.async_step_reauth_confirm()
