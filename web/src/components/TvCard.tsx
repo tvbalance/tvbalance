@@ -134,7 +134,15 @@ function OverrideDialog({
 }
 
 /** One TV: live status and, for callers with the control scope, the parent actions. */
-export function TvCard({ tv, canControl }: { tv: Tv; canControl: boolean }) {
+export function TvCard({
+  tv,
+  canControl,
+  canAdmin = false,
+}: {
+  tv: Tv;
+  canControl: boolean;
+  canAdmin?: boolean;
+}) {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -178,6 +186,11 @@ export function TvCard({ tv, canControl }: { tv: Tv; canControl: boolean }) {
         <Verdict tv={tv} />
         <Usage tv={tv} />
       </div>
+      {canAdmin && where.key === "tv.power.pairing" ? (
+        <Link to={`/tvs/${tv.id}/pair`} className="inline-block text-sm text-brand underline">
+          {t("pairing.pairAgain")}
+        </Link>
+      ) : null}
       {canControl && active ? (
         <div className="flex flex-wrap gap-2">
           <Button

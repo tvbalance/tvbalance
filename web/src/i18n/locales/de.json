@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "TVBalance",
     "tagline": "Gesunde Bildschirmzeit-Regeln für den Smart-TV Ihrer Familie"
@@ -58,7 +58,8 @@
   },
   "dashboard": {
     "title": "Übersicht",
-    "empty": "Noch kein Fernseher. Das Hinzufügen kommt bald."
+    "empty": "Noch kein Fernseher. Füge den ersten hinzu, um zu beginnen.",
+    "add": "Fernseher hinzufügen"
   },
   "region": {
     "language": "Sprache",
@@ -255,7 +256,9 @@
       "enforcement_unavailable": "Regeln konnten nicht durchgesetzt werden: {{reason}}",
       "tv_reachable": "Der Fernseher ist wieder erreichbar",
       "tv_unreachable": "Der Fernseher ist nicht erreichbar",
-      "pairing_lost": "Der Fernseher muss neu gekoppelt werden"
+      "pairing_lost": "Der Fernseher muss neu gekoppelt werden",
+      "tv_added": "Ein Fernseher wurde hinzugefügt",
+      "tv_paired": "Der Fernseher wurde erneut gekoppelt"
     }
   },
   "tvDetail": {
@@ -273,7 +276,8 @@
     "remove": "Diesen Fernseher entfernen",
     "removeTitle": "{{name}} entfernen?",
     "removeHelp": "Der Fernseher wird nicht mehr überwacht.",
-    "confirmRemove": "Fernseher entfernen"
+    "confirmRemove": "Fernseher entfernen",
+    "needsPairing": "Dieser Fernseher muss erneut gekoppelt werden, bevor er überwacht werden kann."
   },
   "settings": {
     "title": "Einstellungen",
@@ -380,6 +384,7 @@
       "power_off": "Ausschalten",
       "wake": "Einschalten",
       "push_updates": "Live-Updates"
-    }
+    },
+    "pairAgain": "Erneut koppeln"
   }
 }

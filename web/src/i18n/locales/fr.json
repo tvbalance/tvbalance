@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "TVBalance",
     "tagline": "Des règles saines de temps d'écran pour la smart TV de votre famille"
@@ -58,7 +58,8 @@
   },
   "dashboard": {
     "title": "Tableau de bord",
-    "empty": "Aucune TV pour le moment. L'ajout d'une TV arrive bientôt."
+    "empty": "Aucune télé pour l'instant. Ajoutez la première pour commencer.",
+    "add": "Ajouter une télé"
   },
   "region": {
     "language": "Langue",
@@ -255,7 +256,9 @@
       "enforcement_unavailable": "Impossible d'appliquer les règles : {{reason}}",
       "tv_reachable": "Le téléviseur est de nouveau joignable",
       "tv_unreachable": "Le téléviseur est injoignable",
-      "pairing_lost": "Le téléviseur doit être réassocié"
+      "pairing_lost": "Le téléviseur doit être réassocié",
+      "tv_added": "Une télé a été ajoutée",
+      "tv_paired": "La télé a été associée de nouveau"
     }
   },
   "tvDetail": {
@@ -273,7 +276,8 @@
     "remove": "Retirer ce téléviseur",
     "removeTitle": "Retirer {{name}} ?",
     "removeHelp": "Le téléviseur n'est plus surveillé.",
-    "confirmRemove": "Retirer le téléviseur"
+    "confirmRemove": "Retirer le téléviseur",
+    "needsPairing": "Cette télé doit être associée de nouveau avant de pouvoir être surveillée."
   },
   "settings": {
     "title": "Réglages",
@@ -380,6 +384,7 @@
       "power_off": "Éteindre",
       "wake": "Allumer",
       "push_updates": "Mises à jour en direct"
-    }
+    },
+    "pairAgain": "Associer de nouveau"
   }
 }

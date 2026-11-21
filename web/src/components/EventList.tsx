@@ -14,6 +14,8 @@ const KNOWN = [
   "tv_reachable",
   "tv_unreachable",
   "pairing_lost",
+  "tv_added",
+  "tv_paired",
 ];
 
 /** Turns a stored event into one readable sentence; unknown types fall back to the raw type. */

@@ -121,9 +121,28 @@ describe("dashboard", () => {
     expect(screen.queryByRole("button", { name: /Pause/ })).toBeNull();
   });
 
-  it("explains the empty state", async () => {
+  it("explains the empty state and offers to add a TV", async () => {
     renderDashboard([]);
     expect(await screen.findByText(/No TV yet/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Add a TV" })).toHaveAttribute("href", "#/tvs/add");
+  });
+
+  it("keeps an Add a TV link in the header once there are TVs", async () => {
+    renderDashboard([tv()]);
+    expect(await screen.findByRole("link", { name: "Add a TV" })).toBeInTheDocument();
+  });
+
+  it("offers Pair again to an administrator when a TV needs pairing", async () => {
+    renderDashboard([tv({ id: "b", name: "B", needs_pairing: true })]);
+    expect(await screen.findByRole("link", { name: "Pair again" })).toHaveAttribute("href", "#/tvs/b/pair");
+  });
+
+  it("hides adding and pairing from a PIN session", async () => {
+    const pin = { ...ME, kind: "pin", full_admin: false, scopes: ["read", "control"] };
+    renderDashboard([tv({ id: "b", name: "B", needs_pairing: true })], pin);
+    await screen.findByText("Needs pairing");
+    expect(screen.queryByRole("link", { name: "Add a TV" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Pair again" })).toBeNull();
   });
 
   it("pauses, adds time and clears with the CSRF header", async () => {

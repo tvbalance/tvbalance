@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "TVBalance",
     "tagline": "Healthy screen-time rules for your family's smart TV"
@@ -58,7 +58,8 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "empty": "No TV yet. Adding a TV is coming soon."
+    "empty": "No TV yet. Add the first one to start.",
+    "add": "Add a TV"
   },
   "region": {
     "language": "Language",
@@ -255,7 +256,9 @@
       "enforcement_unavailable": "Could not enforce the rules: {{reason}}",
       "tv_reachable": "The TV is reachable again",
       "tv_unreachable": "The TV can't be reached",
-      "pairing_lost": "The TV needs to be paired again"
+      "pairing_lost": "The TV needs to be paired again",
+      "tv_added": "A TV was added",
+      "tv_paired": "The TV was paired again"
     }
   },
   "tvDetail": {
@@ -273,7 +276,8 @@
     "remove": "Remove this TV",
     "removeTitle": "Remove {{name}}?",
     "removeHelp": "The TV is no longer monitored.",
-    "confirmRemove": "Remove TV"
+    "confirmRemove": "Remove TV",
+    "needsPairing": "This TV needs to be paired again before it can be monitored."
   },
   "settings": {
     "title": "Settings",
@@ -380,6 +384,7 @@
       "power_off": "Switch off",
       "wake": "Switch on",
       "push_updates": "Live updates"
-    }
+    },
+    "pairAgain": "Pair again"
   }
 }

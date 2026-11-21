@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "TVBalance",
     "tagline": "Regole sane per il tempo davanti alla smart TV di famiglia"
@@ -58,7 +58,8 @@
   },
   "dashboard": {
     "title": "Pannello",
-    "empty": "Nessuna TV per ora. L'aggiunta di una TV arriverà presto."
+    "empty": "Nessuna TV per ora. Aggiungi la prima per iniziare.",
+    "add": "Aggiungi una TV"
   },
   "region": {
     "language": "Lingua",
@@ -255,7 +256,9 @@
       "enforcement_unavailable": "Impossibile applicare le regole: {{reason}}",
       "tv_reachable": "La TV è di nuovo raggiungibile",
       "tv_unreachable": "La TV non è raggiungibile",
-      "pairing_lost": "La TV va riaccoppiata"
+      "pairing_lost": "La TV va riaccoppiata",
+      "tv_added": "È stata aggiunta una TV",
+      "tv_paired": "La TV è stata associata di nuovo"
     }
   },
   "tvDetail": {
@@ -273,7 +276,8 @@
     "remove": "Rimuovi questa TV",
     "removeTitle": "Rimuovere {{name}}?",
     "removeHelp": "La TV non sarà più controllata.",
-    "confirmRemove": "Rimuovi TV"
+    "confirmRemove": "Rimuovi TV",
+    "needsPairing": "Questa TV va associata di nuovo prima di poter essere controllata."
   },
   "settings": {
     "title": "Impostazioni",
@@ -380,6 +384,7 @@
       "power_off": "Spegnere",
       "wake": "Accendere",
       "push_updates": "Aggiornamenti in tempo reale"
-    }
+    },
+    "pairAgain": "Associa di nuovo"
   }
 }

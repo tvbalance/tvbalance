@@ -145,6 +145,16 @@ export function TvDetail() {
       <h1 id="tv-title" className="text-2xl font-bold">
         {tv.name}
       </h1>
+      {tv.needs_pairing || tv.status?.pairing_required ? (
+        <p role="alert" className="space-y-1">
+          <span className="block">{t("tvDetail.needsPairing")}</span>
+          {canWrite ? (
+            <Link to={`/tvs/${tv.id}/pair`} className="text-sm text-brand underline">
+              {t("pairing.pairAgain")}
+            </Link>
+          ) : null}
+        </p>
+      ) : null}
       <Settings key={`${tv.id}-${tv.name}`} tv={tv} canWrite={canWrite} />
       <h2 className="text-lg font-semibold">{t("activity.usage")}</h2>
       {usage.data ? <UsageBars usage={usage.data} /> : null}
