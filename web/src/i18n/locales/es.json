@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "TVBalance",
     "tagline": "Reglas saludables de tiempo de pantalla para la smart TV de tu familia"
@@ -79,7 +79,9 @@
     "not_found": "No encontrado.",
     "conflict": "Entra en conflicto con el estado actual.",
     "tv_offline": "La TV no está accesible ahora mismo.",
-    "unavailable": "El motor se está iniciando. Inténtalo de nuevo en un momento."
+    "unavailable": "El motor se está iniciando. Inténtalo de nuevo en un momento.",
+    "tv_exists": "Este televisor ya está añadido.",
+    "adapter_mismatch": "Este televisor se añadió con otra marca."
   },
   "tv": {
     "power": {
@@ -330,5 +332,54 @@
     "tokenCopyFailed": "No se pudo copiar: selecciona el token y cópialo a mano.",
     "revoke": "Revocar",
     "revokeToken": "Revocar el token {{name}}"
+  },
+  "pairing": {
+    "title": "Añadir un televisor",
+    "repairTitle": "Emparejar de nuevo el televisor",
+    "foundTitle": "Televisores encontrados en tu red",
+    "searchAgain": "Buscar de nuevo",
+    "searching": "Buscando en tu red…",
+    "noneFound": "No se encontró ningún televisor. Escribe su dirección abajo.",
+    "alreadyAdded": "Ya añadido",
+    "choose": "Añadir {{name}}",
+    "pick": "Añadir",
+    "manualTitle": "Escribe la dirección",
+    "manualHelp": "Si tu televisor no aparece, elige su marca y escribe su dirección IP o nombre de host. Los encuentras en los ajustes de red del televisor.",
+    "brand": "Marca",
+    "address": "Dirección",
+    "continue": "Continuar",
+    "pairTitle": "Emparejar con el televisor",
+    "target": "Televisor en {{host}}",
+    "start": "Iniciar el emparejamiento",
+    "waiting": "Esperando a que aceptes en el televisor…",
+    "timeLeft": "Tiempo restante: {{time}}",
+    "failed": "El emparejamiento no funcionó. Comprueba que el televisor está encendido e inténtalo de nuevo.",
+    "expired": "Se acabó el tiempo antes de aceptar en el televisor. Inténtalo de nuevo.",
+    "retry": "Intentar de nuevo",
+    "finishTitle": "Casi listo",
+    "finishHelp": "Ponle un nombre al televisor y elige sus reglas. Puedes cambiar ambos después.",
+    "capabilities": "Lo que TVBalance puede hacer con este televisor",
+    "finish": "Terminar",
+    "added": "Televisor añadido",
+    "paired": "Televisor emparejado de nuevo",
+    "instructions": {
+      "generic": "Enciende el televisor y ten el mando a mano. Al empezar, el televisor te pedirá aceptar la conexión.",
+      "lg_webos": "Enciende el televisor LG y ten el mando a mano. Al empezar, aparece un mensaje en el televisor: elige Sí con el mando."
+    },
+    "capability": {
+      "foreground_app": "Ver la app en uso",
+      "list_apps": "Listar las apps",
+      "launch_app": "Abrir una app",
+      "go_home": "Ir a la pantalla de inicio",
+      "current_input": "Ver la entrada actual",
+      "set_input": "Cambiar de entrada",
+      "live_channel": "Ver el canal en emisión",
+      "set_channel": "Cambiar de canal",
+      "program_info": "Ver el programa",
+      "on_screen_message": "Mostrar mensajes en pantalla",
+      "power_off": "Apagar",
+      "wake": "Encender",
+      "push_updates": "Actualizaciones en directo"
+    }
   }
 }

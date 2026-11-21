@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "TVBalance",
     "tagline": "Regole sane per il tempo davanti alla smart TV di famiglia"
@@ -79,7 +79,9 @@
     "not_found": "Non trovato.",
     "conflict": "È in conflitto con lo stato attuale.",
     "tv_offline": "La TV non è raggiungibile in questo momento.",
-    "unavailable": "Il motore si sta avviando. Riprova tra un attimo."
+    "unavailable": "Il motore si sta avviando. Riprova tra un attimo.",
+    "tv_exists": "Questa TV è già stata aggiunta.",
+    "adapter_mismatch": "Questa TV è stata aggiunta con un'altra marca."
   },
   "tv": {
     "power": {
@@ -330,5 +332,54 @@
     "tokenCopyFailed": "Copia non riuscita: seleziona il token e copialo a mano.",
     "revoke": "Revoca",
     "revokeToken": "Revoca il token {{name}}"
+  },
+  "pairing": {
+    "title": "Aggiungi una TV",
+    "repairTitle": "Associa di nuovo la TV",
+    "foundTitle": "TV trovate nella rete",
+    "searchAgain": "Cerca di nuovo",
+    "searching": "Ricerca nella rete…",
+    "noneFound": "Nessuna TV trovata. Inserisci qui sotto il suo indirizzo.",
+    "alreadyAdded": "Già aggiunta",
+    "choose": "Aggiungi {{name}}",
+    "pick": "Aggiungi",
+    "manualTitle": "Inserisci l'indirizzo",
+    "manualHelp": "Se la TV non è nell'elenco, scegli la marca e scrivi il suo indirizzo IP o il nome host. Lo trovi nelle impostazioni di rete della TV.",
+    "brand": "Marca",
+    "address": "Indirizzo",
+    "continue": "Continua",
+    "pairTitle": "Associa la TV",
+    "target": "TV all'indirizzo {{host}}",
+    "start": "Avvia l'associazione",
+    "waiting": "In attesa che accetti sulla TV…",
+    "timeLeft": "Tempo rimasto: {{time}}",
+    "failed": "L'associazione non è riuscita. Controlla che la TV sia accesa e riprova.",
+    "expired": "Il tempo è scaduto prima dell'accettazione sulla TV. Riprova.",
+    "retry": "Riprova",
+    "finishTitle": "Quasi fatto",
+    "finishHelp": "Dai un nome alla TV e scegli le regole che segue. Potrai cambiarli dopo.",
+    "capabilities": "Cosa può fare TVBalance con questa TV",
+    "finish": "Fine",
+    "added": "TV aggiunta",
+    "paired": "TV associata di nuovo",
+    "instructions": {
+      "generic": "Accendi la TV e tieni il telecomando a portata di mano. Quando avvii l'associazione, la TV ti chiede di accettare la connessione.",
+      "lg_webos": "Accendi la TV LG e tieni il telecomando a portata di mano. Quando avvii l'associazione, sulla TV compare un messaggio: scegli Sì con il telecomando."
+    },
+    "capability": {
+      "foreground_app": "Vedere l'app in uso",
+      "list_apps": "Elencare le app",
+      "launch_app": "Aprire un'app",
+      "go_home": "Tornare alla schermata iniziale",
+      "current_input": "Vedere l'ingresso attuale",
+      "set_input": "Cambiare ingresso",
+      "live_channel": "Vedere il canale in onda",
+      "set_channel": "Cambiare canale",
+      "program_info": "Vedere il programma",
+      "on_screen_message": "Mostrare messaggi a schermo",
+      "power_off": "Spegnere",
+      "wake": "Accendere",
+      "push_updates": "Aggiornamenti in tempo reale"
+    }
   }
 }

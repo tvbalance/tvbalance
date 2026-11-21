@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "TVBalance",
     "tagline": "Gesunde Bildschirmzeit-Regeln für den Smart-TV Ihrer Familie"
@@ -79,7 +79,9 @@
     "not_found": "Nicht gefunden.",
     "conflict": "Das steht im Konflikt mit dem aktuellen Zustand.",
     "tv_offline": "Der Fernseher ist gerade nicht erreichbar.",
-    "unavailable": "Die Engine startet. Versuchen Sie es gleich erneut."
+    "unavailable": "Die Engine startet. Versuchen Sie es gleich erneut.",
+    "tv_exists": "Dieser Fernseher wurde bereits hinzugefügt.",
+    "adapter_mismatch": "Dieser Fernseher wurde mit einer anderen Marke hinzugefügt."
   },
   "tv": {
     "power": {
@@ -330,5 +332,54 @@
     "tokenCopyFailed": "Kopieren fehlgeschlagen: Token markieren und von Hand kopieren.",
     "revoke": "Widerrufen",
     "revokeToken": "Token {{name}} widerrufen"
+  },
+  "pairing": {
+    "title": "Fernseher hinzufügen",
+    "repairTitle": "Fernseher erneut koppeln",
+    "foundTitle": "Im Netzwerk gefundene Fernseher",
+    "searchAgain": "Erneut suchen",
+    "searching": "Netzwerk wird durchsucht…",
+    "noneFound": "Kein Fernseher gefunden. Gib unten seine Adresse ein.",
+    "alreadyAdded": "Bereits hinzugefügt",
+    "choose": "{{name}} hinzufügen",
+    "pick": "Hinzufügen",
+    "manualTitle": "Adresse eingeben",
+    "manualHelp": "Steht dein Fernseher nicht in der Liste, wähle die Marke und gib die IP-Adresse oder den Hostnamen ein. Du findest sie in den Netzwerkeinstellungen des Fernsehers.",
+    "brand": "Marke",
+    "address": "Adresse",
+    "continue": "Weiter",
+    "pairTitle": "Mit dem Fernseher koppeln",
+    "target": "Fernseher unter {{host}}",
+    "start": "Kopplung starten",
+    "waiting": "Warte darauf, dass du am Fernseher zustimmst…",
+    "timeLeft": "Verbleibende Zeit: {{time}}",
+    "failed": "Die Kopplung hat nicht geklappt. Prüfe, ob der Fernseher eingeschaltet ist, und versuche es erneut.",
+    "expired": "Die Zeit ist abgelaufen, bevor am Fernseher zugestimmt wurde. Versuche es erneut.",
+    "retry": "Erneut versuchen",
+    "finishTitle": "Fast fertig",
+    "finishHelp": "Gib dem Fernseher einen Namen und wähle seine Regeln. Beides lässt sich später ändern.",
+    "capabilities": "Was TVBalance mit diesem Fernseher tun kann",
+    "finish": "Fertig",
+    "added": "Fernseher hinzugefügt",
+    "paired": "Fernseher erneut gekoppelt",
+    "instructions": {
+      "generic": "Schalte den Fernseher ein und halte die Fernbedienung bereit. Nach dem Start fragt der Fernseher, ob du die Verbindung zulässt.",
+      "lg_webos": "Schalte den LG-Fernseher ein und halte die Fernbedienung bereit. Nach dem Start erscheint eine Meldung auf dem Fernseher: Wähle mit der Fernbedienung Ja."
+    },
+    "capability": {
+      "foreground_app": "Laufende App erkennen",
+      "list_apps": "Apps auflisten",
+      "launch_app": "App öffnen",
+      "go_home": "Zum Startbildschirm",
+      "current_input": "Aktuellen Eingang erkennen",
+      "set_input": "Eingang wechseln",
+      "live_channel": "Laufenden Sender erkennen",
+      "set_channel": "Sender wechseln",
+      "program_info": "Sendung erkennen",
+      "on_screen_message": "Meldungen auf dem Bildschirm",
+      "power_off": "Ausschalten",
+      "wake": "Einschalten",
+      "push_updates": "Live-Updates"
+    }
   }
 }

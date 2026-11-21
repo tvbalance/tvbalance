@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "TVBalance",
     "tagline": "Des règles saines de temps d'écran pour la smart TV de votre famille"
@@ -79,7 +79,9 @@
     "not_found": "Introuvable.",
     "conflict": "Cela entre en conflit avec l'état actuel.",
     "tv_offline": "La TV est injoignable pour le moment.",
-    "unavailable": "Le moteur démarre. Réessayez dans un instant."
+    "unavailable": "Le moteur démarre. Réessayez dans un instant.",
+    "tv_exists": "Cette télé est déjà ajoutée.",
+    "adapter_mismatch": "Cette télé a été ajoutée avec une autre marque."
   },
   "tv": {
     "power": {
@@ -330,5 +332,54 @@
     "tokenCopyFailed": "Copie impossible : sélectionnez le jeton et copiez-le à la main.",
     "revoke": "Révoquer",
     "revokeToken": "Révoquer le jeton {{name}}"
+  },
+  "pairing": {
+    "title": "Ajouter une télé",
+    "repairTitle": "Associer de nouveau la télé",
+    "foundTitle": "Télés trouvées sur votre réseau",
+    "searchAgain": "Chercher à nouveau",
+    "searching": "Recherche sur votre réseau…",
+    "noneFound": "Aucune télé trouvée. Saisissez son adresse ci-dessous.",
+    "alreadyAdded": "Déjà ajoutée",
+    "choose": "Ajouter {{name}}",
+    "pick": "Ajouter",
+    "manualTitle": "Saisir l'adresse",
+    "manualHelp": "Si votre télé n'est pas dans la liste, choisissez sa marque et saisissez son adresse IP ou son nom d'hôte. Vous les trouverez dans les réglages réseau de la télé.",
+    "brand": "Marque",
+    "address": "Adresse",
+    "continue": "Continuer",
+    "pairTitle": "Associer la télé",
+    "target": "Télé à l'adresse {{host}}",
+    "start": "Lancer l'association",
+    "waiting": "En attente de votre accord sur la télé…",
+    "timeLeft": "Temps restant : {{time}}",
+    "failed": "L'association a échoué. Vérifiez que la télé est allumée et réessayez.",
+    "expired": "Le temps est écoulé avant l'accord sur la télé. Réessayez.",
+    "retry": "Réessayer",
+    "finishTitle": "Presque terminé",
+    "finishHelp": "Donnez un nom à la télé et choisissez ses règles. Vous pourrez changer les deux plus tard.",
+    "capabilities": "Ce que TVBalance peut faire avec cette télé",
+    "finish": "Terminer",
+    "added": "Télé ajoutée",
+    "paired": "Télé associée de nouveau",
+    "instructions": {
+      "generic": "Allumez la télé et gardez la télécommande à portée de main. Au démarrage, la télé vous demande d'accepter la connexion.",
+      "lg_webos": "Allumez la télé LG et gardez la télécommande à portée de main. Au démarrage, un message s'affiche sur la télé : choisissez Oui avec la télécommande."
+    },
+    "capability": {
+      "foreground_app": "Voir l'appli en cours",
+      "list_apps": "Lister les applis",
+      "launch_app": "Ouvrir une appli",
+      "go_home": "Revenir à l'accueil",
+      "current_input": "Voir l'entrée actuelle",
+      "set_input": "Changer d'entrée",
+      "live_channel": "Voir la chaîne en cours",
+      "set_channel": "Changer de chaîne",
+      "program_info": "Voir l'émission",
+      "on_screen_message": "Afficher des messages à l'écran",
+      "power_off": "Éteindre",
+      "wake": "Allumer",
+      "push_updates": "Mises à jour en direct"
+    }
   }
 }

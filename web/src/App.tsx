@@ -4,6 +4,7 @@ import { AuthGate } from "./components/AuthGate";
 import { Layout } from "./components/Layout";
 import { ToastProvider } from "./components/ui/toast";
 import { Activity } from "./pages/Activity";
+import { AddTv } from "./pages/AddTv";
 import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { RuleEditor } from "./pages/RuleEditor";
@@ -28,6 +29,8 @@ export function App() {
             }
           >
             <Route path="/" element={<Dashboard />} />
+            <Route path="/tvs/add" element={<AddTv />} />
+            <Route path="/tvs/:id/pair" element={<AddTv />} />
             <Route path="/tvs/:id" element={<TvDetail />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/rules" element={<Rules />} />

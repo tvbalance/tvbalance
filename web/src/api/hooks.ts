@@ -16,6 +16,8 @@ export type Session = Schemas["SessionOut"];
 export type Token = Schemas["TokenOut"];
 export type Inventory = Schemas["InventoryOut"];
 export type Adapter = Schemas["AdapterOut"];
+export type FoundTv = Schemas["FoundTvOut"];
+export type Pairing = Schemas["PairingOut"];
 
 export const keys = {
   state: ["auth", "state"] as const,
@@ -30,6 +32,8 @@ export const keys = {
   tokens: ["auth", "tokens"] as const,
   inventory: (tvId: string) => ["inventory", tvId] as const,
   adapters: ["adapters"] as const,
+  discovery: ["discovery"] as const,
+  pairing: (id: string) => ["pairing", id] as const,
 };
 
 export function useAuthState() {
@@ -119,6 +123,28 @@ export function useInventory(tvId: string | null) {
     queryFn: ({ signal }) => api.get<Inventory>(`tvs/${tvId}/inventory`, signal),
     enabled: tvId !== null,
     retry: false,
+  });
+}
+
+/** TVs the Engine can see on the network. Runs once; `refetch()` searches again. */
+export function useDiscovery() {
+  return useQuery({
+    queryKey: keys.discovery,
+    queryFn: ({ signal }) => api.get<FoundTv[]>("discovery", signal),
+    retry: false,
+    staleTime: Infinity,
+    gcTime: 0,
+  });
+}
+
+/** A pairing, polled every second while the person has yet to accept on the TV. */
+export function usePairing(id: string | null) {
+  return useQuery({
+    queryKey: keys.pairing(id ?? ""),
+    queryFn: ({ signal }) => api.get<Pairing>(`pairings/${id}`, signal),
+    enabled: id !== null,
+    retry: false,
+    refetchInterval: (query) => (query.state.data?.state === "waiting_for_user" ? 1000 : false),
   });
 }
 

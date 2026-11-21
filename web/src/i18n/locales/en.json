@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "TVBalance",
     "tagline": "Healthy screen-time rules for your family's smart TV"
@@ -79,7 +79,9 @@
     "not_found": "Not found.",
     "conflict": "That conflicts with the current state.",
     "tv_offline": "The TV is not reachable right now.",
-    "unavailable": "The Engine is starting. Try again in a moment."
+    "unavailable": "The Engine is starting. Try again in a moment.",
+    "tv_exists": "This TV is already added.",
+    "adapter_mismatch": "This TV was added with another brand."
   },
   "tv": {
     "power": {
@@ -330,5 +332,54 @@
     "tokenCopyFailed": "Couldn't copy: select the token and copy it by hand.",
     "revoke": "Revoke",
     "revokeToken": "Revoke the token {{name}}"
+  },
+  "pairing": {
+    "title": "Add a TV",
+    "repairTitle": "Pair the TV again",
+    "foundTitle": "TVs found on your network",
+    "searchAgain": "Search again",
+    "searching": "Searching your network…",
+    "noneFound": "No TV found. Enter its address below.",
+    "alreadyAdded": "Already added",
+    "choose": "Add {{name}}",
+    "pick": "Add",
+    "manualTitle": "Enter the address",
+    "manualHelp": "If your TV is not listed, pick its brand and type its IP address or host name. You can find it in the TV's network settings.",
+    "brand": "Brand",
+    "address": "Address",
+    "continue": "Continue",
+    "pairTitle": "Pair with the TV",
+    "target": "TV at {{host}}",
+    "start": "Start pairing",
+    "waiting": "Waiting for you to accept on the TV…",
+    "timeLeft": "Time left: {{time}}",
+    "failed": "Pairing did not work. Check that the TV is on and try again.",
+    "expired": "Time ran out before the TV was accepted. Try again.",
+    "retry": "Try again",
+    "finishTitle": "Almost done",
+    "finishHelp": "Give the TV a name and choose the rules it follows. You can change both later.",
+    "capabilities": "What TVBalance can do with this TV",
+    "finish": "Finish",
+    "added": "TV added",
+    "paired": "TV paired again",
+    "instructions": {
+      "generic": "Turn the TV on and keep the remote at hand. When you start, the TV asks you to accept the connection.",
+      "lg_webos": "Turn the LG TV on and keep the remote at hand. When you start, a message appears on the TV: choose Yes with the remote."
+    },
+    "capability": {
+      "foreground_app": "See the running app",
+      "list_apps": "List the apps",
+      "launch_app": "Open an app",
+      "go_home": "Go to the home screen",
+      "current_input": "See the current input",
+      "set_input": "Switch input",
+      "live_channel": "See the live channel",
+      "set_channel": "Switch channel",
+      "program_info": "See the programme",
+      "on_screen_message": "Show on-screen messages",
+      "power_off": "Switch off",
+      "wake": "Switch on",
+      "push_updates": "Live updates"
+    }
   }
 }
