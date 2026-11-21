@@ -9,9 +9,15 @@ TVBalance talks to LG TVs (webOS 4 and newer) over your home network. Nothing le
 3. Give the TV a fixed address in your router (a DHCP reservation) so it stays reachable.
 
 ## Pair
-Start pairing from TVBalance and watch the TV: it asks whether to allow the new device. Accept it with the remote
-within a minute. TVBalance stores the key the TV hands out; you only do this once per TV.
-If you press **No**, or nothing happens, start again.
+1. Turn the TV on, keep the remote at hand, and open **Add a TV** in the web app.
+2. Pick your TV from the list. If it is not listed (some networks block the search), choose **LG webOS** under
+   *Enter the address* and type the TV's IP address, found in the TV's network settings.
+3. Press **Start pairing** and watch the TV: it asks whether to allow the new device. Accept it with the remote within
+   three minutes. TVBalance stores the key the TV hands out; you only do this once per TV.
+4. Name the TV and choose its rule set.
+
+If you press **No**, or nothing happens, use **Try again**. When the TV forgets the key (for example after a factory
+reset) the dashboard shows **Needs pairing**: open **Pair again** on its card and accept once more.
 
 ## What TVBalance can do on an LG
 Read what is playing (app, HDMI input, live channel and programme), list apps, inputs and channels, show an

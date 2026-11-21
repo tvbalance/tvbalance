@@ -1,5 +1,7 @@
 # M7: Discovery and guided pairing
 
+Status: done. Hardware check with a real TV is left to the maintainer before a release.
+
 ## Goal
 Let a parent add a TV from the Web UI (spec F1) and pair it again when its key is lost (F4): find TVs on the LAN or
 type an address, follow the brand's instructions, store the key encrypted, name the TV and pick a rule set.

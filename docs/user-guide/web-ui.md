@@ -10,7 +10,11 @@ On the first visit the app asks for three things:
 3. **A first rule set**, starting from "School days" (weekdays 16:00-20:00, weekends 09:00-21:00, two hours a day,
    warnings at 10 and 5 minutes) or from an empty set. Everything can be changed afterwards.
 
-Adding a TV comes with the pairing wizard in a later release. Until then the dashboard says that no TV is set up.
+## Adding a TV
+With no TV yet, the dashboard offers **Add a TV** (administrators only; a PIN session never sees it). The wizard
+searches your network, or takes the TV's address by hand, then walks you through accepting the connection on the TV
+and finishes by naming the TV and choosing its rule set. A TV that lost its key shows **Needs pairing** with a
+**Pair again** link. Brand-specific steps are in the TV guides, such as [LG webOS](tv-lg-webos.md).
 
 ## Signing in
 - **Password:** full access.

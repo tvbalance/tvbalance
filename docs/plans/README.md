@@ -21,7 +21,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M4 | LG webOS adapter (done and verified on hardware, see M4-webos.md) | skeleton |
 | M5 | API v1, authentication, WebSocket events (done, see M5-api.md and architecture/api.md) | M2, M3 |
 | M6 | Web UI: onboarding, rules, dashboard, settings (done, see M6-web.md and user-guide/web-ui.md) | M5 |
-| M7 | Discovery and guided pairing wizard (in progress, see M7-pairing.md) | M4, M5 |
+| M7 | Discovery and guided pairing wizard (done, see M7-pairing.md and architecture/api.md) | M4, M5 |
 | M8 | Full Home Assistant integration: entities, admin-only services, events, blueprints | M5 |
 | M9 | Add-on release, Supervisor discovery, ghcr publishing | M5 |
 | M10 | Web Push notifications | M5, M6 |
