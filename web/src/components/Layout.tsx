@@ -10,6 +10,7 @@ const ITEMS = [
   { to: "/", key: "nav.dashboard", end: true },
   { to: "/rules", key: "nav.rules", end: false },
   { to: "/activity", key: "nav.activity", end: false },
+  { to: "/settings", key: "nav.settings", end: false },
   { to: "/system", key: "nav.system", end: false },
 ] as const;
 

@@ -53,7 +53,8 @@
     "dashboard": "Tableau de bord",
     "system": "Système",
     "rules": "Règles",
-    "activity": "Activité"
+    "activity": "Activité",
+    "settings": "Réglages"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -271,5 +272,63 @@
     "removeTitle": "Retirer {{name}} ?",
     "removeHelp": "Le téléviseur n'est plus surveillé.",
     "confirmRemove": "Retirer le téléviseur"
+  },
+  "settings": {
+    "title": "Réglages",
+    "general": "Général",
+    "save": "Enregistrer",
+    "saved": "Réglages enregistrés",
+    "theme": "Apparence",
+    "themes": {
+      "system": "Suivre l'appareil",
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "logout": "Se déconnecter",
+    "security": "Sécurité",
+    "password": "Mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "passwordHint": "Au moins {{count}} caractères.",
+    "confirmPassword": "Répétez le nouveau mot de passe",
+    "passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "changePassword": "Changer le mot de passe",
+    "passwordChanged": "Mot de passe modifié",
+    "pin": "Code parent",
+    "pinHelp": "Un code court qui ouvre les commandes sur un appareil partagé sans le mot de passe. Il peut mettre en pause, ajouter du temps et autoriser ou bloquer, rien de plus.",
+    "newPin": "Nouveau code",
+    "savePin": "Enregistrer le code",
+    "removePin": "Supprimer le code",
+    "pinSet": "Code enregistré",
+    "pinCleared": "Code supprimé",
+    "sessions": "Appareils connectés",
+    "sessionsHelp": "Tous les navigateurs actuellement connectés.",
+    "sessionKind": {
+      "admin": "Administrateur",
+      "pin": "Code"
+    },
+    "thisDevice": "Cet appareil",
+    "lastSeen": "Vu pour la dernière fois {{when}}",
+    "signOut": "Déconnecter",
+    "signOutSession": "Déconnecter l'appareil vu pour la dernière fois {{when}}",
+    "signOutOthers": "Déconnecter tous les autres appareils",
+    "othersSignedOut": "Autres appareils déconnectés",
+    "tokens": "Jetons API",
+    "tokensHelp": "Pour d'autres programmes, comme Home Assistant. Pour Home Assistant, choisissez lecture et contrôle.",
+    "tokenName": "À quoi sert-il ?",
+    "tokenScopes": "Actions autorisées",
+    "scope": {
+      "read": "Lecture",
+      "control": "Contrôle",
+      "admin": "Administration"
+    },
+    "createToken": "Créer un jeton",
+    "tokenShownOnce": "Copiez ce jeton maintenant. Il ne sera plus affiché.",
+    "copy": "Copier",
+    "done": "Terminé",
+    "tokenCopied": "Jeton copié",
+    "tokenCopyFailed": "Copie impossible : sélectionnez le jeton et copiez-le à la main.",
+    "revoke": "Révoquer",
+    "revokeToken": "Révoquer le jeton {{name}}"
   }
 }

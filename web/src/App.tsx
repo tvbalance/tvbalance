@@ -8,6 +8,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { RuleEditor } from "./pages/RuleEditor";
 import { Rules } from "./pages/Rules";
+import { Settings } from "./pages/Settings";
 import { System } from "./pages/System";
 import { TvDetail } from "./pages/TvDetail";
 import { Welcome } from "./pages/Welcome";
@@ -31,6 +32,7 @@ export function App() {
             <Route path="/activity" element={<Activity />} />
             <Route path="/rules" element={<Rules />} />
             <Route path="/rules/:id" element={<RuleEditor />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/system" element={<System />} />
           </Route>
         </Routes>

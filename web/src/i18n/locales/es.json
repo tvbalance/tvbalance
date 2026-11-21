@@ -53,7 +53,8 @@
     "dashboard": "Panel",
     "system": "Sistema",
     "rules": "Reglas",
-    "activity": "Actividad"
+    "activity": "Actividad",
+    "settings": "Ajustes"
   },
   "dashboard": {
     "title": "Panel",
@@ -271,5 +272,63 @@
     "removeTitle": "¿Quitar {{name}}?",
     "removeHelp": "El televisor deja de supervisarse.",
     "confirmRemove": "Quitar televisor"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "general": "General",
+    "save": "Guardar",
+    "saved": "Ajustes guardados",
+    "theme": "Apariencia",
+    "themes": {
+      "system": "Seguir el dispositivo",
+      "light": "Claro",
+      "dark": "Oscuro"
+    },
+    "logout": "Cerrar sesión",
+    "security": "Seguridad",
+    "password": "Contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Contraseña nueva",
+    "passwordHint": "Al menos {{count}} caracteres.",
+    "confirmPassword": "Repite la contraseña nueva",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "changePassword": "Cambiar contraseña",
+    "passwordChanged": "Contraseña cambiada",
+    "pin": "PIN de los padres",
+    "pinHelp": "Un código corto que abre los controles en un dispositivo compartido sin la contraseña. Puede pausar, añadir tiempo y permitir o bloquear, nada más.",
+    "newPin": "PIN nuevo",
+    "savePin": "Guardar PIN",
+    "removePin": "Quitar PIN",
+    "pinSet": "PIN guardado",
+    "pinCleared": "PIN quitado",
+    "sessions": "Dispositivos con sesión",
+    "sessionsHelp": "Todos los navegadores con sesión iniciada ahora.",
+    "sessionKind": {
+      "admin": "Administrador",
+      "pin": "PIN"
+    },
+    "thisDevice": "Este dispositivo",
+    "lastSeen": "Visto por última vez {{when}}",
+    "signOut": "Cerrar sesión",
+    "signOutSession": "Cerrar la sesión del dispositivo visto por última vez {{when}}",
+    "signOutOthers": "Cerrar la sesión de los demás dispositivos",
+    "othersSignedOut": "Otros dispositivos desconectados",
+    "tokens": "Tokens de API",
+    "tokensHelp": "Para otros programas, como Home Assistant. Para Home Assistant elige lectura y control.",
+    "tokenName": "¿Para qué sirve?",
+    "tokenScopes": "Acciones permitidas",
+    "scope": {
+      "read": "Lectura",
+      "control": "Control",
+      "admin": "Administración"
+    },
+    "createToken": "Crear token",
+    "tokenShownOnce": "Copia este token ahora. No se volverá a mostrar.",
+    "copy": "Copiar",
+    "done": "Hecho",
+    "tokenCopied": "Token copiado",
+    "tokenCopyFailed": "No se pudo copiar: selecciona el token y cópialo a mano.",
+    "revoke": "Revocar",
+    "revokeToken": "Revocar el token {{name}}"
   }
 }

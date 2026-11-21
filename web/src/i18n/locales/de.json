@@ -53,7 +53,8 @@
     "dashboard": "Übersicht",
     "system": "System",
     "rules": "Regeln",
-    "activity": "Aktivität"
+    "activity": "Aktivität",
+    "settings": "Einstellungen"
   },
   "dashboard": {
     "title": "Übersicht",
@@ -271,5 +272,63 @@
     "removeTitle": "{{name}} entfernen?",
     "removeHelp": "Der Fernseher wird nicht mehr überwacht.",
     "confirmRemove": "Fernseher entfernen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "general": "Allgemein",
+    "save": "Speichern",
+    "saved": "Einstellungen gespeichert",
+    "theme": "Darstellung",
+    "themes": {
+      "system": "Wie das Gerät",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
+    "logout": "Abmelden",
+    "security": "Sicherheit",
+    "password": "Passwort",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "passwordHint": "Mindestens {{count}} Zeichen.",
+    "confirmPassword": "Neues Passwort wiederholen",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "changePassword": "Passwort ändern",
+    "passwordChanged": "Passwort geändert",
+    "pin": "Eltern-PIN",
+    "pinHelp": "Ein kurzer Code, mit dem sich die Steuerung auf einem gemeinsamen Gerät ohne Passwort öffnen lässt. Er kann pausieren, Zeit hinzufügen und erlauben oder sperren, mehr nicht.",
+    "newPin": "Neue PIN",
+    "savePin": "PIN speichern",
+    "removePin": "PIN entfernen",
+    "pinSet": "PIN gespeichert",
+    "pinCleared": "PIN entfernt",
+    "sessions": "Angemeldete Geräte",
+    "sessionsHelp": "Alle Browser, die gerade angemeldet sind.",
+    "sessionKind": {
+      "admin": "Administrator",
+      "pin": "PIN"
+    },
+    "thisDevice": "Dieses Gerät",
+    "lastSeen": "Zuletzt gesehen {{when}}",
+    "signOut": "Abmelden",
+    "signOutSession": "Das zuletzt {{when}} gesehene Gerät abmelden",
+    "signOutOthers": "Alle anderen Geräte abmelden",
+    "othersSignedOut": "Andere Geräte abgemeldet",
+    "tokens": "API-Token",
+    "tokensHelp": "Für andere Programme, etwa Home Assistant. Für Home Assistant Lesen und Steuern wählen.",
+    "tokenName": "Wofür ist es?",
+    "tokenScopes": "Erlaubte Aktionen",
+    "scope": {
+      "read": "Lesen",
+      "control": "Steuern",
+      "admin": "Verwalten"
+    },
+    "createToken": "Token erstellen",
+    "tokenShownOnce": "Kopiere dieses Token jetzt. Es wird nicht noch einmal angezeigt.",
+    "copy": "Kopieren",
+    "done": "Fertig",
+    "tokenCopied": "Token kopiert",
+    "tokenCopyFailed": "Kopieren fehlgeschlagen: Token markieren und von Hand kopieren.",
+    "revoke": "Widerrufen",
+    "revokeToken": "Token {{name}} widerrufen"
   }
 }

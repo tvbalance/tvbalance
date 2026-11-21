@@ -53,7 +53,8 @@
     "dashboard": "Pannello",
     "system": "Sistema",
     "rules": "Regole",
-    "activity": "Attività"
+    "activity": "Attività",
+    "settings": "Impostazioni"
   },
   "dashboard": {
     "title": "Pannello",
@@ -271,5 +272,63 @@
     "removeTitle": "Rimuovere {{name}}?",
     "removeHelp": "La TV non sarà più controllata.",
     "confirmRemove": "Rimuovi TV"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "general": "Generali",
+    "save": "Salva",
+    "saved": "Impostazioni salvate",
+    "theme": "Aspetto",
+    "themes": {
+      "system": "Segui il dispositivo",
+      "light": "Chiaro",
+      "dark": "Scuro"
+    },
+    "logout": "Esci",
+    "security": "Sicurezza",
+    "password": "Password",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "passwordHint": "Almeno {{count}} caratteri.",
+    "confirmPassword": "Ripeti la nuova password",
+    "passwordMismatch": "Le password non coincidono.",
+    "changePassword": "Cambia password",
+    "passwordChanged": "Password cambiata",
+    "pin": "PIN dei genitori",
+    "pinHelp": "Un codice breve che permette di aprire i comandi su un dispositivo condiviso senza la password. Può mettere in pausa, aggiungere tempo e consentire o bloccare, nient'altro.",
+    "newPin": "Nuovo PIN",
+    "savePin": "Salva PIN",
+    "removePin": "Rimuovi PIN",
+    "pinSet": "PIN salvato",
+    "pinCleared": "PIN rimosso",
+    "sessions": "Dispositivi collegati",
+    "sessionsHelp": "Tutti i browser che hanno attualmente effettuato l'accesso.",
+    "sessionKind": {
+      "admin": "Amministratore",
+      "pin": "PIN"
+    },
+    "thisDevice": "Questo dispositivo",
+    "lastSeen": "Ultimo accesso {{when}}",
+    "signOut": "Esci",
+    "signOutSession": "Disconnetti il dispositivo visto l'ultima volta {{when}}",
+    "signOutOthers": "Disconnetti tutti gli altri dispositivi",
+    "othersSignedOut": "Altri dispositivi disconnessi",
+    "tokens": "Token API",
+    "tokensHelp": "Per altri programmi, come Home Assistant. Per Home Assistant scegli lettura e controllo.",
+    "tokenName": "A cosa serve?",
+    "tokenScopes": "Azioni consentite",
+    "scope": {
+      "read": "Lettura",
+      "control": "Controllo",
+      "admin": "Amministrazione"
+    },
+    "createToken": "Crea token",
+    "tokenShownOnce": "Copia ora questo token. Non verrà mostrato di nuovo.",
+    "copy": "Copia",
+    "done": "Fatto",
+    "tokenCopied": "Token copiato",
+    "tokenCopyFailed": "Copia non riuscita: seleziona il token e copialo a mano.",
+    "revoke": "Revoca",
+    "revokeToken": "Revoca il token {{name}}"
   }
 }

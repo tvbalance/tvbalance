@@ -53,7 +53,8 @@
     "dashboard": "Dashboard",
     "system": "System",
     "rules": "Rules",
-    "activity": "Activity"
+    "activity": "Activity",
+    "settings": "Settings"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -271,5 +272,63 @@
     "removeTitle": "Remove {{name}}?",
     "removeHelp": "The TV is no longer monitored.",
     "confirmRemove": "Remove TV"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "save": "Save",
+    "saved": "Settings saved",
+    "theme": "Appearance",
+    "themes": {
+      "system": "Follow the device",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "logout": "Sign out",
+    "security": "Security",
+    "password": "Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "passwordHint": "At least {{count}} characters.",
+    "confirmPassword": "Repeat the new password",
+    "passwordMismatch": "The passwords don't match.",
+    "changePassword": "Change password",
+    "passwordChanged": "Password changed",
+    "pin": "Parent PIN",
+    "pinHelp": "A short code that lets you open the controls on a shared device without the password. It can pause, add time and allow or block, nothing more.",
+    "newPin": "New PIN",
+    "savePin": "Save PIN",
+    "removePin": "Remove PIN",
+    "pinSet": "PIN saved",
+    "pinCleared": "PIN removed",
+    "sessions": "Signed-in devices",
+    "sessionsHelp": "Every browser that is currently signed in.",
+    "sessionKind": {
+      "admin": "Administrator",
+      "pin": "PIN"
+    },
+    "thisDevice": "This device",
+    "lastSeen": "Last seen {{when}}",
+    "signOut": "Sign out",
+    "signOutSession": "Sign out the device last seen {{when}}",
+    "signOutOthers": "Sign out all other devices",
+    "othersSignedOut": "Other devices signed out",
+    "tokens": "API tokens",
+    "tokensHelp": "For other programs, such as Home Assistant. For Home Assistant choose read and control.",
+    "tokenName": "What is it for?",
+    "tokenScopes": "Allowed actions",
+    "scope": {
+      "read": "Read",
+      "control": "Control",
+      "admin": "Administer"
+    },
+    "createToken": "Create token",
+    "tokenShownOnce": "Copy this token now. It won't be shown again.",
+    "copy": "Copy",
+    "done": "Done",
+    "tokenCopied": "Token copied",
+    "tokenCopyFailed": "Couldn't copy: select the token and copy it by hand.",
+    "revoke": "Revoke",
+    "revokeToken": "Revoke the token {{name}}"
   }
 }
