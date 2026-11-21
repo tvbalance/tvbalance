@@ -18,7 +18,7 @@ from tvbalance.domain.models import Action, Observation, Policy, Power, Schedule
 from tvbalance.sdk.errors import TVError, TVPairingError
 from tvbalance.sdk.fake import FakeTV
 from tvbalance.sdk.plugin import AdapterPlugin
-from tvbalance.sdk.types import AdapterConfig, AdapterInfo, Capability, Maturity
+from tvbalance.sdk.types import AdapterConfig, AdapterInfo, Capability, Maturity, PairingState
 
 # A Tuesday evening: 18:00 in the household zone used by the tests (Europe/Rome).
 T0 = datetime(2026, 11, 17, 17, 0, tzinfo=UTC)
@@ -106,6 +106,42 @@ class ScriptedTV(FakeTV):
     def changed(self) -> None:
         for listener in list(self.listeners):
             listener()
+
+
+class ScriptedPairing:
+    """A pairing flow that walks through ``outcomes`` one poll at a time, then stays where it is."""
+
+    def __init__(self, outcomes: list[PairingState], key: str = "paired-key") -> None:
+        self.outcomes = list(outcomes)
+        self.key = key
+        self.state = PairingState.IDLE
+        self.cancelled = False
+
+    async def start(self) -> PairingState:
+        self.state = PairingState.WAITING_FOR_USER
+        return self.state
+
+    async def poll(self) -> PairingState:
+        await asyncio.sleep(0)
+        if self.outcomes:
+            self.state = self.outcomes.pop(0)
+        return self.state
+
+    def credentials(self) -> dict[str, str]:
+        return {"client_key": self.key} if self.state is PairingState.COMPLETED else {}
+
+    async def cancel(self) -> None:
+        self.cancelled = True
+
+
+@dataclass
+class PairableTV(ScriptedTV):
+    """A ScriptedTV that pairs the way ``flow`` says."""
+
+    flow: ScriptedPairing = field(default_factory=lambda: ScriptedPairing([PairingState.COMPLETED]))
+
+    def pairing(self) -> ScriptedPairing:  # type: ignore[override]
+        return self.flow
 
 
 def pairing_rejected() -> TVPairingError:

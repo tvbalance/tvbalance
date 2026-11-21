@@ -121,7 +121,13 @@ def test_concurrent_searches_share_one_scan() -> None:
 
     async def scenario() -> None:
         storage = SimpleNamespace(tvs=SimpleNamespace(list=no_tvs))
-        service = PairingService(storage, {"fake": plugin})  # type: ignore[arg-type]
+        service = PairingService(
+            storage,  # type: ignore[arg-type]
+            {"fake": plugin},
+            None,  # type: ignore[arg-type]
+            None,  # type: ignore[arg-type]
+            FakeClock(),
+        )
         first, second = await asyncio.gather(service.discover(), service.discover())
         assert first == second and len(first) == 1
 

@@ -26,7 +26,7 @@ from tvbalance.api.routes import (
 from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
-from tvbalance.app.pairing import DISCOVERY_TIMEOUT, PairingService
+from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.config import EngineConfig
@@ -45,6 +45,7 @@ def create_app(
     clock: Clock | None = None,
     supervisor_settings: SupervisorSettings | None = None,
     discovery_timeout: float = DISCOVERY_TIMEOUT,
+    pairing_poll_interval: float = POLL_INTERVAL,
 ) -> FastAPI:
     """Build the app.
 
@@ -73,11 +74,21 @@ def create_app(
         app.state.supervisor = Supervisor(
             storage, registered, app.state.events, clock_, supervisor_settings
         )
-        app.state.pairing = PairingService(storage, registered, include_testing, discovery_timeout)
+        app.state.pairing = PairingService(
+            storage,
+            registered,
+            app.state.supervisor,
+            app.state.events,
+            clock_,
+            include_testing,
+            discovery_timeout,
+            pairing_poll_interval,
+        )
         try:
             await app.state.supervisor.start()
             yield
         finally:
+            await app.state.pairing.stop()
             await app.state.supervisor.stop()
             await storage.close()
 
