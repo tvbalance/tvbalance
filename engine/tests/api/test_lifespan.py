@@ -50,3 +50,22 @@ def test_the_supervisor_watches_paired_tvs_while_the_app_runs(tmp_path: Path) ->
         assert status is not None and status.connected
         assert app.state.events is not None
     assert not tv.connected  # stopped with the app
+
+
+def test_no_discovery_runs_outside_an_addon(tmp_path: Path) -> None:
+    config = EngineConfig(data_dir=tmp_path / "data")
+    app = create_app(plugins={}, config=config)
+    with TestClient(app):
+        assert app.state.ha_discovery is None
+
+
+def test_discovery_starts_and_stops_with_the_app_inside_an_addon(tmp_path: Path) -> None:
+    config = EngineConfig(
+        data_dir=tmp_path / "data",
+        supervisor_token="t",
+        supervisor_url="http://127.0.0.1:1",
+    )
+    app = create_app(plugins={}, config=config)
+    with TestClient(app) as client:
+        assert client.get("/api/v1/health").json() == {"status": "ok"}
+        assert app.state.ha_discovery is not None

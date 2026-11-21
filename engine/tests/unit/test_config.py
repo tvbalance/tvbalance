@@ -42,3 +42,18 @@ def test_empty_paths_count_as_unset() -> None:
     config = EngineConfig.from_env({"TVBALANCE_WEB_DIR": "", "TVBALANCE_DATA_DIR": ""})
     assert config.web_dir is None
     assert config.data_dir == Path("data")
+
+
+def test_the_supervisor_is_only_known_inside_an_addon() -> None:
+    config = EngineConfig.from_env({})
+    assert config.supervisor_token is None
+    assert config.supervisor_url == "http://supervisor"
+
+
+def test_supervisor_settings_come_from_the_environment() -> None:
+    config = EngineConfig.from_env(
+        {"SUPERVISOR_TOKEN": "tok", "TVBALANCE_SUPERVISOR_URL": "http://127.0.0.1:9"}
+    )
+    assert config.supervisor_token == "tok"
+    assert config.supervisor_url == "http://127.0.0.1:9"
+    assert "tok" not in repr(config)

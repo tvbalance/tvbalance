@@ -26,6 +26,7 @@ from tvbalance.api.routes import (
 from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
+from tvbalance.app.ha_discovery import HomeAssistantDiscovery
 from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
@@ -69,7 +70,7 @@ def create_app(
         storage = await open_storage(config, clock_)
         app.state.clock = clock_
         app.state.storage = storage
-        app.state.auth = AuthService(storage.auth, clock_)
+        auth_ = app.state.auth = AuthService(storage.auth, clock_)
         app.state.events = EventBus(storage.events)
         app.state.supervisor = Supervisor(
             storage, registered, app.state.events, clock_, supervisor_settings
@@ -84,10 +85,18 @@ def create_app(
             discovery_timeout,
             pairing_poll_interval,
         )
+        discovery = None
+        if config.supervisor_token:
+            discovery = HomeAssistantDiscovery(auth_, storage.secrets, config)
+        app.state.ha_discovery = discovery
         try:
             await app.state.supervisor.start()
+            if discovery:
+                discovery.start()
             yield
         finally:
+            if discovery:
+                await discovery.stop()
             await app.state.pairing.stop()
             await app.state.supervisor.stop()
             await storage.close()

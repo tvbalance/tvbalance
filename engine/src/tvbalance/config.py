@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_HOST = "0.0.0.0"
 DEFAULT_PORT = 8765
 DEFAULT_DATA_DIR = Path("data")
+DEFAULT_SUPERVISOR_URL = "http://supervisor"
 
 
 class ConfigError(ValueError):
@@ -23,6 +24,9 @@ class EngineConfig:
     data_dir: Path = DEFAULT_DATA_DIR
     # Peers (the Supervisor, under Home Assistant) whose Ingress user headers are believed.
     ingress_trusted: frozenset[str] = frozenset()
+    # Set only inside a Home Assistant Add-on, where the Supervisor can announce the Engine.
+    supervisor_token: str | None = field(default=None, repr=False)
+    supervisor_url: str = DEFAULT_SUPERVISOR_URL
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str]) -> EngineConfig:
@@ -36,6 +40,8 @@ class EngineConfig:
                 for peer in (environ.get("TVBALANCE_INGRESS_TRUSTED") or "").split(",")
                 if peer.strip()
             ),
+            supervisor_token=environ.get("SUPERVISOR_TOKEN") or None,
+            supervisor_url=environ.get("TVBALANCE_SUPERVISOR_URL") or DEFAULT_SUPERVISOR_URL,
         )
 
 
