@@ -77,5 +77,58 @@
     "conflict": "È in conflitto con lo stato attuale.",
     "tv_offline": "La TV non è raggiungibile in questo momento.",
     "unavailable": "Il motore si sta avviando. Riprova tra un attimo."
+  },
+  "tv": {
+    "power": {
+      "on": "Accesa",
+      "standby": "In standby",
+      "off": "Spenta",
+      "offline": "Irraggiungibile",
+      "pairing": "Da riaccoppiare",
+      "disabled": "Non monitorata"
+    },
+    "watching": "Sta guardando {{app}}",
+    "watched": "{{minutes}} min guardati oggi",
+    "left": "{{minutes}} min rimasti",
+    "noLimit": "nessun limite giornaliero",
+    "usageBar": "Tempo usato oggi",
+    "decision": {
+      "allow": "Consentita",
+      "block": "Bloccata"
+    },
+    "warn": "Mancano {{minutes}} min a quando {{limit}}",
+    "reason": {
+      "outside_window": "fuori dagli orari consentiti",
+      "budget_exhausted": "tempo giornaliero finito",
+      "app_blocked": "app non consentita",
+      "input_blocked": "ingresso non consentito",
+      "channel_blocked": "canale non consentito",
+      "override": "bloccata da un genitore"
+    },
+    "limit": {
+      "window": "finiscono gli orari consentiti",
+      "budget": "finisce il tempo giornaliero",
+      "override": "finisce il permesso temporaneo"
+    }
+  },
+  "actions": {
+    "pause": "Pausa {{minutes}} min",
+    "bonus": "+{{minutes}} min",
+    "allow": "Consenti…",
+    "block": "Blocca…",
+    "clear": "Annulla override",
+    "allowTitle": "Consenti la TV",
+    "allowHelp": "La TV è consentita anche fuori dalle regole, per il tempo che scegli.",
+    "blockTitle": "Blocca la TV",
+    "blockHelp": "La TV è bloccata, qualunque cosa dicano le regole, per il tempo che scegli.",
+    "duration": "Per quanto tempo",
+    "minutes": "{{minutes}} min",
+    "untilMidnight": "Fino a mezzanotte",
+    "apply": "Applica",
+    "cancel": "Annulla",
+    "paused": "In pausa per {{minutes}} min",
+    "bonusAdded": "Aggiunti {{minutes}} min",
+    "overrideSet": "Override applicato",
+    "overrideCleared": "Override annullato"
   }
 }

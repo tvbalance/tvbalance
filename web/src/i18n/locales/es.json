@@ -77,5 +77,58 @@
     "conflict": "Entra en conflicto con el estado actual.",
     "tv_offline": "La TV no está accesible ahora mismo.",
     "unavailable": "El motor se está iniciando. Inténtalo de nuevo en un momento."
+  },
+  "tv": {
+    "power": {
+      "on": "Encendida",
+      "standby": "En espera",
+      "off": "Apagada",
+      "offline": "Inaccesible",
+      "pairing": "Hay que volver a emparejar",
+      "disabled": "Sin supervisar"
+    },
+    "watching": "Viendo {{app}}",
+    "watched": "{{minutes}} min vistos hoy",
+    "left": "quedan {{minutes}} min",
+    "noLimit": "sin límite diario",
+    "usageBar": "Tiempo usado hoy",
+    "decision": {
+      "allow": "Permitida",
+      "block": "Bloqueada"
+    },
+    "warn": "Quedan {{minutes}} min hasta que {{limit}}",
+    "reason": {
+      "outside_window": "fuera del horario permitido",
+      "budget_exhausted": "tiempo diario agotado",
+      "app_blocked": "app no permitida",
+      "input_blocked": "entrada no permitida",
+      "channel_blocked": "canal no permitido",
+      "override": "bloqueada por un padre"
+    },
+    "limit": {
+      "window": "termine el horario permitido",
+      "budget": "se agote el tiempo diario",
+      "override": "termine el permiso temporal"
+    }
+  },
+  "actions": {
+    "pause": "Pausa de {{minutes}} min",
+    "bonus": "+{{minutes}} min",
+    "allow": "Permitir…",
+    "block": "Bloquear…",
+    "clear": "Cancelar excepción",
+    "allowTitle": "Permitir la TV",
+    "allowHelp": "La TV se permite incluso fuera de las reglas, durante el tiempo que elijas.",
+    "blockTitle": "Bloquear la TV",
+    "blockHelp": "La TV se bloquea, digan lo que digan las reglas, durante el tiempo que elijas.",
+    "duration": "Durante cuánto tiempo",
+    "minutes": "{{minutes}} min",
+    "untilMidnight": "Hasta medianoche",
+    "apply": "Aplicar",
+    "cancel": "Cancelar",
+    "paused": "En pausa {{minutes}} min",
+    "bonusAdded": "Añadidos {{minutes}} min",
+    "overrideSet": "Excepción aplicada",
+    "overrideCleared": "Excepción cancelada"
   }
 }

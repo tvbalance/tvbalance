@@ -77,5 +77,58 @@
     "conflict": "Cela entre en conflit avec l'état actuel.",
     "tv_offline": "La TV est injoignable pour le moment.",
     "unavailable": "Le moteur démarre. Réessayez dans un instant."
+  },
+  "tv": {
+    "power": {
+      "on": "Allumée",
+      "standby": "En veille",
+      "off": "Éteinte",
+      "offline": "Injoignable",
+      "pairing": "À réassocier",
+      "disabled": "Non surveillée"
+    },
+    "watching": "Regarde {{app}}",
+    "watched": "{{minutes}} min regardées aujourd'hui",
+    "left": "{{minutes}} min restantes",
+    "noLimit": "pas de limite quotidienne",
+    "usageBar": "Temps utilisé aujourd'hui",
+    "decision": {
+      "allow": "Autorisée",
+      "block": "Bloquée"
+    },
+    "warn": "Encore {{minutes}} min avant que {{limit}}",
+    "reason": {
+      "outside_window": "hors des horaires autorisés",
+      "budget_exhausted": "temps quotidien épuisé",
+      "app_blocked": "appli non autorisée",
+      "input_blocked": "entrée non autorisée",
+      "channel_blocked": "chaîne non autorisée",
+      "override": "bloquée par un parent"
+    },
+    "limit": {
+      "window": "les horaires autorisés se terminent",
+      "budget": "le temps quotidien soit épuisé",
+      "override": "l'autorisation temporaire se termine"
+    }
+  },
+  "actions": {
+    "pause": "Pause {{minutes}} min",
+    "bonus": "+{{minutes}} min",
+    "allow": "Autoriser…",
+    "block": "Bloquer…",
+    "clear": "Annuler la dérogation",
+    "allowTitle": "Autoriser la TV",
+    "allowHelp": "La TV est autorisée même en dehors des règles, pour la durée choisie.",
+    "blockTitle": "Bloquer la TV",
+    "blockHelp": "La TV est bloquée, quelles que soient les règles, pour la durée choisie.",
+    "duration": "Pendant combien de temps",
+    "minutes": "{{minutes}} min",
+    "untilMidnight": "Jusqu'à minuit",
+    "apply": "Appliquer",
+    "cancel": "Annuler",
+    "paused": "En pause pour {{minutes}} min",
+    "bonusAdded": "{{minutes}} min ajoutées",
+    "overrideSet": "Dérogation appliquée",
+    "overrideCleared": "Dérogation annulée"
   }
 }

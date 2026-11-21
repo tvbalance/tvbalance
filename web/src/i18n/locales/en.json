@@ -77,5 +77,58 @@
     "conflict": "That conflicts with the current state.",
     "tv_offline": "The TV is not reachable right now.",
     "unavailable": "The Engine is starting. Try again in a moment."
+  },
+  "tv": {
+    "power": {
+      "on": "On",
+      "standby": "Standby",
+      "off": "Off",
+      "offline": "Unreachable",
+      "pairing": "Needs pairing",
+      "disabled": "Not monitored"
+    },
+    "watching": "Watching {{app}}",
+    "watched": "{{minutes}} min watched today",
+    "left": "{{minutes}} min left",
+    "noLimit": "no daily limit",
+    "usageBar": "Time used today",
+    "decision": {
+      "allow": "Allowed",
+      "block": "Blocked"
+    },
+    "warn": "{{minutes}} min left before {{limit}}",
+    "reason": {
+      "outside_window": "outside the allowed hours",
+      "budget_exhausted": "daily time used up",
+      "app_blocked": "app not allowed",
+      "input_blocked": "input not allowed",
+      "channel_blocked": "channel not allowed",
+      "override": "blocked by a parent"
+    },
+    "limit": {
+      "window": "the allowed hours end",
+      "budget": "the daily time is used up",
+      "override": "the temporary permission ends"
+    }
+  },
+  "actions": {
+    "pause": "Pause {{minutes}} min",
+    "bonus": "+{{minutes}} min",
+    "allow": "Allow…",
+    "block": "Block…",
+    "clear": "Clear override",
+    "allowTitle": "Allow the TV",
+    "allowHelp": "The TV is allowed even outside the rules, for the time you choose.",
+    "blockTitle": "Block the TV",
+    "blockHelp": "The TV is blocked, whatever the rules say, for the time you choose.",
+    "duration": "For how long",
+    "minutes": "{{minutes}} min",
+    "untilMidnight": "Until midnight",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "paused": "Paused for {{minutes}} min",
+    "bonusAdded": "Added {{minutes}} min",
+    "overrideSet": "Override applied",
+    "overrideCleared": "Override cleared"
   }
 }

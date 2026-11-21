@@ -77,5 +77,58 @@
     "conflict": "Das steht im Konflikt mit dem aktuellen Zustand.",
     "tv_offline": "Der Fernseher ist gerade nicht erreichbar.",
     "unavailable": "Die Engine startet. Versuchen Sie es gleich erneut."
+  },
+  "tv": {
+    "power": {
+      "on": "An",
+      "standby": "Standby",
+      "off": "Aus",
+      "offline": "Nicht erreichbar",
+      "pairing": "Neu koppeln",
+      "disabled": "Nicht überwacht"
+    },
+    "watching": "Schaut {{app}}",
+    "watched": "{{minutes}} Min. heute gesehen",
+    "left": "noch {{minutes}} Min.",
+    "noLimit": "kein Tageslimit",
+    "usageBar": "Heute genutzte Zeit",
+    "decision": {
+      "allow": "Erlaubt",
+      "block": "Gesperrt"
+    },
+    "warn": "Noch {{minutes}} Min., bis {{limit}}",
+    "reason": {
+      "outside_window": "außerhalb der erlaubten Zeiten",
+      "budget_exhausted": "Tageszeit aufgebraucht",
+      "app_blocked": "App nicht erlaubt",
+      "input_blocked": "Eingang nicht erlaubt",
+      "channel_blocked": "Sender nicht erlaubt",
+      "override": "von den Eltern gesperrt"
+    },
+    "limit": {
+      "window": "die erlaubten Zeiten enden",
+      "budget": "die Tageszeit aufgebraucht ist",
+      "override": "die vorübergehende Erlaubnis endet"
+    }
+  },
+  "actions": {
+    "pause": "{{minutes}} Min. Pause",
+    "bonus": "+{{minutes}} Min.",
+    "allow": "Erlauben…",
+    "block": "Sperren…",
+    "clear": "Überschreibung aufheben",
+    "allowTitle": "Fernseher erlauben",
+    "allowHelp": "Der Fernseher ist auch außerhalb der Regeln erlaubt, so lange Sie wählen.",
+    "blockTitle": "Fernseher sperren",
+    "blockHelp": "Der Fernseher ist gesperrt, was auch die Regeln sagen, so lange Sie wählen.",
+    "duration": "Wie lange",
+    "minutes": "{{minutes}} Min.",
+    "untilMidnight": "Bis Mitternacht",
+    "apply": "Anwenden",
+    "cancel": "Abbrechen",
+    "paused": "{{minutes}} Min. pausiert",
+    "bonusAdded": "{{minutes}} Min. hinzugefügt",
+    "overrideSet": "Überschreibung angewendet",
+    "overrideCleared": "Überschreibung aufgehoben"
   }
 }
