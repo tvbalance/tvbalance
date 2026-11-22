@@ -4,6 +4,7 @@ from tvbalance_client.client import (
     AdapterSummary,
     AuthenticationError,
     Caller,
+    CertificateError,
     Decision,
     EngineInfo,
     Event,
@@ -13,13 +14,17 @@ from tvbalance_client.client import (
     TVBalanceConnectionError,
     TVBalanceError,
     TvStatus,
+    ca_fingerprint,
+    fetch_ca_certificate,
     parse_status,
+    ssl_context_for,
 )
 
 __all__ = [
     "AdapterSummary",
     "AuthenticationError",
     "Caller",
+    "CertificateError",
     "Decision",
     "EngineInfo",
     "Event",
@@ -29,5 +34,8 @@ __all__ = [
     "TVBalanceError",
     "Tv",
     "TvStatus",
+    "ca_fingerprint",
+    "fetch_ca_certificate",
     "parse_status",
+    "ssl_context_for",
 ]

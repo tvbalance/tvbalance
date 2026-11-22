@@ -15,4 +15,19 @@ async with aiohttp.ClientSession() as session:
 
 Create the API token in the Engine web UI under **Settings → API tokens**.
 
+## HTTPS with the Engine's local CA
+
+The Engine can serve HTTPS with a certificate from its own local CA. Fetch the CA once, let the user
+confirm its fingerprint, then pin it:
+
+```python
+from tvbalance_client import ca_fingerprint, fetch_ca_certificate, ssl_context_for
+
+pem = await fetch_ca_certificate("https://engine.local:8766")
+print(ca_fingerprint(pem))  # compare with Settings → Secure connection
+client = TVBalanceClient("https://engine.local:8766", "tvb_...", ssl_context=ssl_context_for(pem))
+```
+
+A certificate that does not match raises `CertificateError`.
+
 Licensed under Apache-2.0.

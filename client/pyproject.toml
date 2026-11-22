@@ -1,6 +1,6 @@
 [project]
 name = "tvbalance-client"
-version = "0.1.0"
+version = "0.2.0"
 description = "Async client for the TVBalance Engine API (used by the Home Assistant integration)"
 readme = "README.md"
 license = "Apache-2.0"

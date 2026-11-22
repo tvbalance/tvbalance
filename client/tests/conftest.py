@@ -8,6 +8,7 @@ import pytest
 import uvicorn
 from fastapi import FastAPI
 
+from tvbalance.__main__ import serve
 from tvbalance.api.app import create_app
 from tvbalance.config import EngineConfig
 from tvbalance.sdk.fake import PLUGIN
@@ -68,3 +69,36 @@ async def mint_token(engine_url: str) -> AsyncIterator[Callable[[list[str]], Awa
 @pytest.fixture
 async def engine_token(mint_token: Callable[[list[str]], Awaitable[str]]) -> str:
     return await mint_token(["read", "control"])
+
+
+def _free_port() -> int:
+    with socket.socket() as probe:
+        probe.bind(("127.0.0.1", 0))
+        return int(probe.getsockname()[1])
+
+
+@pytest.fixture
+async def https_url(tmp_path: Path) -> AsyncIterator[str]:
+    """An engine serving HTTPS with its own local CA, as a household would run it."""
+    config = EngineConfig(
+        data_dir=tmp_path / "tls-data",
+        host="127.0.0.1",
+        port=_free_port(),
+        https_port=_free_port(),
+    )
+    stop = asyncio.Event()
+    task = asyncio.create_task(serve(config, stop=stop))
+    async with aiohttp.ClientSession() as probe:
+        for _ in range(200):
+            try:
+                async with probe.get(
+                    f"https://127.0.0.1:{config.https_port}/api/v1/health", ssl=False
+                ):
+                    break
+            except aiohttp.ClientConnectionError:
+                await asyncio.sleep(0.05)
+        else:
+            raise AssertionError("HTTPS never answered")
+    yield f"https://127.0.0.1:{config.https_port}"
+    stop.set()
+    await task

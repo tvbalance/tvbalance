@@ -1,15 +1,22 @@
 import asyncio
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 
 import pytest
+from cryptography import x509
 from fastapi import FastAPI
 
+from tvbalance.infra import tls
 from tvbalance_client import (
     AuthenticationError,
+    CertificateError,
     TVBalanceClient,
     TVBalanceConnectionError,
     TVBalanceError,
+    ca_fingerprint,
+    fetch_ca_certificate,
     parse_status,
+    ssl_context_for,
 )
 
 
@@ -160,3 +167,35 @@ async def test_unreachable_engine_raises_connection_error() -> None:
     async with TVBalanceClient("http://127.0.0.1:1") as client:
         with pytest.raises(TVBalanceConnectionError):
             await client.health()
+
+
+async def test_the_ca_is_fetched_and_fingerprinted(https_url: str) -> None:
+    pem = await fetch_ca_certificate(https_url)
+    assert pem.startswith("-----BEGIN CERTIFICATE-----")
+    assert ca_fingerprint(pem) == tls.fingerprint(x509.load_pem_x509_certificate(pem.encode()))
+
+
+async def test_a_pinned_ca_opens_the_secure_connection(https_url: str) -> None:
+    context = ssl_context_for(await fetch_ca_certificate(https_url))
+    async with TVBalanceClient(https_url, ssl_context=context) as client:
+        assert await client.health() is True
+
+
+async def test_an_unknown_ca_is_a_certificate_error(https_url: str) -> None:
+    async with TVBalanceClient(https_url) as client:
+        with pytest.raises(CertificateError):
+            await client.health()
+
+
+async def test_another_ca_is_a_certificate_error(https_url: str) -> None:
+    other = tls.ca_cert_pem(tls.create_ca(datetime.now(UTC))).decode()
+    async with TVBalanceClient(https_url, ssl_context=ssl_context_for(other)) as client:
+        with pytest.raises(CertificateError):
+            await client.health()
+
+
+async def test_the_event_stream_uses_the_pinned_ca(https_url: str) -> None:
+    context = ssl_context_for(await fetch_ca_certificate(https_url))
+    async with TVBalanceClient(https_url, ssl_context=context) as client:
+        with pytest.raises(AuthenticationError):  # reaching the sign-in check means TLS worked
+            await asyncio.wait_for(anext(client.events()), 5)

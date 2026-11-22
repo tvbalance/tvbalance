@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import ssl
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from datetime import datetime
@@ -26,6 +28,10 @@ class TVBalanceError(Exception):
 
 class TVBalanceConnectionError(TVBalanceError):
     """The Engine could not be reached."""
+
+
+class CertificateError(TVBalanceError):
+    """The Engine's HTTPS certificate is not the one that was trusted (unknown or changed CA)."""
 
 
 class AuthenticationError(TVBalanceError):
@@ -100,6 +106,36 @@ class Event:
     payload: dict[str, Any]
 
 
+def ca_fingerprint(pem: str) -> str:
+    """The SHA-256 fingerprint of a PEM certificate, as ``AA:BB:...`` like the Engine shows it."""
+    digest = hashlib.sha256(ssl.PEM_cert_to_DER_cert(pem)).hexdigest().upper()
+    return ":".join(digest[i : i + 2] for i in range(0, len(digest), 2))
+
+
+def ssl_context_for(pem: str) -> ssl.SSLContext:
+    """A client context that trusts only the given CA (the Engine's local one)."""
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)  # no system store: nothing but the CA counts
+    context.load_verify_locations(cadata=pem)
+    return context
+
+
+async def fetch_ca_certificate(base_url: str, session: aiohttp.ClientSession | None = None) -> str:
+    """Download the Engine's CA unverified; the user confirms its fingerprint."""
+    url = f"{base_url.rstrip('/')}/api/v1/tls/ca.crt"
+    owned = session is None
+    http = session or aiohttp.ClientSession(timeout=DEFAULT_TIMEOUT)
+    try:
+        async with http.get(url, ssl=False) as resp:
+            if resp.status >= 400:
+                raise await TVBalanceClient._failure("/api/v1/tls/ca.crt", resp)
+            return await resp.text()
+    except aiohttp.ClientConnectionError as ex:
+        raise TVBalanceConnectionError(f"cannot reach {base_url}: {ex}") from ex
+    finally:
+        if owned:
+            await http.close()
+
+
 def _status(raw: dict[str, Any] | None) -> TvStatus | None:
     if raw is None:
         return None
@@ -154,11 +190,13 @@ class TVBalanceClient:
         base_url: str,
         token: str | None = None,
         session: aiohttp.ClientSession | None = None,
+        ssl_context: ssl.SSLContext | None = None,
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._token = token
         self._session = session
         self._owns_session = session is None
+        self._tls: dict[str, Any] = {} if ssl_context is None else {"ssl": ssl_context}
 
     async def __aenter__(self) -> Self:
         return self
@@ -195,11 +233,13 @@ class TVBalanceClient:
     async def _request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
         try:
             async with self._http().request(
-                method, f"{self._base_url}{path}", json=body, headers=self._headers()
+                method, f"{self._base_url}{path}", json=body, headers=self._headers(), **self._tls
             ) as resp:
                 if resp.status >= 400:
                     raise await self._failure(path, resp)
                 return None if resp.status == 204 else await resp.json()
+        except aiohttp.ClientConnectorCertificateError as ex:
+            raise CertificateError(f"{self._base_url}: {ex}") from ex
         except aiohttp.ClientConnectionError as ex:
             raise TVBalanceConnectionError(f"cannot reach {self._base_url}: {ex}") from ex
         except TimeoutError as ex:
@@ -280,7 +320,7 @@ class TVBalanceClient:
         """
         url = self._base_url.replace("http", "ws", 1) + "/api/v1/events/ws"
         try:
-            async with self._http().ws_connect(url, headers=self._headers()) as ws:
+            async with self._http().ws_connect(url, headers=self._headers(), **self._tls) as ws:
                 async for message in ws:
                     if message.type is not aiohttp.WSMsgType.TEXT:
                         break
@@ -298,5 +338,7 @@ class TVBalanceClient:
                         "the Engine closed the event stream: sign-in required",
                         status=401 if ws.close_code == WS_UNAUTHENTICATED else 403,
                     )
+        except aiohttp.ClientConnectorCertificateError as ex:
+            raise CertificateError(f"{self._base_url}: {ex}") from ex
         except aiohttp.ClientConnectionError as ex:
             raise TVBalanceConnectionError(f"cannot reach {self._base_url}: {ex}") from ex
