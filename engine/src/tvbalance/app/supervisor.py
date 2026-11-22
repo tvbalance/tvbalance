@@ -9,7 +9,7 @@ from contextlib import suppress
 from tvbalance.app.events import EventBus
 from tvbalance.app.status import Inventory, SupervisorSettings, TvStatus
 from tvbalance.app.worker import TvWorker
-from tvbalance.ports.services import Clock
+from tvbalance.ports.services import Clock, Entitlements
 from tvbalance.ports.storage import Storage, TvRecord
 from tvbalance.sdk.plugin import AdapterPlugin
 
@@ -24,14 +24,17 @@ class Supervisor:
         bus: EventBus,
         clock: Clock,
         settings: SupervisorSettings | None = None,
+        entitlements: Entitlements | None = None,
     ) -> None:
         self._storage = storage
         self._plugins = plugins
         self._bus = bus
         self._clock = clock
         self._settings = settings or SupervisorSettings()
+        self._entitlements = entitlements  # ``None``: no limit on the number of TVs
         self._workers: dict[str, TvWorker] = {}
         self._tasks: dict[str, asyncio.Task[None]] = {}
+        self._limited: set[str] = set()
         self._stopping = False
 
     async def start(self) -> None:
@@ -41,15 +44,18 @@ class Supervisor:
     async def refresh(self, tv_id: str | None = None) -> None:
         """Reconcile with the stored TVs. With ``tv_id`` that TV is restarted from fresh data."""
         records = {record.id: record for record in await self._storage.tvs.list()}
+        admitted = self._admit(list(records.values()))
         if tv_id is not None:
             await self._stop_worker(tv_id)
-            self._launch(records.get(tv_id))
-            return
-        for stale in set(self._tasks) - {i for i, r in records.items() if self._wanted(r)}:
+        for stale in set(self._tasks) - admitted:
             await self._stop_worker(stale)
         for record in records.values():
-            if record.id not in self._tasks:
+            if record.id in admitted and record.id not in self._tasks:
                 self._launch(record)
+
+    def plan_limited(self, tv_id: str) -> bool:
+        """Whether the plan keeps this TV from being supervised (it stays configured)."""
+        return tv_id in self._limited
 
     def nudge(self, tv_id: str) -> None:
         """Make the worker of ``tv_id`` re-evaluate now, without reconnecting to the TV."""
@@ -77,6 +83,16 @@ class Supervisor:
         for tv_id in list(self._tasks):
             await self._stop_worker(tv_id)
 
+    def _admit(self, records: list[TvRecord]) -> set[str]:
+        """The ids to supervise: the oldest wanted TVs, as many as the plan allows."""
+        wanted = sorted((r for r in records if self._wanted(r)), key=lambda r: (r.created_at, r.id))
+        limit = self._entitlements.max_tvs() if self._entitlements else None
+        admitted = wanted if limit is None else wanted[:limit]
+        self._limited = {r.id for r in wanted[len(admitted) :]}
+        for record in wanted[len(admitted) :]:
+            log.info("TV %s is not supervised: the Free plan covers %s TV(s)", record.id, limit)
+        return {r.id for r in admitted}
+
     def _wanted(self, record: TvRecord) -> bool:
         if not record.enabled:
             return False
@@ -87,9 +103,7 @@ class Supervisor:
             return False
         return True
 
-    def _launch(self, record: TvRecord | None) -> None:
-        if record is None or not self._wanted(record):
-            return
+    def _launch(self, record: TvRecord) -> None:
         worker = TvWorker(
             record,
             self._plugins[record.adapter_id],

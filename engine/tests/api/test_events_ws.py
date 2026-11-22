@@ -6,9 +6,11 @@ from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 from support import (
     FAST,
+    LICENSE_PUBLIC,
     T0,
     FakeClock,
     ScriptedTV,
+    license_key,
     plugin_for,
     seed_tv,
     sign_in_as_admin,
@@ -31,9 +33,12 @@ def client(engine_config: EngineConfig) -> Iterator[TestClient]:
         config=engine_config,
         clock=FakeClock(),
         supervisor_settings=FAST,
+        license_public_keys=(LICENSE_PUBLIC,),
     )
     with TestClient(app) as running:
         sign_in_as_admin(running)
+        assert running.portal is not None
+        running.portal.call(running.app.state.license.activate, license_key())  # type: ignore[attr-defined]
         yield running
 
 

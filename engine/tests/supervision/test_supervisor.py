@@ -9,19 +9,40 @@ from tvbalance.app.events import EventBus
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.config import EngineConfig
 from tvbalance.infra.db.repositories import open_storage
+from tvbalance.ports.services import Entitlements
 from tvbalance.ports.storage import Storage
 
 
 @pytest.fixture
-async def storage(tmp_path: Path) -> AsyncIterator[Storage]:
-    store = await open_storage(EngineConfig(data_dir=tmp_path / "data"), FakeClock())
+def clock() -> FakeClock:
+    return FakeClock()
+
+
+@pytest.fixture
+async def storage(tmp_path: Path, clock: FakeClock) -> AsyncIterator[Storage]:
+    store = await open_storage(EngineConfig(data_dir=tmp_path / "data"), clock)
     yield store
     await store.close()
 
 
-def supervisor(storage: Storage, *tvs: ScriptedTV) -> Supervisor:
+def supervisor(
+    storage: Storage, *tvs: ScriptedTV, entitlements: Entitlements | None = None
+) -> Supervisor:
     plugins = {f"fake{i}": plugin_for(tv, adapter_id=f"fake{i}") for i, tv in enumerate(tvs)}
-    return Supervisor(storage, plugins, EventBus(storage.events), FakeClock(), FAST)
+    return Supervisor(storage, plugins, EventBus(storage.events), FakeClock(), FAST, entitlements)
+
+
+class Plan:
+    """An ``Entitlements`` whose limit the test changes."""
+
+    def __init__(self, max_tvs: int | None) -> None:
+        self.limit = max_tvs
+
+    def is_pro(self) -> bool:
+        return self.limit is None
+
+    def max_tvs(self) -> int | None:
+        return self.limit
 
 
 async def pair(storage: Storage, adapter: str = "fake0", name: str = "TV") -> str:
@@ -139,3 +160,80 @@ async def test_stop_is_idempotent_and_leaves_nothing_running(storage: Storage) -
     await sup.stop()
     assert sup.statuses() == []
     assert policy_id
+
+
+async def _two_tvs(storage: Storage, clock: FakeClock) -> tuple[str, str]:
+    older = await pair(storage, "fake0", "Older")
+    clock.advance(minutes=1)
+    newer = await pair(storage, "fake1", "Newer")
+    return older, newer
+
+
+async def test_free_plan_supervises_only_the_oldest_enabled_tv(
+    storage: Storage, clock: FakeClock
+) -> None:
+    first, second = ScriptedTV(observation=watching()), ScriptedTV(observation=watching())
+    older, newer = await _two_tvs(storage, clock)
+    sup = supervisor(storage, first, second, entitlements=Plan(1))
+    await sup.start()
+    try:
+        await eventually(lambda: first.observe_calls > 0)
+        assert sup.status(older) is not None and sup.status(newer) is None
+        assert not sup.plan_limited(older) and sup.plan_limited(newer)
+        assert second.connect_calls == 0
+    finally:
+        await sup.stop()
+
+
+async def test_a_license_starts_the_limited_tv_and_its_end_stops_it(
+    storage: Storage, clock: FakeClock
+) -> None:
+    first, second = ScriptedTV(observation=watching()), ScriptedTV(observation=watching())
+    older, newer = await _two_tvs(storage, clock)
+    plan = Plan(1)
+    sup = supervisor(storage, first, second, entitlements=plan)
+    await sup.start()
+    try:
+        plan.limit = None
+        await sup.refresh()
+        await eventually(lambda: second.observe_calls > 0)
+        assert sup.status(newer) is not None and not sup.plan_limited(newer)
+        plan.limit = 1
+        await sup.refresh()
+        assert sup.status(newer) is None and sup.plan_limited(newer)
+        assert sup.status(older) is not None
+    finally:
+        await sup.stop()
+
+
+async def test_disabling_the_oldest_tv_lets_the_next_one_in(
+    storage: Storage, clock: FakeClock
+) -> None:
+    first, second = ScriptedTV(observation=watching()), ScriptedTV(observation=watching())
+    older, newer = await _two_tvs(storage, clock)
+    sup = supervisor(storage, first, second, entitlements=Plan(1))
+    await sup.start()
+    try:
+        await storage.tvs.set_enabled(older, False)
+        await sup.refresh(older)
+        await eventually(lambda: second.observe_calls > 0)
+        assert sup.status(older) is None and sup.status(newer) is not None
+        assert not sup.plan_limited(newer) and not sup.plan_limited(older)
+    finally:
+        await sup.stop()
+
+
+async def test_a_tv_without_an_adapter_does_not_use_up_the_free_slot(
+    storage: Storage, clock: FakeClock
+) -> None:
+    tv = ScriptedTV(observation=watching())
+    await pair(storage, "gone", "Orphan")
+    clock.advance(minutes=1)
+    good = await pair(storage, "fake0", "Good")
+    sup = supervisor(storage, tv, entitlements=Plan(1))
+    await sup.start()
+    try:
+        await eventually(lambda: tv.observe_calls > 0)
+        assert sup.status(good) is not None
+    finally:
+        await sup.stop()

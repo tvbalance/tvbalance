@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterable
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -29,6 +29,7 @@ from tvbalance.api.routes.system import API_VERSION as API_VERSION
 from tvbalance.app.auth import AuthService
 from tvbalance.app.events import EventBus
 from tvbalance.app.ha_discovery import HomeAssistantDiscovery
+from tvbalance.app.licensing import LicenseService
 from tvbalance.app.notifications import PushNotifier, load_vapid_keys
 from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
 from tvbalance.app.status import SupervisorSettings
@@ -37,6 +38,7 @@ from tvbalance.app.tls import TlsManager
 from tvbalance.config import EngineConfig
 from tvbalance.infra.clock import SystemClock
 from tvbalance.infra.db.repositories import open_storage
+from tvbalance.infra.licensing import TRUSTED_PUBLIC_KEYS
 from tvbalance.infra.webpush import WebPushSender
 from tvbalance.ports.services import Clock
 from tvbalance.sdk.plugin import AdapterPlugin
@@ -52,6 +54,7 @@ def create_app(
     supervisor_settings: SupervisorSettings | None = None,
     discovery_timeout: float = DISCOVERY_TIMEOUT,
     pairing_poll_interval: float = POLL_INTERVAL,
+    license_public_keys: Iterable[str] = TRUSTED_PUBLIC_KEYS,
 ) -> FastAPI:
     """Build the app.
 
@@ -61,9 +64,10 @@ def create_app(
     With a `config` the storage is opened at startup (running the migrations) and closed at
     shutdown; it is available as `app.state.storage`, next to the authentication service
     (`app.state.auth`), the clock (`app.state.clock`), the event bus (`app.state.events`) and the
-    supervisor that watches every paired TV (`app.state.supervisor`). `clock` and
-    `supervisor_settings` let tests control time and pacing. Without a config the API serves
-    only its public routes.
+    supervisor that watches every paired TV (`app.state.supervisor`), within the limits of the
+    license service (`app.state.license`). `clock` and `supervisor_settings` let tests control
+    time and pacing; `license_public_keys` are the keys whose licenses count. Without a config
+    the API serves only its public routes.
     """
 
     @asynccontextmanager
@@ -77,8 +81,16 @@ def create_app(
         app.state.storage = storage
         auth_ = app.state.auth = AuthService(storage.auth, clock_)
         app.state.events = EventBus(storage.events)
+        license_ = app.state.license = LicenseService(
+            storage.secrets,
+            app.state.events,
+            clock_,
+            license_public_keys,
+            on_change=lambda: app.state.supervisor.refresh(),
+        )
+        await license_.load()
         app.state.supervisor = Supervisor(
-            storage, registered, app.state.events, clock_, supervisor_settings
+            storage, registered, app.state.events, clock_, supervisor_settings, license_
         )
         app.state.pairing = PairingService(
             storage,
@@ -103,6 +115,7 @@ def create_app(
             await notifier.start()
             tls_manager.start()
             await app.state.supervisor.start()
+            license_.start()
             if discovery:
                 discovery.start()
             yield
@@ -110,6 +123,7 @@ def create_app(
             if discovery:
                 await discovery.stop()
             await app.state.pairing.stop()
+            await license_.stop()
             await app.state.supervisor.stop()
             await tls_manager.stop()
             await notifier.stop()

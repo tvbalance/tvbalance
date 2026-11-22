@@ -15,6 +15,7 @@ from tvbalance.app.events import BusEvent
 from tvbalance.app.session import SessionTimeouts
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.domain.models import Action, Observation, Policy, Power, Schedule, TimeWindow
+from tvbalance.infra.licensing import generate_keypair, sign_license
 from tvbalance.sdk.errors import TVError, TVPairingError
 from tvbalance.sdk.fake import FakeTV
 from tvbalance.sdk.plugin import AdapterPlugin
@@ -22,6 +23,26 @@ from tvbalance.sdk.types import AdapterConfig, AdapterInfo, Capability, Maturity
 
 # A Tuesday evening: 18:00 in the household zone used by the tests (Europe/Rome).
 T0 = datetime(2026, 11, 17, 17, 0, tzinfo=UTC)
+
+# A signing key pair for tests: pass ``license_public_keys=(LICENSE_PUBLIC,)`` to ``create_app``.
+LICENSE_PRIVATE, LICENSE_PUBLIC = generate_keypair()
+
+
+def license_key(expires_at: datetime | None = None, licensee: str = "Rossi") -> str:
+    """A Pro license signed with the test key."""
+    return sign_license(
+        {
+            "v": 1,
+            "product": "tvbalance",
+            "tier": "pro",
+            "license_id": "test-license",
+            "licensee": licensee,
+            "issued_at": T0.isoformat(),
+            "expires_at": expires_at.isoformat() if expires_at else None,
+        },
+        LICENSE_PRIVATE,
+    )
+
 
 FAST = SupervisorSettings(
     tick_interval=0.02,
