@@ -17,6 +17,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from tvbalance_client import (
     AdapterSummary,
     AuthenticationError,
+    CertificateError,
     Event,
     Tv,
     TVBalanceClient,
@@ -58,7 +59,7 @@ class TVBalanceCoordinator(DataUpdateCoordinator[dict[str, Tv]]):
     async def _async_setup(self) -> None:
         try:
             self.adapters = {a.id: a for a in await self.client.adapters()}
-        except AuthenticationError as ex:
+        except (AuthenticationError, CertificateError) as ex:
             raise ConfigEntryAuthFailed(str(ex)) from ex
         except TVBalanceError as ex:
             raise UpdateFailed(str(ex)) from ex
@@ -66,7 +67,7 @@ class TVBalanceCoordinator(DataUpdateCoordinator[dict[str, Tv]]):
     async def _async_update_data(self) -> dict[str, Tv]:
         try:
             tvs = await self.client.tvs()
-        except AuthenticationError as ex:
+        except (AuthenticationError, CertificateError) as ex:
             raise ConfigEntryAuthFailed(str(ex)) from ex
         except TVBalanceError as ex:
             raise UpdateFailed(str(ex)) from ex
@@ -100,7 +101,7 @@ class TVBalanceCoordinator(DataUpdateCoordinator[dict[str, Tv]]):
                 async for event in self.client.events():
                     delay = RECONNECT_MIN
                     self._handle(event)
-            except AuthenticationError:
+            except (AuthenticationError, CertificateError):
                 self.config_entry.async_start_reauth(self.hass)
                 return
             except TVBalanceError as ex:

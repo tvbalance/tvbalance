@@ -19,12 +19,17 @@
         "data": {
           "token": "API token"
         }
+      },
+      "tls_confirm": {
+        "title": "Trust the TVBalance certificate",
+        "description": "The Engine at {url} uses a certificate from its own local authority. Open TVBalance, go to Settings > Secure connection and check that the fingerprint is the same as this one:\n\n{fingerprint}\n\nSubmit to trust it. Home Assistant will accept only this certificate authority for this Engine."
       }
     },
     "error": {
       "cannot_connect": "Cannot reach the TVBalance Engine.",
       "invalid_auth": "The Engine rejected the API token.",
-      "invalid_response": "The server answered, but it does not look like a TVBalance Engine."
+      "invalid_response": "The server answered, but it does not look like a TVBalance Engine.",
+      "untrusted_certificate": "The certificate of this Engine is not trusted, and it has no local authority to trust. Use a certificate that Home Assistant already trusts, or turn on the automatic one."
     },
     "abort": {
       "already_configured": "This Engine is already configured.",

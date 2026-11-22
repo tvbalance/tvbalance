@@ -19,12 +19,17 @@
         "data": {
           "token": "Jeton d'API"
         }
+      },
+      "tls_confirm": {
+        "title": "Faire confiance au certificat TVBalance",
+        "description": "Le moteur à {url} utilise un certificat de sa propre autorité locale. Ouvrez TVBalance, allez dans Réglages > Connexion sécurisée et vérifiez que l'empreinte est identique à celle-ci :\n\n{fingerprint}\n\nValidez pour lui faire confiance. Home Assistant n'acceptera que cette autorité pour ce moteur."
       }
     },
     "error": {
       "cannot_connect": "Impossible de joindre l'Engine TVBalance.",
       "invalid_auth": "L'Engine a refusé le jeton d'API.",
-      "invalid_response": "Le serveur a répondu, mais ne ressemble pas à un Engine TVBalance."
+      "invalid_response": "Le serveur a répondu, mais ne ressemble pas à un Engine TVBalance.",
+      "untrusted_certificate": "Le certificat de ce moteur n'est pas approuvé et il n'a pas d'autorité locale à approuver. Utilisez un certificat que Home Assistant approuve déjà, ou activez le certificat automatique."
     },
     "abort": {
       "already_configured": "Cet Engine est déjà configuré.",

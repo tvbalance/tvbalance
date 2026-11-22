@@ -5,14 +5,14 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
 
-from tvbalance_client import TVBalanceClient, TVBalanceError
+from tvbalance_client import CertificateError, TVBalanceError
 
-from .const import CONF_TOKEN, CONF_URL, DOMAIN
+from .connection import build_client
+from .const import CONF_CA_PEM, CONF_TOKEN, CONF_URL, DOMAIN
 from .coordinator import TVBalanceCoordinator
 from .services import async_setup_services
 
@@ -34,13 +34,13 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: TVBalanceConfigEntry) -> bool:
-    client = TVBalanceClient(
-        entry.data[CONF_URL],
-        entry.data.get(CONF_TOKEN),
-        session=async_get_clientsession(hass),
+    client = await build_client(
+        hass, entry.data[CONF_URL], entry.data.get(CONF_TOKEN), entry.data.get(CONF_CA_PEM)
     )
     try:
         await client.health()
+    except CertificateError as ex:
+        raise ConfigEntryAuthFailed(f"TVBalance certificate no longer trusted: {ex}") from ex
     except TVBalanceError as ex:
         raise ConfigEntryNotReady(f"TVBalance Engine unavailable: {ex}") from ex
     coordinator = TVBalanceCoordinator(hass, entry, client)

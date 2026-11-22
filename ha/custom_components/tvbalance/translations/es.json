@@ -19,12 +19,17 @@
         "data": {
           "token": "Token de API"
         }
+      },
+      "tls_confirm": {
+        "title": "Confiar en el certificado de TVBalance",
+        "description": "El motor en {url} usa un certificado de su propia autoridad local. Abre TVBalance, ve a Ajustes > Conexión segura y comprueba que la huella coincide con esta:\n\n{fingerprint}\n\nConfirma para confiar en ella. Home Assistant solo aceptará esta autoridad para este motor."
       }
     },
     "error": {
       "cannot_connect": "No se puede acceder al Engine de TVBalance.",
       "invalid_auth": "El Engine rechazó el token de API.",
-      "invalid_response": "El servidor respondió, pero no parece un Engine de TVBalance."
+      "invalid_response": "El servidor respondió, pero no parece un Engine de TVBalance.",
+      "untrusted_certificate": "El certificado de este motor no es de confianza y no tiene una autoridad local en la que confiar. Usa un certificado en el que Home Assistant ya confíe, o activa el automático."
     },
     "abort": {
       "already_configured": "Este Engine ya está configurado.",

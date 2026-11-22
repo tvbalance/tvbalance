@@ -19,12 +19,17 @@
         "data": {
           "token": "Token API"
         }
+      },
+      "tls_confirm": {
+        "title": "Considera attendibile il certificato di TVBalance",
+        "description": "L'Engine a {url} usa un certificato della propria autorità locale. Apri TVBalance, vai in Impostazioni > Connessione sicura e controlla che l'impronta sia uguale a questa:\n\n{fingerprint}\n\nConferma per fidarti. Home Assistant accetterà solo questa autorità per questo Engine."
       }
     },
     "error": {
       "cannot_connect": "Impossibile raggiungere l'Engine TVBalance.",
       "invalid_auth": "L'Engine ha rifiutato il token API.",
-      "invalid_response": "Il server ha risposto, ma non sembra un Engine TVBalance."
+      "invalid_response": "Il server ha risposto, ma non sembra un Engine TVBalance.",
+      "untrusted_certificate": "Il certificato di questo Engine non è attendibile e non ha un'autorità locale di cui fidarsi. Usa un certificato che Home Assistant già considera attendibile, oppure attiva quello automatico."
     },
     "abort": {
       "already_configured": "Questo Engine è già configurato.",

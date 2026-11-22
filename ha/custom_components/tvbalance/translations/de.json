@@ -19,12 +19,17 @@
         "data": {
           "token": "API-Token"
         }
+      },
+      "tls_confirm": {
+        "title": "Dem TVBalance-Zertifikat vertrauen",
+        "description": "Die Engine unter {url} nutzt ein Zertifikat ihrer eigenen lokalen Zertifizierungsstelle. Öffne TVBalance, gehe zu Einstellungen > Sichere Verbindung und prüfe, ob der Fingerabdruck mit diesem übereinstimmt:\n\n{fingerprint}\n\nBestätige, um zu vertrauen. Home Assistant akzeptiert für diese Engine nur diese Zertifizierungsstelle."
       }
     },
     "error": {
       "cannot_connect": "Die TVBalance Engine ist nicht erreichbar.",
       "invalid_auth": "Die Engine hat das API-Token abgelehnt.",
-      "invalid_response": "Der Server hat geantwortet, sieht aber nicht wie eine TVBalance Engine aus."
+      "invalid_response": "Der Server hat geantwortet, sieht aber nicht wie eine TVBalance Engine aus.",
+      "untrusted_certificate": "Dem Zertifikat dieser Engine wird nicht vertraut, und es gibt keine lokale Zertifizierungsstelle, der man vertrauen könnte. Nutze ein Zertifikat, dem Home Assistant bereits vertraut, oder aktiviere das automatische."
     },
     "abort": {
       "already_configured": "Diese Engine ist bereits eingerichtet.",
