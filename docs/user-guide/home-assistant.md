@@ -62,7 +62,7 @@ Profile services are for the whole household, not a TV, and need the Pro plan:
 
 | Service | Fields |
 | --- | --- |
-| `tvbalance.activate_profile` | `policy_id`, `minutes` (1–1440) or `until_midnight`, optional `excluded_device_ids` |
+| `tvbalance.activate_profile` | `policy_id`, `minutes` (1â€“1440) or `until_midnight`, optional `excluded_device_ids` |
 | `tvbalance.stop_profile` | none |
 
 `allow`, `block` and `activate_profile` need exactly one of `minutes` or `until_midnight`. No PIN is ever part of a service call.
