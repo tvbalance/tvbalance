@@ -7,7 +7,7 @@ import logging
 import uuid
 from collections.abc import Iterator
 from contextlib import contextmanager
-from datetime import date, datetime
+from datetime import date, datetime, time
 from typing import Any
 
 from sqlalchemy import ColumnClause, Row, delete, literal_column, select, update
@@ -18,6 +18,13 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from tvbalance.config import EngineConfig
 from tvbalance.domain.enforcement import EnforcementState
 from tvbalance.domain.models import Override, Policy, Usage
+from tvbalance.domain.profiles import (
+    CalendarEntry,
+    DatedEntry,
+    ProfileActivation,
+    ProfileSource,
+    WeeklyEntry,
+)
 from tvbalance.infra.clock import SystemClock
 from tvbalance.infra.db import tables
 from tvbalance.infra.db.engine import create_engine
@@ -29,6 +36,7 @@ from tvbalance.ports.services import Clock
 from tvbalance.ports.storage import (
     AdminRecord,
     ApiTokenRecord,
+    CalendarRecord,
     NotFoundError,
     PolicyRecord,
     PushSubscriptionRecord,
@@ -640,6 +648,124 @@ class SqlitePushSubscriptionStore:
         return failures or 0
 
 
+class SqliteProfileStore:
+    def __init__(self, engine: AsyncEngine) -> None:
+        self._engine = engine
+
+    async def activate(self, activation: ProfileActivation, now: datetime) -> None:
+        with _unknown_references():
+            async with self._engine.begin() as conn:
+                await conn.execute(_end_live(now))
+                await conn.execute(
+                    tables.profile_activations.insert().values(
+                        policy_id=activation.policy_id,
+                        starts_at=activation.starts_at,
+                        ends_at=activation.ends_at,
+                        excluded_tv_ids=sorted(activation.excluded_tv_ids),
+                        source=activation.source.value,
+                    )
+                )
+
+    async def active(self, now: datetime) -> tuple[ProfileActivation, ...]:
+        table = tables.profile_activations
+        query = (
+            select(table)
+            .where(table.c.starts_at <= now, table.c.ends_at > now)
+            .order_by(table.c.starts_at, table.c.id)
+        )
+        async with self._engine.connect() as conn:
+            rows = await conn.execute(query)
+            return tuple(
+                ProfileActivation(
+                    r.policy_id,
+                    r.starts_at,
+                    r.ends_at,
+                    frozenset(r.excluded_tv_ids),
+                    ProfileSource(r.source),
+                )
+                for r in rows
+            )
+
+    async def stop(self, now: datetime) -> int:
+        async with self._engine.begin() as conn:
+            result = await conn.execute(_end_live(now))
+        return result.rowcount
+
+    async def add_entry(self, entry: CalendarEntry) -> int:
+        with _unknown_references():
+            async with self._engine.begin() as conn:
+                result = await conn.execute(
+                    tables.calendar_entries.insert().values(**_entry_values(entry))
+                )
+        key = result.inserted_primary_key
+        assert key is not None
+        return int(key[0])
+
+    async def entries(self) -> tuple[CalendarRecord, ...]:
+        table = tables.calendar_entries
+        async with self._engine.connect() as conn:
+            rows = await conn.execute(select(table).order_by(table.c.id))
+            return tuple(CalendarRecord(r.id, _entry_from_row(r)) for r in rows)
+
+    async def update_entry(self, entry_id: int, entry: CalendarEntry) -> bool:
+        table = tables.calendar_entries
+        with _unknown_references():
+            async with self._engine.begin() as conn:
+                result = await conn.execute(
+                    update(table).where(table.c.id == entry_id).values(**_entry_values(entry))
+                )
+        return result.rowcount > 0
+
+    async def delete_entry(self, entry_id: int) -> bool:
+        table = tables.calendar_entries
+        async with self._engine.begin() as conn:
+            result = await conn.execute(delete(table).where(table.c.id == entry_id))
+        return result.rowcount > 0
+
+
+def _end_live(now: datetime) -> Any:
+    table = tables.profile_activations
+    return update(table).where(table.c.starts_at <= now, table.c.ends_at > now).values(ends_at=now)
+
+
+def _entry_values(entry: CalendarEntry) -> dict[str, Any]:
+    excluded = sorted(entry.excluded_tv_ids)
+    if isinstance(entry, WeeklyEntry):
+        return {
+            "policy_id": entry.policy_id,
+            "kind": "weekly",
+            "weekdays": sorted(entry.weekdays),
+            "start_time": entry.start.strftime("%H:%M"),
+            "end_time": entry.end.strftime("%H:%M"),
+            "start_date": None,
+            "end_date": None,
+            "excluded_tv_ids": excluded,
+        }
+    return {
+        "policy_id": entry.policy_id,
+        "kind": "dated",
+        "weekdays": None,
+        "start_time": None,
+        "end_time": None,
+        "start_date": entry.start_date,
+        "end_date": entry.end_date,
+        "excluded_tv_ids": excluded,
+    }
+
+
+def _entry_from_row(row: Row[Any]) -> CalendarEntry:
+    excluded = frozenset(row.excluded_tv_ids)
+    if row.kind == "weekly":
+        return WeeklyEntry(
+            row.policy_id,
+            frozenset(row.weekdays),
+            time.fromisoformat(row.start_time),
+            time.fromisoformat(row.end_time),
+            excluded,
+        )
+    return DatedEntry(row.policy_id, row.start_date, row.end_date, excluded)
+
+
 class SqliteStorage:
     def __init__(self, engine: AsyncEngine, box: SecretBox, clock: Clock) -> None:
         self._engine = engine
@@ -653,6 +779,7 @@ class SqliteStorage:
         self.enforcement = SqliteEnforcementStateStore(engine, clock)
         self.auth = SqliteAuthStore(engine, clock)
         self.push = SqlitePushSubscriptionStore(engine, box, clock)
+        self.profiles = SqliteProfileStore(engine)
 
     async def close(self) -> None:
         await self._engine.dispose()

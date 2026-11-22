@@ -148,3 +148,29 @@ push_subscriptions = Table(
     Column("last_sent_at", UtcDateTime, nullable=True),
     Column("failures", Integer, nullable=False),
 )
+
+profile_activations = Table(
+    "profile_activations",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("policy_id", ForeignKey("policies.id", ondelete="CASCADE"), nullable=False),
+    Column("starts_at", UtcDateTime, nullable=False),
+    Column("ends_at", UtcDateTime, nullable=False),
+    Column("excluded_tv_ids", JSON, nullable=False),
+    Column("source", String, nullable=False),
+    Index("ix_profile_activations_ends_at", "ends_at"),
+)
+
+calendar_entries = Table(
+    "calendar_entries",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("policy_id", ForeignKey("policies.id", ondelete="CASCADE"), nullable=False),
+    Column("kind", String, nullable=False),  # "weekly" or "dated"
+    Column("weekdays", JSON, nullable=True),
+    Column("start_time", String, nullable=True),  # HH:MM
+    Column("end_time", String, nullable=True),
+    Column("start_date", Date, nullable=True),
+    Column("end_date", Date, nullable=True),
+    Column("excluded_tv_ids", JSON, nullable=False),
+)

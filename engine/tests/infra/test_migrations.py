@@ -24,6 +24,8 @@ TABLES = {
     "sessions",
     "api_tokens",
     "push_subscriptions",
+    "profile_activations",
+    "calendar_entries",
 }
 
 
@@ -53,7 +55,7 @@ async def test_upgrade_on_an_empty_database_creates_the_schema(engine: AsyncEngi
     async with engine.connect() as conn:
         assert await conn.run_sync(_table_names) == TABLES
         version = (await conn.execute(text("SELECT version_num FROM alembic_version"))).scalar()
-    assert version == "0004"
+    assert version == "0005"
 
 
 async def test_the_migrations_and_the_table_definitions_agree(engine: AsyncEngine) -> None:

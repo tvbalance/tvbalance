@@ -8,6 +8,7 @@ from typing import Any, Protocol
 
 from tvbalance.domain.enforcement import EnforcementState
 from tvbalance.domain.models import Override, Policy, Usage
+from tvbalance.domain.profiles import CalendarEntry, ProfileActivation
 
 
 class NotFoundError(LookupError):
@@ -144,6 +145,36 @@ class OverrideStore(Protocol):
         ...
 
     async def clear(self, tv_id: str) -> int: ...
+
+
+@dataclass(frozen=True, slots=True)
+class CalendarRecord:
+    id: int
+    entry: CalendarEntry
+
+
+class ProfileStore(Protocol):
+    async def activate(self, activation: ProfileActivation, now: datetime) -> None:
+        """Store the activation; those in force at ``now`` end there (the newest one wins)."""
+        ...
+
+    async def active(self, now: datetime) -> tuple[ProfileActivation, ...]:
+        """Activations in force at ``now``, oldest first."""
+        ...
+
+    async def stop(self, now: datetime) -> int:
+        """End every activation in force at ``now``; returns how many."""
+        ...
+
+    async def add_entry(self, entry: CalendarEntry) -> int: ...
+
+    async def entries(self) -> tuple[CalendarRecord, ...]:
+        """Calendar entries in creation order (the order breaks ties between weekly ones)."""
+        ...
+
+    async def update_entry(self, entry_id: int, entry: CalendarEntry) -> bool: ...
+
+    async def delete_entry(self, entry_id: int) -> bool: ...
 
 
 class EventLog(Protocol):
@@ -307,5 +338,8 @@ class Storage(Protocol):
 
     @property
     def push(self) -> PushSubscriptionStore: ...
+
+    @property
+    def profiles(self) -> ProfileStore: ...
 
     async def close(self) -> None: ...
