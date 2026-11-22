@@ -34,6 +34,7 @@ If the token is revoked or expires, Home Assistant asks you for a new one (a rep
 | --- | --- |
 | Status (sensor) | `watching`, `standby`, `off`, `unreachable`, `needs_pairing` or `not_monitored` |
 | App, Program (sensors) | What is on screen now. Input and Channel exist too, disabled by default |
+| Profile (sensor) | The name of the profile in force for this TV, unknown when none |
 | Watched today, Time left (sensors) | Minutes; Time left is unknown when the TV has no daily budget |
 | Blocked (binary sensor) | On while enforcement blocks the TV; the `reason` attribute says why |
 | Connected, Needs pairing (binary sensors) | Link health |
@@ -57,14 +58,21 @@ a dashboard cannot call it. Automations and scripts can. Every service takes a `
 | `tvbalance.clear_override` | none |
 | `tvbalance.set_monitoring` | `enabled`; needs a token with the admin scope |
 
-`allow` and `block` need exactly one of `minutes` or `until_midnight`. No PIN is ever part of a service call.
+Profile services are for the whole household, not a TV, and need the Pro plan:
+
+| Service | Fields |
+| --- | --- |
+| `tvbalance.activate_profile` | `policy_id`, `minutes` (1–1440) or `until_midnight`, optional `excluded_device_ids` |
+| `tvbalance.stop_profile` | none |
+
+`allow`, `block` and `activate_profile` need exactly one of `minutes` or `until_midnight`. No PIN is ever part of a service call.
 
 ## Events
 
 Each Engine event is also fired on the Home Assistant bus as `tvbalance_event`, with `device_id`, `tv_id`, `type`
 and `payload`. Types: `time_warning` (`minutes_left`, `limit`), `blocked` (`reason`), `redirected` (`action`),
 `powered_off`, `enforcement_paused`, `enforcement_unavailable` (`reason`), `tv_unreachable`, `tv_reachable`,
-`pairing_lost`, `tv_paired`.
+`pairing_lost`, `tv_paired`, `profile_started` (`name`, `until`, `source`), `profile_ended` (`name`).
 
 ## Blueprints
 
@@ -73,3 +81,5 @@ Under `blueprints/automation/tvbalance/`; copy them to `config/blueprints/automa
 - **warning_light**: flash a light when a TV has N minutes or fewer left.
 - **notify_parent**: send a notification for the events you choose.
 - **button_bonus**: grant bonus minutes when a physical button is pressed.
+- **calendar_profile**: switch a rule set on for the household while a Home Assistant calendar event runs, and
+  off when it ends (Pro).

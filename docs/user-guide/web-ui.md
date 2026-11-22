@@ -45,6 +45,12 @@ Open **Rules**, pick a set (or create one), and edit it in four tabs:
   list read from the TV, with app icons. If the TV is off or unreachable, type the ids by hand instead.
 - **Advanced:** how firmly blocks are enforced. The defaults suit nearly everyone.
 
+### Profiles and calendar (Pro)
+*Activate as profile* on a rule set puts it in force for every TV in the household for a chosen time, leaving out
+the TVs you tick. The Dashboard shows the profile in force and lets you end it; each TV card shows its name.
+**Rules > Calendar** lists the entries that switch rule sets on automatically, weekly or between two dates. See
+[TVBalance Pro](pro.md).
+
 If a rule set can't be saved, a message names the problem, for example a fallback that is itself blocked, a warning
 longer than the budget, or two overlapping windows.
 

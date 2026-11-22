@@ -6,10 +6,30 @@ unlocks the advanced features as they arrive.
 | | Free | Pro |
 | --- | --- | --- |
 | TVs supervised | 1 | Unlimited |
+| Profiles and calendar | No | Yes |
 | Rules, time budgets, parent actions, notifications, Home Assistant | Yes | Yes |
 
 The license is a key you paste into the app. It is checked on your own device with a signature, so it needs no
 internet connection and nothing about you is sent anywhere.
+
+## Profiles and calendar
+
+A **profile** is a rule set you switch on for the whole household at once, for example "Holidays" or
+"Grandparents' weekend". While it is on, every TV follows it instead of its own rule set, except the TVs you leave
+out (say, the parents' TV).
+
+- **By hand:** in **Rules**, press *Activate as profile* on a set, choose how long (30 minutes to 4 hours, or until
+  midnight) and the TVs to leave out. The Dashboard shows the active profile with an *End profile* button.
+- **By the calendar:** in **Rules > Calendar**, add entries that switch a rule set on by themselves, either every
+  week on chosen days and hours (a window that ends before it starts runs past midnight) or between two dates.
+- **From Home Assistant:** the `tvbalance.activate_profile` and `tvbalance.stop_profile` services and the
+  "calendar" blueprint.
+
+When several apply, the most recent manual profile wins, then a dated calendar entry, then a weekly one, then the
+TV's own rule set. Ending a profile or letting it expire returns every TV to its own rules.
+
+You can set profiles and the calendar up on any plan; they are saved but only applied with a Pro license, and the
+screens say so. Nothing is lost if a license ends.
 
 ## Get and activate a license
 1. In **Settings → TVBalance Pro**, choose **Buy Pro** (shown when the purchase page is configured).
