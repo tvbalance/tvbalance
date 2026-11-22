@@ -24,6 +24,9 @@ export function emptyPolicy(): PolicyDoc {
     fallback: null,
     warn_at_minutes: [10, 5],
     escalation: { debounce: 3, grace: 15, power_off_cap: 3, cap_window: 300, cap_pause: 600, message_repeat: 60 },
+    weekday_budget_minutes: {},
+    app_budgets: [],
+    rollover_max_minutes: null,
   };
 }
 

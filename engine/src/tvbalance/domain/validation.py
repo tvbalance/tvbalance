@@ -22,6 +22,9 @@ class IssueCode(StrEnum):
     INVALID_WARN_THRESHOLD = "invalid_warn_threshold"
     NEGATIVE_BUDGET = "negative_budget"
     OVERLAPPING_WINDOWS = "overlapping_windows"
+    INVALID_WEEKDAY = "invalid_weekday"
+    DUPLICATE_APP_BUDGET = "duplicate_app_budget"
+    EMPTY_APP_BUDGET = "empty_app_budget"
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,6 +69,27 @@ def _fallback_issues(policy: Policy) -> list[PolicyIssue]:
     return []
 
 
+def _advanced_budget_issues(policy: Policy) -> list[PolicyIssue]:
+    issues: list[PolicyIssue] = []
+    for day, minutes in policy.weekday_budget_minutes.items():
+        if not 0 <= day <= 6:
+            issues.append(PolicyIssue(IssueCode.INVALID_WEEKDAY, str(day)))
+        if minutes < 0:
+            issues.append(PolicyIssue(IssueCode.NEGATIVE_BUDGET, f"weekday {day}"))
+    seen: set[str] = set()
+    for group in policy.app_budgets:
+        if group.name in seen:
+            issues.append(PolicyIssue(IssueCode.DUPLICATE_APP_BUDGET, group.name))
+        seen.add(group.name)
+        if not group.apps:
+            issues.append(PolicyIssue(IssueCode.EMPTY_APP_BUDGET, group.name))
+        if group.minutes < 0:
+            issues.append(PolicyIssue(IssueCode.NEGATIVE_BUDGET, group.name))
+    if policy.rollover_max_minutes is not None and policy.rollover_max_minutes < 0:
+        issues.append(PolicyIssue(IssueCode.NEGATIVE_BUDGET, "rollover"))
+    return issues
+
+
 def validate_policy(policy: Policy) -> list[PolicyIssue]:
     issues = _fallback_issues(policy)
     for kind, allowed, blocked in (
@@ -80,6 +104,7 @@ def validate_policy(policy: Policy) -> list[PolicyIssue]:
         issues.append(PolicyIssue(IssueCode.INVALID_WARN_THRESHOLD))
     if policy.daily_budget_minutes is not None and policy.daily_budget_minutes < 0:
         issues.append(PolicyIssue(IssueCode.NEGATIVE_BUDGET))
+    issues.extend(_advanced_budget_issues(policy))
     day_rules = [*policy.schedule.windows.items(), *policy.schedule.special_days.items()]
     for key, windows in day_rules:
         if _overlap(windows):

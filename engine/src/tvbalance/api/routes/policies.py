@@ -13,7 +13,7 @@ from tvbalance.api.schemas.policies import PolicyCreate, PolicyDoc, PolicyOut, P
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.domain.models import Policy
 from tvbalance.domain.validation import validate_policy
-from tvbalance.infra.db.policy_codec import PolicyDecodeError, decode_policy, encode_policy
+from tvbalance.infra.db.policy_codec import VERSION, PolicyDecodeError, decode_policy, encode_policy
 from tvbalance.ports.storage import PolicyRecord, Storage
 
 router = APIRouter(prefix="/api/v1/policies", tags=["policies"])
@@ -25,7 +25,7 @@ SupervisorDep = Annotated[Supervisor, Depends(get_supervisor)]
 def to_domain(doc: PolicyDoc) -> Policy:
     """The checked policy, or a 422 that names every problem found."""
     try:
-        policy = decode_policy({"version": 1, **doc.model_dump(mode="json")})
+        policy = decode_policy({"version": VERSION, **doc.model_dump(mode="json")})
     except PolicyDecodeError as ex:
         raise ApiError(422, "validation_failed", str(ex)) from ex
     if issues := validate_policy(policy):

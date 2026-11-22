@@ -7,6 +7,7 @@ from datetime import date, time, timedelta
 from typing import Any
 
 from tvbalance.domain.models import (
+    AppBudget,
     AppTarget,
     ChannelTarget,
     EscalationSettings,
@@ -18,7 +19,8 @@ from tvbalance.domain.models import (
     TimeWindow,
 )
 
-VERSION = 1
+VERSION = 2
+READABLE_VERSIONS = (1, 2)  # a version 1 document has none of the advanced budgets
 
 
 class PolicyDecodeError(ValueError):
@@ -51,11 +53,19 @@ def encode_policy(policy: Policy) -> dict[str, Any]:
         "fallback": None if policy.fallback is None else _encode_target(policy.fallback),
         "warn_at_minutes": list(policy.warn_at_minutes),
         "escalation": _encode_escalation(policy.escalation),
+        "weekday_budget_minutes": {
+            str(day): minutes for day, minutes in sorted(policy.weekday_budget_minutes.items())
+        },
+        "app_budgets": [
+            {"name": b.name, "apps": sorted(b.apps), "minutes": b.minutes}
+            for b in policy.app_budgets
+        ],
+        "rollover_max_minutes": policy.rollover_max_minutes,
     }
 
 
 def decode_policy(doc: Any) -> Policy:
-    if not isinstance(doc, dict) or doc.get("version") != VERSION:
+    if not isinstance(doc, dict) or doc.get("version") not in READABLE_VERSIONS:
         version = doc.get("version") if isinstance(doc, dict) else None
         raise PolicyDecodeError(f"unsupported policy document (version {version!r})")
     try:
@@ -83,6 +93,15 @@ def decode_policy(doc: Any) -> Policy:
             fallback=None if doc["fallback"] is None else _decode_target(doc["fallback"]),
             warn_at_minutes=tuple(_ints(doc["warn_at_minutes"])),
             escalation=_decode_escalation(doc["escalation"]),
+            weekday_budget_minutes={
+                int(day): _int(minutes)
+                for day, minutes in doc.get("weekday_budget_minutes", {}).items()
+            },
+            app_budgets=tuple(
+                AppBudget(str(b["name"]), _strings(b["apps"]), _int(b["minutes"]))
+                for b in doc.get("app_budgets", [])
+            ),
+            rollover_max_minutes=_optional_int(doc.get("rollover_max_minutes")),
         )
     except (KeyError, TypeError, ValueError, AttributeError) as ex:
         raise PolicyDecodeError(f"malformed policy document: {ex!r}") from ex
@@ -102,6 +121,16 @@ def _strings(values: Any) -> frozenset[str]:
     if not isinstance(values, list) or not all(isinstance(v, str) for v in values):
         raise TypeError("expected a list of strings")
     return frozenset(values)
+
+
+def _int(value: Any) -> int:
+    if not isinstance(value, int) or isinstance(value, bool):
+        raise TypeError("expected an integer")
+    return value
+
+
+def _optional_int(value: Any) -> int | None:
+    return None if value is None else _int(value)
 
 
 def _ints(values: Any) -> list[int]:

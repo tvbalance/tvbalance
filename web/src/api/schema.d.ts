@@ -860,6 +860,15 @@ export interface components {
             id: string;
             maturity: components["schemas"]["Maturity"];
         };
+        /** AppBudgetDoc */
+        AppBudgetDoc: {
+            /** Apps */
+            apps: string[];
+            /** Minutes */
+            minutes: number;
+            /** Name */
+            name: string;
+        };
         /** AppOut */
         AppOut: {
             /** Has Icon */
@@ -1242,6 +1251,7 @@ export interface components {
              *       "always_allowed_apps": [],
              *       "always_allowed_channels": [],
              *       "always_allowed_inputs": [],
+             *       "app_budgets": [],
              *       "blocked_apps": [],
              *       "blocked_channels": [],
              *       "blocked_inputs": [],
@@ -1260,7 +1270,8 @@ export interface components {
              *       "warn_at_minutes": [
              *         10,
              *         5
-             *       ]
+             *       ],
+             *       "weekday_budget_minutes": {}
              *     }
              */
             policy: components["schemas"]["PolicyDoc"];
@@ -1284,6 +1295,11 @@ export interface components {
              * @default []
              */
             always_allowed_inputs: string[];
+            /**
+             * App Budgets
+             * @default []
+             */
+            app_budgets: components["schemas"]["AppBudgetDoc"][];
             /**
              * Blocked Apps
              * @default []
@@ -1313,6 +1329,8 @@ export interface components {
              */
             escalation: components["schemas"]["EscalationDoc"];
             fallback?: components["schemas"]["TargetDoc"] | null;
+            /** Rollover Max Minutes */
+            rollover_max_minutes?: number | null;
             /**
              * @default {
              *       "special_days": {},
@@ -1328,6 +1346,13 @@ export interface components {
              *     ]
              */
             warn_at_minutes: number[];
+            /**
+             * Weekday Budget Minutes
+             * @default {}
+             */
+            weekday_budget_minutes: {
+                [key: string]: number;
+            };
         };
         /** PolicyOut */
         PolicyOut: {

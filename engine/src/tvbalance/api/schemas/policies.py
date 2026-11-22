@@ -46,6 +46,12 @@ class EscalationDoc(Strict):
     message_repeat: float = Field(default=60, ge=0)
 
 
+class AppBudgetDoc(Strict):
+    name: str = Field(min_length=1, max_length=40)
+    apps: list[str]
+    minutes: int
+
+
 class PolicyDoc(Strict):
     schedule: ScheduleDoc = ScheduleDoc()
     daily_budget_minutes: int | None = None
@@ -59,6 +65,9 @@ class PolicyDoc(Strict):
     fallback: TargetDoc | None = None
     warn_at_minutes: list[int] = [10, 5]
     escalation: EscalationDoc = EscalationDoc()
+    weekday_budget_minutes: dict[int, int] = {}
+    app_budgets: list[AppBudgetDoc] = []
+    rollover_max_minutes: int | None = None
 
 
 class PolicyCreate(Strict):

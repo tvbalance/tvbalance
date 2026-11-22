@@ -8,6 +8,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from tvbalance.domain.models import (
+    AppBudget,
     AppTarget,
     ChannelTarget,
     EscalationSettings,
@@ -50,6 +51,9 @@ FULL = Policy(
         cap_pause=timedelta(minutes=20),
         message_repeat=timedelta(seconds=90),
     ),
+    weekday_budget_minutes={0: 60, 5: 180},
+    app_budgets=(AppBudget("games", frozenset({"fortnite", "roblox"}), 45),),
+    rollover_max_minutes=30,
 )
 
 
@@ -63,8 +67,20 @@ def test_full_policy_round_trips() -> None:
 
 def test_the_document_is_plain_json_and_versioned() -> None:
     doc = encode_policy(FULL)
-    assert doc["version"] == 1
+    assert doc["version"] == 2
     assert json.loads(json.dumps(doc)) == doc
+
+
+def test_a_version_1_document_reads_without_advanced_budgets() -> None:
+    doc = encode_policy(FULL)
+    doc["version"] = 1
+    for key in ("weekday_budget_minutes", "app_budgets", "rollover_max_minutes"):
+        del doc[key]
+    policy = decode_policy(doc)
+    assert policy.weekday_budget_minutes == {}
+    assert policy.app_budgets == ()
+    assert policy.rollover_max_minutes is None
+    assert policy.daily_budget_minutes == FULL.daily_budget_minutes
 
 
 def test_equal_policies_give_identical_documents() -> None:
@@ -95,7 +111,7 @@ def _broken(**changes: Any) -> Any:
         [],
         "policy",
         {},
-        {"version": 2},
+        {"version": 3},
         {"version": "1"},
         _broken(version=0),
         _broken(fallback={"kind": "moon"}),
@@ -108,6 +124,9 @@ def _broken(**changes: Any) -> Any:
         _broken(escalation={"debounce": "fast"}),
         _broken(blocked_apps="tiktok"),
         _broken(warn_at_minutes=None),
+        _broken(weekday_budget_minutes={"monday": 60}),
+        _broken(app_budgets=[{"name": "g", "apps": "a", "minutes": 5}]),
+        _broken(rollover_max_minutes="lots"),
     ],
 )
 def test_bad_documents_are_rejected(doc: Any) -> None:

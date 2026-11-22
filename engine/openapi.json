@@ -151,6 +151,35 @@
         "title": "AdapterOut",
         "type": "object"
       },
+      "AppBudgetDoc": {
+        "additionalProperties": false,
+        "properties": {
+          "apps": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Apps",
+            "type": "array"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "name": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "apps",
+          "minutes"
+        ],
+        "title": "AppBudgetDoc",
+        "type": "object"
+      },
       "AppOut": {
         "properties": {
           "has_icon": {
@@ -1145,6 +1174,7 @@
               "always_allowed_apps": [],
               "always_allowed_channels": [],
               "always_allowed_inputs": [],
+              "app_budgets": [],
               "blocked_apps": [],
               "blocked_channels": [],
               "blocked_inputs": [],
@@ -1163,7 +1193,8 @@
               "warn_at_minutes": [
                 10,
                 5
-              ]
+              ],
+              "weekday_budget_minutes": {}
             }
           }
         },
@@ -1212,6 +1243,14 @@
               "type": "string"
             },
             "title": "Always Allowed Inputs",
+            "type": "array"
+          },
+          "app_budgets": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/AppBudgetDoc"
+            },
+            "title": "App Budgets",
             "type": "array"
           },
           "blocked_apps": {
@@ -1270,6 +1309,17 @@
               }
             ]
           },
+          "rollover_max_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rollover Max Minutes"
+          },
           "schedule": {
             "$ref": "#/components/schemas/ScheduleDoc",
             "default": {
@@ -1287,6 +1337,14 @@
             },
             "title": "Warn At Minutes",
             "type": "array"
+          },
+          "weekday_budget_minutes": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "default": {},
+            "title": "Weekday Budget Minutes",
+            "type": "object"
           }
         },
         "title": "PolicyDoc",

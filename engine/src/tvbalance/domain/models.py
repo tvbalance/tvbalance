@@ -93,6 +93,15 @@ class EscalationSettings:
 
 
 @dataclass(frozen=True, slots=True)
+class AppBudget:
+    """A group of apps the parent defines, such as "games", sharing one daily allowance."""
+
+    name: str
+    apps: frozenset[str]
+    minutes: int
+
+
+@dataclass(frozen=True, slots=True)
 class Policy:
     schedule: Schedule = field(default_factory=Schedule)
     daily_budget_minutes: int | None = None
@@ -106,6 +115,10 @@ class Policy:
     fallback: Target | None = None
     warn_at_minutes: tuple[int, ...] = (10, 5)
     escalation: EscalationSettings = field(default_factory=EscalationSettings)
+    # Advanced budgets (Pro): a weekday's own daily budget, app-group allowances and a rollover cap.
+    weekday_budget_minutes: dict[int, int] = field(default_factory=dict)
+    app_budgets: tuple[AppBudget, ...] = ()
+    rollover_max_minutes: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
