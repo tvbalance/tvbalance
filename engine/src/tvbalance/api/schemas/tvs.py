@@ -39,6 +39,7 @@ class TvOut(BaseModel):
     policy_id: int | None
     enabled: bool
     needs_pairing: bool
+    plan_limited: bool  # configured, but the Free plan does not cover supervising it
     created_at: datetime
     status: TvStatusOut | None  # null while no worker runs (disabled or adapter missing)
 

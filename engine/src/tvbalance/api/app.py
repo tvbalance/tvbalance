@@ -17,6 +17,7 @@ from tvbalance.api.routes import (
     control,
     events_ws,
     inventory,
+    license,
     pairing,
     policies,
     push,
@@ -135,6 +136,7 @@ def create_app(
     app.state.plugins = registered
     app.state.include_testing = include_testing
     app.state.ingress_trusted = config.ingress_trusted if config else frozenset()
+    app.state.checkout_url = config.checkout_url if config else ""
     install_error_handlers(app)
     app.include_router(system.router)
     app.include_router(auth.router)
@@ -142,6 +144,7 @@ def create_app(
     app.include_router(pairing.router)
     app.include_router(push.router)
     app.include_router(tls.router)
+    app.include_router(license.router)
     app.include_router(policies.router)
     app.include_router(control.router)
     app.include_router(inventory.router)

@@ -487,6 +487,92 @@
         "title": "InventoryOut",
         "type": "object"
       },
+      "LicenseKeyIn": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "title": "LicenseKeyIn",
+        "type": "object"
+      },
+      "LicenseOut": {
+        "properties": {
+          "checkout_url": {
+            "title": "Checkout Url",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "licensee": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Licensee"
+          },
+          "max_tvs": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Tvs"
+          },
+          "status": {
+            "enum": [
+              "none",
+              "active",
+              "expired",
+              "invalid"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tier": {
+            "enum": [
+              "free",
+              "pro"
+            ],
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "tier",
+          "licensee",
+          "expires_at",
+          "max_tvs",
+          "checkout_url"
+        ],
+        "title": "LicenseOut",
+        "type": "object"
+      },
       "LoginRequest": {
         "additionalProperties": false,
         "properties": {
@@ -1702,6 +1788,10 @@
             "title": "Needs Pairing",
             "type": "boolean"
           },
+          "plan_limited": {
+            "title": "Plan Limited",
+            "type": "boolean"
+          },
           "policy_id": {
             "anyOf": [
               {
@@ -1732,6 +1822,7 @@
           "policy_id",
           "enabled",
           "needs_pairing",
+          "plan_limited",
           "created_at",
           "status"
         ],
@@ -2991,6 +3082,145 @@
         "summary": "Info",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/api/v1/license": {
+      "delete": {
+        "operationId": "remove_license_api_v1_license_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Remove License",
+        "tags": [
+          "license"
+        ]
+      },
+      "get": {
+        "operationId": "read_license_api_v1_license_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Read License",
+        "tags": [
+          "license"
+        ]
+      },
+      "put": {
+        "operationId": "activate_license_api_v1_license_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicenseKeyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Activate License",
+        "tags": [
+          "license"
         ]
       }
     },

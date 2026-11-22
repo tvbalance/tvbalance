@@ -82,6 +82,13 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
 - **HTTPS** (full admin only): `GET /tls` (mode, certificate names and expiry, CA fingerprint, the HTTPS
   addresses) and `POST /tls/rotate` (a new CA and certificate; devices must install the new CA again,
   automatic mode only). `https_port` in `/info` is set only while HTTPS is available.
+- **License:** `GET /license` (`read`) answers `{status, tier, licensee, expires_at, max_tvs,
+  checkout_url}`; `status` is `none`, `active`, `expired` or `invalid`, `max_tvs` is null when
+  unlimited, and `checkout_url` is empty unless `TVBALANCE_CHECKOUT_URL` is set. `PUT /license`
+  (`{key}`) and `DELETE /license` are full admin only; a key that does not verify, or has already
+  expired, is a 422 `invalid_license`. The key is never returned. On the Free plan only the oldest
+  enabled TV is supervised: the others carry `plan_limited: true` and no live status. Changes are
+  announced by the `license_changed` event (`tier`, `status`).
 
 ## Live events: `GET /api/v1/events/ws`
 

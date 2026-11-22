@@ -326,6 +326,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/license": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read License */
+        get: operations["read_license_api_v1_license_get"];
+        /** Activate License */
+        put: operations["activate_license_api_v1_license_put"];
+        post?: never;
+        /** Remove License */
+        delete: operations["remove_license_api_v1_license_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pairings": {
         parameters: {
             query?: never;
@@ -910,6 +929,32 @@ export interface components {
             /** Inputs */
             inputs: components["schemas"]["InputOut"][];
         };
+        /** LicenseKeyIn */
+        LicenseKeyIn: {
+            /** Key */
+            key: string;
+        };
+        /** LicenseOut */
+        LicenseOut: {
+            /** Checkout Url */
+            checkout_url: string;
+            /** Expires At */
+            expires_at: string | null;
+            /** Licensee */
+            licensee: string | null;
+            /** Max Tvs */
+            max_tvs: number | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "none" | "active" | "expired" | "invalid";
+            /**
+             * Tier
+             * @enum {string}
+             */
+            tier: "free" | "pro";
+        };
         /** LoginRequest */
         LoginRequest: {
             /** Password */
@@ -1384,6 +1429,8 @@ export interface components {
             name: string;
             /** Needs Pairing */
             needs_pairing: boolean;
+            /** Plan Limited */
+            plan_limited: boolean;
             /** Policy Id */
             policy_id: number | null;
             status: components["schemas"]["TvStatusOut"] | null;
@@ -2298,6 +2345,133 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InfoResponse"];
+                };
+            };
+        };
+    };
+    read_license_api_v1_license_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LicenseOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    activate_license_api_v1_license_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LicenseKeyIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LicenseOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    remove_license_api_v1_license_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LicenseOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

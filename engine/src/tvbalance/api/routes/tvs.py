@@ -50,7 +50,7 @@ def status_out(status: TvStatus | None) -> TvStatusOut | None:
     )
 
 
-def tv_out(record: TvRecord, status: TvStatus | None) -> TvOut:
+def tv_out(record: TvRecord, status: TvStatus | None, plan_limited: bool) -> TvOut:
     return TvOut(
         id=record.id,
         adapter_id=record.adapter_id,
@@ -59,6 +59,7 @@ def tv_out(record: TvRecord, status: TvStatus | None) -> TvOut:
         policy_id=record.policy_id,
         enabled=record.enabled,
         needs_pairing=record.needs_pairing,
+        plan_limited=plan_limited,
         created_at=record.created_at,
         status=status_out(status),
     )
@@ -73,12 +74,17 @@ async def existing_tv(storage: Storage, tv_id: str) -> TvRecord:
 
 @router.get("", response_model=list[TvOut], responses=AUTH_ERRORS)
 async def list_tvs(_: CanRead, storage: StorageDep, supervisor: SupervisorDep) -> list[TvOut]:
-    return [tv_out(r, supervisor.status(r.id)) for r in await storage.tvs.list()]
+    return [
+        tv_out(r, supervisor.status(r.id), supervisor.plan_limited(r.id))
+        for r in await storage.tvs.list()
+    ]
 
 
 @router.get("/{tv_id}", response_model=TvOut, responses=NOT_FOUND_ERRORS)
 async def get_tv(tv_id: str, _: CanRead, storage: StorageDep, supervisor: SupervisorDep) -> TvOut:
-    return tv_out(await existing_tv(storage, tv_id), supervisor.status(tv_id))
+    return tv_out(
+        await existing_tv(storage, tv_id), supervisor.status(tv_id), supervisor.plan_limited(tv_id)
+    )
 
 
 @router.patch("/{tv_id}", response_model=TvOut, responses=NOT_FOUND_ERRORS)
@@ -96,7 +102,9 @@ async def update_tv(
     if body.name is not None:
         await storage.tvs.rename(tv_id, body.name)
     await supervisor.refresh(tv_id)
-    return tv_out(await existing_tv(storage, tv_id), supervisor.status(tv_id))
+    return tv_out(
+        await existing_tv(storage, tv_id), supervisor.status(tv_id), supervisor.plan_limited(tv_id)
+    )
 
 
 @router.delete("/{tv_id}", status_code=204, responses=NOT_FOUND_ERRORS)

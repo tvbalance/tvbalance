@@ -39,6 +39,8 @@ class EngineConfig:
     tls_certfile: Path | None = None
     tls_keyfile: Path | None = None
     tls_names: tuple[str, ...] = ()
+    # Where the web UI sends someone who wants Pro; empty hides the button.
+    checkout_url: str = ""
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str]) -> EngineConfig:
@@ -84,7 +86,15 @@ class EngineConfig:
             tls_certfile=certfile,
             tls_keyfile=keyfile,
             tls_names=tuple(name.strip() for name in listed if name.strip()),
+            checkout_url=_checkout_url(environ.get("TVBALANCE_CHECKOUT_URL")),
         )
+
+
+def _checkout_url(raw: str | None) -> str:
+    url = (raw or "").strip()
+    if url and not url.startswith(("http://", "https://")):
+        raise ConfigError("TVBALANCE_CHECKOUT_URL must be an http(s) URL")
+    return url
 
 
 def _port(raw: str | None, name: str = "TVBALANCE_PORT", default: int = DEFAULT_PORT) -> int:
