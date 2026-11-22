@@ -1,6 +1,6 @@
 # M11: Licensing and entitlements
 
-Status: done. The production public key is still to be generated and added to `TRUSTED_PUBLIC_KEYS`
+Status: done. The production public key is in `TRUSTED_PUBLIC_KEYS`
 (see operations/licensing.md).
 
 ## Goal

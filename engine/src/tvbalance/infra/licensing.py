@@ -21,8 +21,8 @@ TIER = "pro"
 PAYLOAD_VERSION = 1
 
 # Public keys (unpadded base64url) whose licenses this build accepts; more than one allows rotation.
-# Empty until the production key pair is generated (see docs/operations/licensing.md): all Free.
-TRUSTED_PUBLIC_KEYS: tuple[str, ...] = ()
+# Issue licenses with the matching private key (see docs/operations/licensing.md).
+TRUSTED_PUBLIC_KEYS: tuple[str, ...] = ("4L7kmCIkxn3_yoL0QAf9lUNTmsbBMtt1rGz55g5x3Ds",)
 
 
 class LicenseError(Exception):
