@@ -4,8 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 import { errorMessage } from "../api/errors";
-import { keys, useMe, usePolicies, useTvs, type Policy } from "../api/hooks";
+import { keys, useActiveProfile, useMe, usePolicies, useTvs, type Policy } from "../api/hooks";
 import { api } from "../api/http";
+import { ActivateProfileDialog } from "../components/ActivateProfileDialog";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Dialog } from "../components/ui/dialog";
@@ -71,8 +72,11 @@ export function Rules() {
   const policies = usePolicies();
   const tvs = useTvs();
   const me = useMe();
+  const profile = useActiveProfile();
   const [creating, setCreating] = useState(false);
+  const [activating, setActivating] = useState<Policy | null>(null);
   const canWrite = me.data?.scopes.includes("admin") ?? false;
+  const canControl = me.data?.scopes.includes("control") ?? false;
   const tvName = (id: string) => tvs.data?.find((tv) => tv.id === id)?.name ?? id;
 
   return (
@@ -84,6 +88,14 @@ export function Rules() {
         {canWrite ? <Button onClick={() => setCreating(true)}>{t("rules.new")}</Button> : null}
       </div>
       <p className="text-muted">{t("rules.intro")}</p>
+      <Link to="/calendar" className="inline-block text-sm text-brand underline">
+        {t("rules.calendar")}
+      </Link>
+      {profile.data && !profile.data.effective ? (
+        <p role="status" className="text-sm text-warn">
+          {t("profiles.requiresPro")}
+        </p>
+      ) : null}
       {policies.isPending ? <p role="status">{t("auth.loading")}</p> : null}
       {policies.error ? <p role="alert">{t("auth.error")}</p> : null}
       {policies.data?.length === 0 ? <p className="text-muted">{t("rules.none")}</p> : null}
@@ -101,11 +113,25 @@ export function Rules() {
                   ? t("rules.usedBy", { tvs: policy.tv_ids.map(tvName).join(", ") })
                   : t("rules.unused")}
               </p>
+              {canControl ? (
+                <Button
+                  variant="secondary"
+                  aria-label={t("rules.activateProfileFor", { name: policy.name })}
+                  onClick={() => setActivating(policy)}
+                >
+                  {t("rules.activateProfile")}
+                </Button>
+              ) : null}
             </Card>
           </li>
         ))}
       </ul>
       <NewRuleDialog key={String(creating)} open={creating} onClose={() => setCreating(false)} />
+      <ActivateProfileDialog
+        key={activating?.id ?? "none"}
+        policy={activating}
+        onClose={() => setActivating(null)}
+      />
     </section>
   );
 }

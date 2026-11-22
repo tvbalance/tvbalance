@@ -34,6 +34,7 @@ function apply(queryClient: QueryClient, message: Message): void {
   // Any other message is a logged event: the TV's state moved, so refetch what shows it.
   void queryClient.invalidateQueries({ queryKey: keys.tvs });
   void queryClient.invalidateQueries({ queryKey: keys.eventsAll });
+  void queryClient.invalidateQueries({ queryKey: keys.profile });
   void queryClient.invalidateQueries({ queryKey: ["usage"] });
 }
 

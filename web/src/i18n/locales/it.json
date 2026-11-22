@@ -117,7 +117,8 @@
       "budget": "finisce il tempo giornaliero",
       "override": "finisce il permesso temporaneo"
     },
-    "planLimited": "Richiede Pro"
+    "planLimited": "Richiede Pro",
+    "profile": "Profilo: {{name}}"
   },
   "actions": {
     "pause": "Pausa {{minutes}} min",
@@ -237,7 +238,10 @@
       "cap_pauseHelp": "Quanto aspetta il motore dopo aver raggiunto il limite.",
       "message_repeat": "Ripeti il messaggio ogni (secondi)",
       "message_repeatHelp": "Ogni quanto il messaggio a schermo riappare."
-    }
+    },
+    "activateProfile": "Attiva come profilo",
+    "activateProfileFor": "Attiva {{name}} come profilo",
+    "calendar": "Calendario"
   },
   "activity": {
     "title": "Attività",
@@ -493,5 +497,52 @@
     "removeConfirm": "Rimuovi",
     "removed": "Licenza rimossa",
     "buy": "Acquista Pro"
+  },
+  "profiles": {
+    "banner": "Profilo attivo",
+    "active": "Il profilo “{{name}}” è attivo fino a {{until}}.",
+    "stop": "Termina profilo",
+    "stopped": "Profilo terminato",
+    "activate": "Attiva",
+    "activated": "Profilo attivato",
+    "activateTitle": "Attiva “{{name}}” come profilo",
+    "activateHelp": "Le regole valgono per tutte le TV di casa, tranne quelle che escludi.",
+    "excluded": "TV che mantengono le proprie regole",
+    "requiresPro": "Profili e calendario richiedono il piano Pro; per ora vengono salvati ma non applicati."
+  },
+  "calendar": {
+    "title": "Calendario",
+    "add": "Aggiungi voce",
+    "intro": "Attiva automaticamente un set di regole in certi giorni della settimana o in un periodo, come le vacanze.",
+    "none": "Nessuna voce.",
+    "edit": "Modifica",
+    "remove": "Rimuovi",
+    "removeEntry": "Rimuovi la voce per {{name}}",
+    "removed": "Voce rimossa",
+    "saved": "Voce salvata",
+    "newTitle": "Nuova voce del calendario",
+    "editTitle": "Modifica voce del calendario",
+    "formHelp": "Una voce con date vince su una settimanale.",
+    "kind": "Si ripete",
+    "weekly": "Ogni settimana",
+    "dated": "Tra due date",
+    "ruleSet": "Set di regole",
+    "days": "Giorni",
+    "from": "Dalle",
+    "until": "Alle",
+    "overnight": "Una fine prima dell'inizio supera la mezzanotte.",
+    "firstDay": "Primo giorno",
+    "lastDay": "Ultimo giorno",
+    "weeklyWhen": "{{days}}, {{start}}–{{end}}",
+    "datedWhen": "Dal {{start}} al {{end}}",
+    "day": {
+      "0": "Lun",
+      "1": "Mar",
+      "2": "Mer",
+      "3": "Gio",
+      "4": "Ven",
+      "5": "Sab",
+      "6": "Dom"
+    }
   }
 }

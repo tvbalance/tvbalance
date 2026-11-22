@@ -117,7 +117,8 @@
       "budget": "the daily time is used up",
       "override": "the temporary permission ends"
     },
-    "planLimited": "Requires Pro"
+    "planLimited": "Requires Pro",
+    "profile": "Profile: {{name}}"
   },
   "actions": {
     "pause": "Pause {{minutes}} min",
@@ -237,7 +238,10 @@
       "cap_pauseHelp": "How long the Engine waits once the cap is hit.",
       "message_repeat": "Repeat message every (seconds)",
       "message_repeatHelp": "How often the on-screen message is shown again."
-    }
+    },
+    "activateProfile": "Activate as profile",
+    "activateProfileFor": "Activate {{name}} as profile",
+    "calendar": "Calendar"
   },
   "activity": {
     "title": "Activity",
@@ -493,5 +497,52 @@
     "removeConfirm": "Remove",
     "removed": "License removed",
     "buy": "Buy Pro"
+  },
+  "profiles": {
+    "banner": "Active profile",
+    "active": "Profile “{{name}}” is on until {{until}}.",
+    "stop": "End profile",
+    "stopped": "Profile ended",
+    "activate": "Activate",
+    "activated": "Profile activated",
+    "activateTitle": "Activate “{{name}}” as a profile",
+    "activateHelp": "The rule set applies to every TV in the household, except the ones you leave out.",
+    "excluded": "TVs that keep their own rules",
+    "requiresPro": "Profiles and the calendar need the Pro plan; until then they are saved but not applied."
+  },
+  "calendar": {
+    "title": "Calendar",
+    "add": "Add entry",
+    "intro": "Switch rule sets on automatically, on certain weekdays or during a period such as the holidays.",
+    "none": "No entries yet.",
+    "edit": "Edit",
+    "remove": "Remove",
+    "removeEntry": "Remove entry for {{name}}",
+    "removed": "Entry removed",
+    "saved": "Entry saved",
+    "newTitle": "New calendar entry",
+    "editTitle": "Edit calendar entry",
+    "formHelp": "A dated entry wins over a weekly one.",
+    "kind": "Repeats",
+    "weekly": "Every week",
+    "dated": "Between two dates",
+    "ruleSet": "Rule set",
+    "days": "Days",
+    "from": "From",
+    "until": "Until",
+    "overnight": "An end before the start runs past midnight.",
+    "firstDay": "First day",
+    "lastDay": "Last day",
+    "weeklyWhen": "{{days}}, {{start}}–{{end}}",
+    "datedWhen": "{{start}} to {{end}}",
+    "day": {
+      "0": "Mon",
+      "1": "Tue",
+      "2": "Wed",
+      "3": "Thu",
+      "4": "Fri",
+      "5": "Sat",
+      "6": "Sun"
+    }
   }
 }

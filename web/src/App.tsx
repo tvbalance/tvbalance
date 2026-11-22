@@ -5,6 +5,7 @@ import { Layout } from "./components/Layout";
 import { ToastProvider } from "./components/ui/toast";
 import { Activity } from "./pages/Activity";
 import { AddTv } from "./pages/AddTv";
+import { Calendar } from "./pages/Calendar";
 import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { RuleEditor } from "./pages/RuleEditor";
@@ -35,6 +36,7 @@ export function App() {
             <Route path="/activity" element={<Activity />} />
             <Route path="/rules" element={<Rules />} />
             <Route path="/rules/:id" element={<RuleEditor />} />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/system" element={<System />} />
           </Route>

@@ -24,7 +24,13 @@ export type Info = Schemas["InfoResponse"];
 export type TlsStatus = Schemas["TlsStatusOut"];
 export type License = Schemas["LicenseOut"];
 
+export type ActiveProfile = Schemas["ActiveProfileOut"];
+export type Calendar = Schemas["CalendarOut"];
+export type CalendarEntry = Calendar["entries"][number];
+
 export const keys = {
+  profile: ["profile"] as const,
+  calendar: ["calendar"] as const,
   state: ["auth", "state"] as const,
   me: ["auth", "me"] as const,
   tvs: ["tvs"] as const,
@@ -125,6 +131,20 @@ export function useLicense(enabled = true) {
     queryKey: keys.license,
     queryFn: ({ signal }) => api.get<License>("license", signal),
     enabled,
+  });
+}
+
+export function useActiveProfile() {
+  return useQuery({
+    queryKey: keys.profile,
+    queryFn: ({ signal }) => api.get<ActiveProfile>("profiles/active", signal),
+  });
+}
+
+export function useCalendar() {
+  return useQuery({
+    queryKey: keys.calendar,
+    queryFn: ({ signal }) => api.get<Calendar>("calendar", signal),
   });
 }
 

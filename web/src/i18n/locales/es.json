@@ -117,7 +117,8 @@
       "budget": "se agote el tiempo diario",
       "override": "termine el permiso temporal"
     },
-    "planLimited": "Requiere Pro"
+    "planLimited": "Requiere Pro",
+    "profile": "Perfil: {{name}}"
   },
   "actions": {
     "pause": "Pausa de {{minutes}} min",
@@ -237,7 +238,10 @@
       "cap_pauseHelp": "Cuánto espera el motor al alcanzar el límite.",
       "message_repeat": "Repetir el mensaje cada (segundos)",
       "message_repeatHelp": "Cada cuánto vuelve a aparecer el mensaje en pantalla."
-    }
+    },
+    "activateProfile": "Activar como perfil",
+    "activateProfileFor": "Activar {{name}} como perfil",
+    "calendar": "Calendario"
   },
   "activity": {
     "title": "Actividad",
@@ -493,5 +497,52 @@
     "removeConfirm": "Quitar",
     "removed": "Licencia quitada",
     "buy": "Comprar Pro"
+  },
+  "profiles": {
+    "banner": "Perfil activo",
+    "active": "El perfil «{{name}}» está activo hasta {{until}}.",
+    "stop": "Terminar perfil",
+    "stopped": "Perfil terminado",
+    "activate": "Activar",
+    "activated": "Perfil activado",
+    "activateTitle": "Activar «{{name}}» como perfil",
+    "activateHelp": "Las reglas se aplican a todos los televisores del hogar, salvo los que excluyas.",
+    "excluded": "Televisores que mantienen sus propias reglas",
+    "requiresPro": "Los perfiles y el calendario requieren el plan Pro; hasta entonces se guardan pero no se aplican."
+  },
+  "calendar": {
+    "title": "Calendario",
+    "add": "Añadir entrada",
+    "intro": "Activa automáticamente un conjunto de reglas en ciertos días de la semana o durante un periodo, como las vacaciones.",
+    "none": "Aún no hay entradas.",
+    "edit": "Editar",
+    "remove": "Quitar",
+    "removeEntry": "Quitar la entrada de {{name}}",
+    "removed": "Entrada quitada",
+    "saved": "Entrada guardada",
+    "newTitle": "Nueva entrada del calendario",
+    "editTitle": "Editar entrada del calendario",
+    "formHelp": "Una entrada con fechas gana a una semanal.",
+    "kind": "Se repite",
+    "weekly": "Cada semana",
+    "dated": "Entre dos fechas",
+    "ruleSet": "Conjunto de reglas",
+    "days": "Días",
+    "from": "Desde",
+    "until": "Hasta",
+    "overnight": "Un final anterior al inicio pasa de medianoche.",
+    "firstDay": "Primer día",
+    "lastDay": "Último día",
+    "weeklyWhen": "{{days}}, {{start}}–{{end}}",
+    "datedWhen": "Del {{start}} al {{end}}",
+    "day": {
+      "0": "Lun",
+      "1": "Mar",
+      "2": "Mié",
+      "3": "Jue",
+      "4": "Vie",
+      "5": "Sáb",
+      "6": "Dom"
+    }
   }
 }

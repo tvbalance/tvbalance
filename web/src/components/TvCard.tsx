@@ -187,6 +187,9 @@ export function TvCard({
       </div>
       <div aria-live="polite" className="space-y-2">
         {watching ? <p className="text-sm text-muted">{t("tv.watching", { app: watching })}</p> : null}
+        {tv.status?.active_profile ? (
+          <Badge tone="ok">{t("tv.profile", { name: tv.status.active_profile.name })}</Badge>
+        ) : null}
         <Verdict tv={tv} />
         <Usage tv={tv} />
       </div>

@@ -117,7 +117,8 @@
       "budget": "die Tageszeit aufgebraucht ist",
       "override": "die vorübergehende Erlaubnis endet"
     },
-    "planLimited": "Benötigt Pro"
+    "planLimited": "Benötigt Pro",
+    "profile": "Profil: {{name}}"
   },
   "actions": {
     "pause": "{{minutes}} Min. Pause",
@@ -237,7 +238,10 @@
       "cap_pauseHelp": "Wie lange die Engine nach Erreichen der Grenze wartet.",
       "message_repeat": "Meldung wiederholen alle (Sekunden)",
       "message_repeatHelp": "Wie oft die Bildschirmmeldung erneut erscheint."
-    }
+    },
+    "activateProfile": "Als Profil aktivieren",
+    "activateProfileFor": "{{name}} als Profil aktivieren",
+    "calendar": "Kalender"
   },
   "activity": {
     "title": "Aktivität",
@@ -493,5 +497,52 @@
     "removeConfirm": "Entfernen",
     "removed": "Lizenz entfernt",
     "buy": "Pro kaufen"
+  },
+  "profiles": {
+    "banner": "Aktives Profil",
+    "active": "Das Profil „{{name}}“ ist bis {{until}} aktiv.",
+    "stop": "Profil beenden",
+    "stopped": "Profil beendet",
+    "activate": "Aktivieren",
+    "activated": "Profil aktiviert",
+    "activateTitle": "„{{name}}“ als Profil aktivieren",
+    "activateHelp": "Die Regeln gelten für alle Fernseher im Haushalt, außer für die, die Sie ausnehmen.",
+    "excluded": "Fernseher mit eigenen Regeln",
+    "requiresPro": "Profile und Kalender benötigen den Pro-Tarif; bis dahin werden sie gespeichert, aber nicht angewendet."
+  },
+  "calendar": {
+    "title": "Kalender",
+    "add": "Eintrag hinzufügen",
+    "intro": "Regelsätze automatisch an bestimmten Wochentagen oder in einem Zeitraum, etwa den Ferien, einschalten.",
+    "none": "Noch keine Einträge.",
+    "edit": "Bearbeiten",
+    "remove": "Entfernen",
+    "removeEntry": "Eintrag für {{name}} entfernen",
+    "removed": "Eintrag entfernt",
+    "saved": "Eintrag gespeichert",
+    "newTitle": "Neuer Kalendereintrag",
+    "editTitle": "Kalendereintrag bearbeiten",
+    "formHelp": "Ein Eintrag mit Datum geht einem wöchentlichen vor.",
+    "kind": "Wiederholung",
+    "weekly": "Jede Woche",
+    "dated": "Zwischen zwei Daten",
+    "ruleSet": "Regelsatz",
+    "days": "Tage",
+    "from": "Von",
+    "until": "Bis",
+    "overnight": "Ein Ende vor dem Beginn läuft über Mitternacht.",
+    "firstDay": "Erster Tag",
+    "lastDay": "Letzter Tag",
+    "weeklyWhen": "{{days}}, {{start}}–{{end}}",
+    "datedWhen": "{{start}} bis {{end}}",
+    "day": {
+      "0": "Mo",
+      "1": "Di",
+      "2": "Mi",
+      "3": "Do",
+      "4": "Fr",
+      "5": "Sa",
+      "6": "So"
+    }
   }
 }

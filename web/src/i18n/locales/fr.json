@@ -117,7 +117,8 @@
       "budget": "le temps quotidien soit épuisé",
       "override": "l'autorisation temporaire se termine"
     },
-    "planLimited": "Nécessite Pro"
+    "planLimited": "Nécessite Pro",
+    "profile": "Profil : {{name}}"
   },
   "actions": {
     "pause": "Pause {{minutes}} min",
@@ -237,7 +238,10 @@
       "cap_pauseHelp": "Durée d'attente du moteur une fois la limite atteinte.",
       "message_repeat": "Répéter le message toutes les (secondes)",
       "message_repeatHelp": "Fréquence de réaffichage du message à l'écran."
-    }
+    },
+    "activateProfile": "Activer comme profil",
+    "activateProfileFor": "Activer {{name}} comme profil",
+    "calendar": "Calendrier"
   },
   "activity": {
     "title": "Activité",
@@ -493,5 +497,52 @@
     "removeConfirm": "Supprimer",
     "removed": "Licence supprimée",
     "buy": "Acheter Pro"
+  },
+  "profiles": {
+    "banner": "Profil actif",
+    "active": "Le profil « {{name}} » est actif jusqu'à {{until}}.",
+    "stop": "Terminer le profil",
+    "stopped": "Profil terminé",
+    "activate": "Activer",
+    "activated": "Profil activé",
+    "activateTitle": "Activer « {{name}} » comme profil",
+    "activateHelp": "Les règles s'appliquent à tous les téléviseurs du foyer, sauf ceux que vous excluez.",
+    "excluded": "Téléviseurs qui gardent leurs propres règles",
+    "requiresPro": "Les profils et le calendrier demandent l'offre Pro ; en attendant, ils sont enregistrés mais non appliqués."
+  },
+  "calendar": {
+    "title": "Calendrier",
+    "add": "Ajouter une entrée",
+    "intro": "Activez automatiquement un jeu de règles certains jours de la semaine ou pendant une période, comme les vacances.",
+    "none": "Aucune entrée.",
+    "edit": "Modifier",
+    "remove": "Supprimer",
+    "removeEntry": "Supprimer l'entrée pour {{name}}",
+    "removed": "Entrée supprimée",
+    "saved": "Entrée enregistrée",
+    "newTitle": "Nouvelle entrée du calendrier",
+    "editTitle": "Modifier l'entrée du calendrier",
+    "formHelp": "Une entrée avec dates l'emporte sur une entrée hebdomadaire.",
+    "kind": "Répétition",
+    "weekly": "Chaque semaine",
+    "dated": "Entre deux dates",
+    "ruleSet": "Jeu de règles",
+    "days": "Jours",
+    "from": "De",
+    "until": "À",
+    "overnight": "Une fin avant le début dépasse minuit.",
+    "firstDay": "Premier jour",
+    "lastDay": "Dernier jour",
+    "weeklyWhen": "{{days}}, {{start}}–{{end}}",
+    "datedWhen": "Du {{start}} au {{end}}",
+    "day": {
+      "0": "Lun",
+      "1": "Mar",
+      "2": "Mer",
+      "3": "Jeu",
+      "4": "Ven",
+      "5": "Sam",
+      "6": "Dim"
+    }
   }
 }

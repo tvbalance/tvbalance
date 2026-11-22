@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { useMe, useTvs } from "../api/hooks";
+import { ProfileBanner } from "../components/ProfileBanner";
 import { TvCard } from "../components/TvCard";
 
 export function Dashboard() {
@@ -28,7 +29,8 @@ export function Dashboard() {
         </h1>
         {canAdmin && tvs.data && tvs.data.length > 0 ? addTv : null}
       </div>
-      {tvs.isPending ? <p role="status">{t("auth.loading")}</p> : null}
+      <ProfileBanner canControl={canControl} />
+      {tvs.isPending ?<p role="status">{t("auth.loading")}</p> : null}
       {tvs.error ? <p role="alert">{t("auth.error")}</p> : null}
       {tvs.data?.length === 0 ? (
         <div className="space-y-3">
