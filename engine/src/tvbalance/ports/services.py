@@ -23,7 +23,9 @@ class Entitlements(Protocol):
 
     def is_pro(self) -> bool: ...
 
-    def max_tvs(self) -> int: ...
+    def max_tvs(self) -> int | None:
+        """How many TVs are supervised; ``None`` means no limit."""
+        ...
 
 
 class EPGSource(Protocol):
