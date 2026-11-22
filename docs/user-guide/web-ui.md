@@ -68,6 +68,8 @@ secure address. You can dismiss it; the choice is remembered in this browser.
   connection, so it works through Home Assistant over HTTPS (Ingress), from `localhost` or from the secure
   address of your network (see https.md), not from a plain `http://` address. The card links to the secure
   address when there is one. On iPhone and iPad, add TVBalance to the Home Screen first.
+- **TVBalance Pro:** the current plan, who the license is for and when it expires, a field to paste a license
+  key, and a button to remove it. Only the administrator sees this card. See pro.md.
 - **Secure connection:** the HTTPS addresses, the certificate's expiry and fingerprint, downloads of the
   certificate and of the iPhone and iPad profile, install steps per device, and a button to create a new
   certificate. Only the administrator sees this card. See https.md.

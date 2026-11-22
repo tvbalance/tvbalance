@@ -1,6 +1,7 @@
 # M11: Licensing and entitlements
 
-Status: in progress.
+Status: done. The production public key is still to be generated and added to `TRUSTED_PUBLIC_KEYS`
+(see operations/licensing.md).
 
 ## Goal
 Spec F12 and ADR 0006: a one-time Pro license per household, verified offline with Ed25519. The gate applies only at

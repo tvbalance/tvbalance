@@ -34,6 +34,7 @@ budgets and app/input/channel rules on the TV itself, and plugs natively into Ho
 - [Product specification](docs/product/spec.md)
 - [Architecture decision records](docs/architecture/adr/)
 - [Discovery notes](docs/discovery/)
+- [TVBalance Pro](docs/user-guide/pro.md) and [issuing licenses](docs/operations/licensing.md)
 
 ## License
 
