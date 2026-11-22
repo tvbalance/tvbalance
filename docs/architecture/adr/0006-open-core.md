@@ -14,3 +14,7 @@ The core, the adapters, the client and the Home Assistant integration are Apache
 ## Consequences
 
 Community contributions and trust are maximized. Anyone can fork and enable Pro features by rebuilding; this is accepted. Free tier must stay genuinely useful (single TV, schedules, base time budget).
+
+## Update (2026-11)
+
+Until the repository is made public, the Pro features of M16 (profiles, calendar, advanced budgets, reports) live in this repository in modules of their own, gated at runtime through the entitlements port. Whether they move into the closed package is decided before publication; the isolation keeps that move cheap.

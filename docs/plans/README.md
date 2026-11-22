@@ -30,7 +30,7 @@ Modules are implemented one at a time, test first, with small commits.
 | M13 | Google/Android TV adapter (feasibility spike first) | skeleton |
 | M14 | Samsung Tizen adapter (feasibility spike first) | skeleton |
 | M15 | EPG catalog and channel matching (Pro, private repository) | M11 |
-| M16 | Profiles and calendar, advanced budgets, reports (Pro) | M1, M11 |
+| M16 | Profiles and calendar, advanced budgets, reports (Pro; in progress, see M16-pro-features.md) | M1, M11 |
 | M17 | Documentation site and user guide in five languages | any |
 | M18 | HTTPS on the LAN with a locally managed certificate (done, see M18-https-lan.md and user-guide/https.md) | M5, M6, M8 |
 
