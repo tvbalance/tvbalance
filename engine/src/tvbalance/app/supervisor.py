@@ -7,6 +7,7 @@ import logging
 from contextlib import suppress
 
 from tvbalance.app.events import EventBus
+from tvbalance.app.profiles import ProfileService
 from tvbalance.app.status import Inventory, SupervisorSettings, TvStatus
 from tvbalance.app.worker import TvWorker
 from tvbalance.ports.services import Clock, Entitlements
@@ -111,6 +112,7 @@ class Supervisor:
             self._bus,
             self._clock,
             self._settings,
+            ProfileService(self._storage, self._clock, self._entitlements),
         )
         task = asyncio.create_task(worker.run(), name=f"tv-{record.id}")
         self._workers[record.id] = worker

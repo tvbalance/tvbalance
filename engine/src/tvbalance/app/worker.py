@@ -15,14 +15,15 @@ from datetime import datetime, timedelta
 from tvbalance.app.events import EventBus, to_record
 from tvbalance.app.household import household_now
 from tvbalance.app.messages import localize
+from tvbalance.app.profiles import ProfileService
 from tvbalance.app.session import TVSession
-from tvbalance.app.status import Inventory, SupervisorSettings, TvStatus
+from tvbalance.app.status import Inventory, ProfileInfo, SupervisorSettings, TvStatus
 from tvbalance.domain.budget import accrue, remaining_seconds
 from tvbalance.domain.enforcement import EnforcementState, step
 from tvbalance.domain.models import Decision, Observation, Policy, Power, Usage
 from tvbalance.domain.rules import evaluate
 from tvbalance.ports.services import Clock
-from tvbalance.ports.storage import Storage, TvRecord
+from tvbalance.ports.storage import PolicyRecord, Storage, TvRecord
 from tvbalance.sdk.errors import TVError, TVPairingError, TVTimeoutError
 from tvbalance.sdk.plugin import AdapterPlugin
 from tvbalance.sdk.types import AdapterConfig, Capability
@@ -46,6 +47,7 @@ class TvWorker:
         bus: EventBus,
         clock: Clock,
         settings: SupervisorSettings | None = None,
+        profiles: ProfileService | None = None,
     ) -> None:
         self._record = record
         self._plugin = plugin
@@ -53,6 +55,8 @@ class TvWorker:
         self._bus = bus
         self._clock = clock
         self._settings = settings or SupervisorSettings()
+        self._profiles = profiles
+        self._profile: ProfileInfo | None = None
         self._session: TVSession | None = None
         self._unsubscribe: Callable[[], None] = _nothing
         self._wake = asyncio.Event()
@@ -173,11 +177,7 @@ class TvWorker:
         record = await self._storage.tvs.get(self._record.id)
         if record is not None:
             self._record = record
-        policy_record = (
-            None
-            if self._record.policy_id is None
-            else await self._storage.policies.get(self._record.policy_id)
-        )
+        policy_record = await self._rules(now)
         policy = Policy() if policy_record is None else policy_record.policy
 
         usage = await self._storage.usage.get(self._record.id, now.date())
@@ -218,6 +218,45 @@ class TvWorker:
             event_type, payload = to_record(event)
             await self._publish(event_type, payload)
         self._set_status(observation=obs, decision=decision, usage=usage, policy=policy, at=now)
+
+    async def _rules(self, now: datetime) -> PolicyRecord | None:
+        """The profile in force when there is one, else the rules assigned to the TV."""
+        found = (
+            None
+            if self._profiles is None
+            else await self._profiles.active_for(self._record.id, now)
+        )
+        profile = None if found is None else await self._storage.policies.get(found.policy_id)
+        if found is not None and profile is not None:
+            await self._profile_changed(
+                ProfileInfo(profile.id, profile.name, found.until, found.source)
+            )
+            return profile
+        await self._profile_changed(None)
+        if self._record.policy_id is None:
+            return None
+        return await self._storage.policies.get(self._record.policy_id)
+
+    async def _profile_changed(self, now_in_force: ProfileInfo | None) -> None:
+        """Report a profile coming into or going out of force, once each."""
+        before = self._profile
+        old_id = None if before is None else before.policy_id
+        new_id = None if now_in_force is None else now_in_force.policy_id
+        if before is not None and old_id != new_id:
+            await self._publish(
+                "profile_ended", {"policy_id": before.policy_id, "name": before.name}
+            )
+        if now_in_force is not None and old_id != new_id:
+            await self._publish(
+                "profile_started",
+                {
+                    "policy_id": now_in_force.policy_id,
+                    "name": now_in_force.name,
+                    "until": now_in_force.until.isoformat(),
+                    "source": now_in_force.source.value,
+                },
+            )
+        self._profile = now_in_force
 
     async def _local_now(self) -> datetime:
         return await household_now(self._storage.settings, self._clock)
@@ -293,4 +332,5 @@ class TvWorker:
                 else remaining_seconds(policy, usage)
             ),
             updated_at=old.updated_at if at is None else at,
+            active_profile=self._profile,
         )

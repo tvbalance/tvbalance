@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from support import (
+    ALL_DAY,
     CLOSED,
     FAST,
     OPEN,
@@ -20,6 +21,7 @@ from support import (
 )
 
 from tvbalance.app.events import BusEvent, EventBus
+from tvbalance.app.profiles import ProfileService
 from tvbalance.app.worker import TvWorker
 from tvbalance.config import EngineConfig
 from tvbalance.domain.models import (
@@ -47,9 +49,19 @@ class World:
     queue: asyncio.Queue[BusEvent]
     record: TvRecord
 
-    def worker(self, capabilities: frozenset[Capability] | None = None) -> TvWorker:
+    def worker(
+        self,
+        capabilities: frozenset[Capability] | None = None,
+        profiles: ProfileService | None = None,
+    ) -> TvWorker:
         return TvWorker(
-            self.record, plugin_for(self.tv, capabilities), self.storage, self.bus, self.clock, FAST
+            self.record,
+            plugin_for(self.tv, capabilities),
+            self.storage,
+            self.bus,
+            self.clock,
+            FAST,
+            profiles,
         )
 
     async def assign(self, policy: Policy) -> None:
@@ -358,3 +370,81 @@ async def test_without_the_push_capability_nothing_is_subscribed(world: World) -
 
 def test_timeout_errors_are_tv_errors() -> None:
     assert issubclass(TVTimeoutError, TVError)
+
+
+# --- profiles -------------------------------------------------------------------------------
+
+
+class Plan:
+    def is_pro(self) -> bool:
+        return True
+
+    def max_tvs(self) -> int | None:
+        return None
+
+
+PERMISSIVE = Policy(schedule=ALL_DAY)
+
+
+def profile_kinds(world: World) -> list[str]:
+    return [k for k in kinds(world.queue) if k.startswith("profile_")]
+
+
+async def test_an_active_profile_replaces_the_rules_of_the_tv(world: World) -> None:
+    world.tv.observation = watching("tiktok")
+    await world.assign(CLOSED)
+    profiles = ProfileService(world.storage, world.clock, Plan())
+    open_id = await world.storage.policies.create("Open", PERMISSIVE)
+    await profiles.activate(open_id, T0 + timedelta(hours=1))
+    worker = world.worker(profiles=profiles)
+    assert await worker.connect()
+    await worker.tick()
+    world.clock.advance(seconds=3)
+    await worker.tick()
+    assert world.tv.executed == []
+    status = worker.status.active_profile
+    assert status is not None and status.name == "Open"
+    assert status.policy_id == open_id
+    assert status.until == T0 + timedelta(hours=1)
+
+
+async def test_profile_start_and_end_are_reported_once(world: World) -> None:
+    await world.assign(OPEN)
+    profiles = ProfileService(world.storage, world.clock, Plan())
+    profile_id = await world.storage.policies.create("Evening", OPEN)
+    await profiles.activate(profile_id, T0 + timedelta(minutes=1))
+    worker = world.worker(profiles=profiles)
+    assert await worker.connect()
+    await worker.tick()
+    await worker.tick()
+    world.clock.advance(seconds=61)
+    await worker.tick()
+    await worker.tick()
+    assert profile_kinds(world) == ["profile_started", "profile_ended"]
+    assert worker.status.active_profile is None
+
+
+async def test_a_stopped_profile_ends_on_the_next_look(world: World) -> None:
+    await world.assign(OPEN)
+    profiles = ProfileService(world.storage, world.clock, Plan())
+    profile_id = await world.storage.policies.create("P", OPEN)
+    await profiles.activate(profile_id, T0 + timedelta(hours=1))
+    worker = world.worker(profiles=profiles)
+    assert await worker.connect()
+    await worker.tick()
+    await profiles.stop()
+    await worker.tick()
+    assert profile_kinds(world) == ["profile_started", "profile_ended"]
+
+
+async def test_a_tv_without_rules_gets_the_profile_too(world: World) -> None:
+    world.tv.observation = watching("tiktok")
+    profiles = ProfileService(world.storage, world.clock, Plan())
+    profile_id = await world.storage.policies.create("P", OPEN)
+    await profiles.activate(profile_id, T0 + timedelta(hours=1))
+    worker = world.worker(profiles=profiles)
+    assert await worker.connect()
+    await worker.tick()
+    world.clock.advance(seconds=3)
+    await worker.tick()
+    assert messages(world.tv)  # tiktok is blocked by the profile

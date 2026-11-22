@@ -7,6 +7,7 @@ from datetime import datetime
 
 from tvbalance.app.session import SessionTimeouts
 from tvbalance.domain.models import Decision, Observation
+from tvbalance.domain.profiles import ProfileSource
 from tvbalance.sdk.types import AppInfo, ChannelInfo, InputInfo
 
 
@@ -28,6 +29,16 @@ class Inventory:
 
 
 @dataclass(frozen=True, slots=True)
+class ProfileInfo:
+    """The profile in force for a TV."""
+
+    policy_id: int
+    name: str
+    until: datetime
+    source: ProfileSource
+
+
+@dataclass(frozen=True, slots=True)
 class TvStatus:
     tv_id: str
     connected: bool = False
@@ -37,3 +48,4 @@ class TvStatus:
     watched_seconds: int = 0
     remaining_seconds: int | None = None  # ``None``: no daily budget
     updated_at: datetime | None = None
+    active_profile: ProfileInfo | None = None
