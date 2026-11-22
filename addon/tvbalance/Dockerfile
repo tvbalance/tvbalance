@@ -44,9 +44,10 @@ ENV PATH="/app/.venv/bin:$PATH" \
     TVBALANCE_WEB_DIR=/app/web \
     TVBALANCE_DATA_DIR=/data \
     TVBALANCE_PORT=8765 \
+    TVBALANCE_HTTPS_PORT=8766 \
     TVBALANCE_INGRESS_TRUSTED=172.30.32.2
 VOLUME /data
-EXPOSE 8765
+EXPOSE 8765 8766
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
   CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8765/api/v1/health', timeout=4)"
 CMD ["tvbalance"]

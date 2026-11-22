@@ -21,7 +21,24 @@ Assistant picks it up on its own.
 ## Network
 
 The Add-on uses the host network so it can discover TVs and send Wake-on-LAN packets.
-The Engine listens on port 8765 (also used by Ingress).
+The Engine listens on port 8765 (HTTP, also used by Ingress) and on port 8766 (HTTPS).
+
+## HTTPS
+
+By default the Add-on serves HTTPS on port 8766 with a certificate from its own local authority, renewed by
+itself. Open **Settings → Secure connection** in the TVBalance panel to download the certificate, install it on
+your devices and compare its fingerprint. Web Push notifications need this secure address.
+
+Options:
+
+- **HTTPS**: `auto` (default) or `off`.
+- **Certificate file** and **Key file**: use your own certificate instead. The names are relative to Home
+  Assistant's `/ssl` folder, for example `fullchain.pem` and `privkey.pem`.
+- **Extra names**: more names for the automatic certificate. Only local names and private addresses are
+  accepted.
+
+The Home Assistant integration keeps working over HTTP inside the host. If you point it at an `https://` address
+instead, it asks you to confirm the certificate fingerprint once.
 
 ## Data
 

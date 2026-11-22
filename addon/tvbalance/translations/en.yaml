@@ -1,1 +1,19 @@
-configuration: {}
+configuration:
+  tls:
+    name: HTTPS
+    description: >-
+      auto serves HTTPS on port 8766 with a certificate from TVBalance's own local authority. off turns HTTPS
+      off. Setting a certificate file below uses your own certificate instead.
+  tls_certfile:
+    name: Certificate file
+    description: >-
+      Your own certificate, as a file name in Home Assistant's /ssl folder (for example fullchain.pem). Needs the
+      key file as well.
+  tls_keyfile:
+    name: Key file
+    description: The private key that goes with your certificate, as a file name in /ssl (for example privkey.pem).
+  tls_names:
+    name: Extra names
+    description: >-
+      More host names or addresses for the automatic certificate. Only local names (.local, .lan, .home.arpa,
+      .internal) and private addresses are accepted.

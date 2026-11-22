@@ -18,3 +18,14 @@ panel_title: TVBalance
 hassio_api: true
 discovery:
   - tvbalance
+# HTTPS uses a local certificate authority by default; /ssl holds a certificate of your own.
+map:
+  - ssl:ro
+options:
+  tls: auto
+schema:
+  tls: list(auto|off)
+  tls_certfile: str?
+  tls_keyfile: str?
+  tls_names:
+    - str?
