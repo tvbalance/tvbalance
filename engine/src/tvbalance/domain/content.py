@@ -2,7 +2,18 @@
 
 from __future__ import annotations
 
-from tvbalance.domain.models import BlockReason, Observation, Policy
+from tvbalance.domain.models import BlockReason, ContentKey, Observation, Policy
+
+
+def content_of(observation: Observation) -> ContentKey | None:
+    """What the viewer is on: the app if there is one, else the input, else the channel."""
+    if observation.foreground_app is not None:
+        return ContentKey("app", observation.foreground_app)
+    if observation.input_id is not None:
+        return ContentKey("input", observation.input_id)
+    if observation.channel_id is not None:
+        return ContentKey("channel", observation.channel_id)
+    return None
 
 
 def is_always_allowed(observation: Observation, policy: Policy) -> bool:

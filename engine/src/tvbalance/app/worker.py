@@ -19,6 +19,7 @@ from tvbalance.app.profiles import ProfileService
 from tvbalance.app.session import TVSession
 from tvbalance.app.status import Inventory, ProfileInfo, SupervisorSettings, TvStatus
 from tvbalance.domain.budget import accrue, remaining_seconds
+from tvbalance.domain.content import content_of
 from tvbalance.domain.enforcement import EnforcementState, step
 from tvbalance.domain.models import Decision, Observation, Policy, Power, Usage
 from tvbalance.domain.rules import evaluate
@@ -186,6 +187,11 @@ class TvWorker:
             delta = billed.watched_seconds - usage.watched_seconds
             if billed.day == usage.day and delta > 0:
                 await self._storage.usage.add_watched(self._record.id, now.date(), delta)
+                content = content_of(obs)
+                if content is not None:
+                    await self._storage.content_usage.add(
+                        self._record.id, now.date(), content, delta
+                    )
                 usage = billed
         self._last_tick = now
         if usage.day != now.date():

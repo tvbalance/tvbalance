@@ -10,14 +10,14 @@ from contextlib import contextmanager
 from datetime import date, datetime, time
 from typing import Any
 
-from sqlalchemy import ColumnClause, Row, delete, literal_column, select, update
+from sqlalchemy import ColumnClause, Row, delete, func, literal_column, select, update
 from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from tvbalance.config import EngineConfig
 from tvbalance.domain.enforcement import EnforcementState
-from tvbalance.domain.models import Override, Policy, Usage
+from tvbalance.domain.models import ContentKey, Override, Policy, Usage
 from tvbalance.domain.profiles import (
     CalendarEntry,
     DatedEntry,
@@ -227,6 +227,42 @@ class SqliteUsageStore:
         with _unknown_references():
             async with self._engine.begin() as conn:
                 await conn.execute(stmt)
+
+
+class SqliteContentUsageStore:
+    def __init__(self, engine: AsyncEngine) -> None:
+        self._engine = engine
+
+    async def add(self, tv_id: str, day: date, content: ContentKey, seconds: int) -> None:
+        stmt = insert(tables.content_usage).values(
+            tv_id=tv_id, day=day, kind=content.kind, content_id=content.id, seconds=seconds
+        )
+        stmt = stmt.on_conflict_do_update(
+            index_elements=[
+                tables.content_usage.c.tv_id,
+                tables.content_usage.c.day,
+                tables.content_usage.c.kind,
+                tables.content_usage.c.content_id,
+            ],
+            set_={"seconds": tables.content_usage.c.seconds + stmt.excluded.seconds},
+        )
+        with _unknown_references():
+            async with self._engine.begin() as conn:
+                await conn.execute(stmt)
+
+    async def day(self, tv_id: str, day: date) -> dict[ContentKey, int]:
+        return await self.between(tv_id, day, day)
+
+    async def between(self, tv_id: str, first: date, last: date) -> dict[ContentKey, int]:
+        table = tables.content_usage
+        query = (
+            select(table.c.kind, table.c.content_id, func.sum(table.c.seconds).label("seconds"))
+            .where(table.c.tv_id == tv_id, table.c.day >= first, table.c.day <= last)
+            .group_by(table.c.kind, table.c.content_id)
+        )
+        async with self._engine.connect() as conn:
+            rows = (await conn.execute(query)).all()
+        return {ContentKey(row.kind, row.content_id): int(row.seconds) for row in rows}
 
 
 class SqliteOverrideStore:
@@ -772,6 +808,7 @@ class SqliteStorage:
         self.tvs = SqliteTvStore(engine, box, clock)
         self.policies = SqlitePolicyStore(engine, clock)
         self.usage = SqliteUsageStore(engine)
+        self.content_usage = SqliteContentUsageStore(engine)
         self.overrides = SqliteOverrideStore(engine)
         self.events = SqliteEventLog(engine)
         self.settings = SqliteSettingsStore(engine)

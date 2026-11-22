@@ -25,6 +25,7 @@ from tvbalance.app.profiles import ProfileService
 from tvbalance.app.worker import TvWorker
 from tvbalance.config import EngineConfig
 from tvbalance.domain.models import (
+    ContentKey,
     GoHome,
     MessageKind,
     Observation,
@@ -109,6 +110,15 @@ async def test_allowed_viewing_is_counted_and_left_alone(world: World) -> None:
     assert world.tv.executed == []
     assert worker.status.connected
     assert worker.status.watched_seconds == 30
+
+
+async def test_viewing_is_also_counted_per_content(world: World) -> None:
+    worker = await live(world)
+    await worker.tick()
+    world.clock.advance(seconds=30)
+    await worker.tick()
+    used = await world.storage.content_usage.day(world.record.id, T0.date())
+    assert used == {ContentKey("app", "video"): 30}
 
 
 async def test_blocked_app_gets_a_message_then_goes_home(world: World) -> None:

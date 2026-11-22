@@ -7,7 +7,7 @@ from datetime import date, datetime
 from typing import Any, Protocol
 
 from tvbalance.domain.enforcement import EnforcementState
-from tvbalance.domain.models import Override, Policy, Usage
+from tvbalance.domain.models import ContentKey, Override, Policy, Usage
 from tvbalance.domain.profiles import CalendarEntry, ProfileActivation
 
 
@@ -135,6 +135,20 @@ class UsageStore(Protocol):
         ...
 
     async def add_bonus(self, tv_id: str, day: date, minutes: int) -> None: ...
+
+
+class ContentUsageStore(Protocol):
+    async def add(self, tv_id: str, day: date, content: ContentKey, seconds: int) -> None:
+        """Atomic: concurrent calls never lose an increment."""
+        ...
+
+    async def day(self, tv_id: str, day: date) -> dict[ContentKey, int]:
+        """Seconds per content on one day; empty for a day without viewing."""
+        ...
+
+    async def between(self, tv_id: str, first: date, last: date) -> dict[ContentKey, int]:
+        """Seconds per content summed over the days ``first`` to ``last`` inclusive."""
+        ...
 
 
 class OverrideStore(Protocol):
@@ -317,6 +331,9 @@ class Storage(Protocol):
 
     @property
     def usage(self) -> UsageStore: ...
+
+    @property
+    def content_usage(self) -> ContentUsageStore: ...
 
     @property
     def overrides(self) -> OverrideStore: ...

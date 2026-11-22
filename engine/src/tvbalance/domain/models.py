@@ -26,6 +26,14 @@ class Observation:
 
 
 @dataclass(frozen=True, slots=True)
+class ContentKey:
+    """What was on screen: an app, an input or a channel."""
+
+    kind: str  # "app", "input" or "channel"
+    id: str
+
+
+@dataclass(frozen=True, slots=True)
 class TimeWindow:
     """An allowed viewing window (start inclusive, end exclusive).
 

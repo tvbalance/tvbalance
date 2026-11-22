@@ -61,6 +61,16 @@ usage = Table(
     Column("bonus_minutes", Integer, nullable=False),
 )
 
+content_usage = Table(
+    "content_usage",
+    metadata,
+    Column("tv_id", ForeignKey("tvs.id", ondelete="CASCADE"), primary_key=True),
+    Column("day", Date, primary_key=True),
+    Column("kind", String, primary_key=True),
+    Column("content_id", String, primary_key=True),
+    Column("seconds", Integer, nullable=False),
+)
+
 overrides = Table(
     "overrides",
     metadata,
