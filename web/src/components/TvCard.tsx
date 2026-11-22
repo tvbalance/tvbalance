@@ -179,7 +179,11 @@ export function TvCard({
             {tv.name}
           </Link>
         </h2>
-        <Badge tone={where.tone}>{t(where.key)}</Badge>
+        {tv.plan_limited ? (
+          <Badge tone="warn">{t("tv.planLimited")}</Badge>
+        ) : (
+          <Badge tone={where.tone}>{t(where.key)}</Badge>
+        )}
       </div>
       <div aria-live="polite" className="space-y-2">
         {watching ? <p className="text-sm text-muted">{t("tv.watching", { app: watching })}</p> : null}

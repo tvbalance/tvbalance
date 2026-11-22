@@ -82,7 +82,8 @@
     "tv_offline": "La TV no está accesible ahora mismo.",
     "unavailable": "El motor se está iniciando. Inténtalo de nuevo en un momento.",
     "tv_exists": "Este televisor ya está añadido.",
-    "adapter_mismatch": "Este televisor se añadió con otra marca."
+    "adapter_mismatch": "Este televisor se añadió con otra marca.",
+    "invalid_license": "Esta clave de licencia no es válida."
   },
   "tv": {
     "power": {
@@ -115,7 +116,8 @@
       "window": "termine el horario permitido",
       "budget": "se agote el tiempo diario",
       "override": "termine el permiso temporal"
-    }
+    },
+    "planLimited": "Requiere Pro"
   },
   "actions": {
     "pause": "Pausa de {{minutes}} min",
@@ -258,7 +260,8 @@
       "tv_unreachable": "No se puede contactar con el televisor",
       "pairing_lost": "Hay que volver a emparejar el televisor",
       "tv_added": "Se añadió un televisor",
-      "tv_paired": "El televisor se emparejó de nuevo"
+      "tv_paired": "El televisor se emparejó de nuevo",
+      "license_changed": "La licencia ha cambiado"
     }
   },
   "tvDetail": {
@@ -277,7 +280,8 @@
     "removeTitle": "¿Quitar {{name}}?",
     "removeHelp": "El televisor deja de supervisarse.",
     "confirmRemove": "Quitar televisor",
-    "needsPairing": "Este televisor debe emparejarse de nuevo antes de poder supervisarse."
+    "needsPairing": "Este televisor debe emparejarse de nuevo antes de poder supervisarse.",
+    "planLimited": "Este televisor está configurado pero no se supervisa: el plan Free cubre uno. Añade una licencia Pro en Ajustes o desactiva los demás televisores."
   },
   "settings": {
     "title": "Ajustes",
@@ -385,7 +389,8 @@
       "wake": "Encender",
       "push_updates": "Actualizaciones en directo"
     },
-    "pairAgain": "Emparejar de nuevo"
+    "pairAgain": "Emparejar de nuevo",
+    "freeNotice": "El plan Free supervisa un televisor. Puedes añadir este, pero seguirá inactivo hasta que añadas una licencia Pro en Ajustes."
   },
   "push": {
     "title": "Notificaciones",
@@ -460,5 +465,33 @@
     "rotateConfirm": "Crear",
     "rotated": "Hay un certificado nuevo listo",
     "customNote": "TVBalance usa tu propio certificado. Los dispositivos ya deben confiar en él."
+  },
+  "license": {
+    "title": "TVBalance Pro",
+    "help": "El plan Free supervisa un televisor. Una licencia Pro, comprada una sola vez para todo el hogar, quita el límite. Se comprueba en este dispositivo y no necesita internet.",
+    "plan": {
+      "free": "Plan Free",
+      "pro": "Pro"
+    },
+    "status": {
+      "none": "No se ha introducido ninguna clave de licencia.",
+      "active": "Licencia activa.",
+      "expired": "La licencia ha caducado, así que se aplica el plan Free.",
+      "invalid": "La clave de licencia guardada ya no es válida, así que se aplica el plan Free."
+    },
+    "licensee": "Licencia a nombre de {{name}}",
+    "expires": "Válida hasta el {{date}}",
+    "perpetual": "Sin fecha de caducidad",
+    "tvLimit": "Televisores supervisados: {{count}}",
+    "tvUnlimited": "Televisores supervisados: sin límite",
+    "keyLabel": "Clave de licencia",
+    "activate": "Activar",
+    "activated": "Licencia activada",
+    "remove": "Quitar la licencia",
+    "removeTitle": "¿Quitar la licencia?",
+    "removeHelp": "El hogar vuelve al plan Free. Tus ajustes se conservan, pero solo se supervisa el televisor activado más antiguo.",
+    "removeConfirm": "Quitar",
+    "removed": "Licencia quitada",
+    "buy": "Comprar Pro"
   }
 }

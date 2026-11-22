@@ -82,7 +82,8 @@
     "tv_offline": "Der Fernseher ist gerade nicht erreichbar.",
     "unavailable": "Die Engine startet. Versuchen Sie es gleich erneut.",
     "tv_exists": "Dieser Fernseher wurde bereits hinzugefügt.",
-    "adapter_mismatch": "Dieser Fernseher wurde mit einer anderen Marke hinzugefügt."
+    "adapter_mismatch": "Dieser Fernseher wurde mit einer anderen Marke hinzugefügt.",
+    "invalid_license": "Dieser Lizenzschlüssel ist nicht gültig."
   },
   "tv": {
     "power": {
@@ -115,7 +116,8 @@
       "window": "die erlaubten Zeiten enden",
       "budget": "die Tageszeit aufgebraucht ist",
       "override": "die vorübergehende Erlaubnis endet"
-    }
+    },
+    "planLimited": "Benötigt Pro"
   },
   "actions": {
     "pause": "{{minutes}} Min. Pause",
@@ -258,7 +260,8 @@
       "tv_unreachable": "Der Fernseher ist nicht erreichbar",
       "pairing_lost": "Der Fernseher muss neu gekoppelt werden",
       "tv_added": "Ein Fernseher wurde hinzugefügt",
-      "tv_paired": "Der Fernseher wurde erneut gekoppelt"
+      "tv_paired": "Der Fernseher wurde erneut gekoppelt",
+      "license_changed": "Die Lizenz hat sich geändert"
     }
   },
   "tvDetail": {
@@ -277,7 +280,8 @@
     "removeTitle": "{{name}} entfernen?",
     "removeHelp": "Der Fernseher wird nicht mehr überwacht.",
     "confirmRemove": "Fernseher entfernen",
-    "needsPairing": "Dieser Fernseher muss erneut gekoppelt werden, bevor er überwacht werden kann."
+    "needsPairing": "Dieser Fernseher muss erneut gekoppelt werden, bevor er überwacht werden kann.",
+    "planLimited": "Dieser Fernseher ist eingerichtet, wird aber nicht überwacht: Der Free-Tarif deckt einen Fernseher ab. Fügen Sie in den Einstellungen eine Pro-Lizenz hinzu oder schalten Sie die anderen Fernseher ab."
   },
   "settings": {
     "title": "Einstellungen",
@@ -385,7 +389,8 @@
       "wake": "Einschalten",
       "push_updates": "Live-Updates"
     },
-    "pairAgain": "Erneut koppeln"
+    "pairAgain": "Erneut koppeln",
+    "freeNotice": "Der Free-Tarif überwacht einen Fernseher. Sie können diesen hinzufügen, er bleibt aber inaktiv, bis Sie in den Einstellungen eine Pro-Lizenz hinzufügen."
   },
   "push": {
     "title": "Benachrichtigungen",
@@ -460,5 +465,33 @@
     "rotateConfirm": "Erstellen",
     "rotated": "Ein neues Zertifikat ist bereit",
     "customNote": "TVBalance nutzt dein eigenes Zertifikat. Die Geräte müssen ihm bereits vertrauen."
+  },
+  "license": {
+    "title": "TVBalance Pro",
+    "help": "Der Free-Tarif überwacht einen Fernseher. Eine Pro-Lizenz, einmal für den ganzen Haushalt gekauft, hebt die Grenze auf. Sie wird auf diesem Gerät geprüft und braucht kein Internet.",
+    "plan": {
+      "free": "Free-Tarif",
+      "pro": "Pro"
+    },
+    "status": {
+      "none": "Es wurde kein Lizenzschlüssel eingegeben.",
+      "active": "Lizenz aktiv.",
+      "expired": "Die Lizenz ist abgelaufen, deshalb gilt der Free-Tarif.",
+      "invalid": "Der gespeicherte Lizenzschlüssel ist nicht mehr gültig, deshalb gilt der Free-Tarif."
+    },
+    "licensee": "Lizenziert für {{name}}",
+    "expires": "Gültig bis {{date}}",
+    "perpetual": "Kein Ablaufdatum",
+    "tvLimit": "Überwachte Fernseher: {{count}}",
+    "tvUnlimited": "Überwachte Fernseher: unbegrenzt",
+    "keyLabel": "Lizenzschlüssel",
+    "activate": "Aktivieren",
+    "activated": "Lizenz aktiviert",
+    "remove": "Lizenz entfernen",
+    "removeTitle": "Lizenz entfernen?",
+    "removeHelp": "Der Haushalt kehrt zum Free-Tarif zurück. Ihre Einstellungen bleiben erhalten, überwacht wird aber nur der älteste aktivierte Fernseher.",
+    "removeConfirm": "Entfernen",
+    "removed": "Lizenz entfernt",
+    "buy": "Pro kaufen"
   }
 }

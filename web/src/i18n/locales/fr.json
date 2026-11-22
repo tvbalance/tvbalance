@@ -82,7 +82,8 @@
     "tv_offline": "La TV est injoignable pour le moment.",
     "unavailable": "Le moteur démarre. Réessayez dans un instant.",
     "tv_exists": "Cette télé est déjà ajoutée.",
-    "adapter_mismatch": "Cette télé a été ajoutée avec une autre marque."
+    "adapter_mismatch": "Cette télé a été ajoutée avec une autre marque.",
+    "invalid_license": "Cette clé de licence n’est pas valide."
   },
   "tv": {
     "power": {
@@ -115,7 +116,8 @@
       "window": "les horaires autorisés se terminent",
       "budget": "le temps quotidien soit épuisé",
       "override": "l'autorisation temporaire se termine"
-    }
+    },
+    "planLimited": "Nécessite Pro"
   },
   "actions": {
     "pause": "Pause {{minutes}} min",
@@ -258,7 +260,8 @@
       "tv_unreachable": "Le téléviseur est injoignable",
       "pairing_lost": "Le téléviseur doit être réassocié",
       "tv_added": "Une télé a été ajoutée",
-      "tv_paired": "La télé a été associée de nouveau"
+      "tv_paired": "La télé a été associée de nouveau",
+      "license_changed": "La licence a changé"
     }
   },
   "tvDetail": {
@@ -277,7 +280,8 @@
     "removeTitle": "Retirer {{name}} ?",
     "removeHelp": "Le téléviseur n'est plus surveillé.",
     "confirmRemove": "Retirer le téléviseur",
-    "needsPairing": "Cette télé doit être associée de nouveau avant de pouvoir être surveillée."
+    "needsPairing": "Cette télé doit être associée de nouveau avant de pouvoir être surveillée.",
+    "planLimited": "Ce téléviseur est configuré mais n’est pas supervisé : l’offre Free en couvre un. Ajoutez une licence Pro dans les Réglages, ou désactivez les autres téléviseurs."
   },
   "settings": {
     "title": "Réglages",
@@ -385,7 +389,8 @@
       "wake": "Allumer",
       "push_updates": "Mises à jour en direct"
     },
-    "pairAgain": "Associer de nouveau"
+    "pairAgain": "Associer de nouveau",
+    "freeNotice": "L’offre Free supervise un téléviseur. Vous pouvez ajouter celui-ci, mais il reste inactif tant que vous n’ajoutez pas de licence Pro dans les Réglages."
   },
   "push": {
     "title": "Notifications",
@@ -460,5 +465,33 @@
     "rotateConfirm": "Créer",
     "rotated": "Un nouveau certificat est prêt",
     "customNote": "TVBalance utilise votre propre certificat. Les appareils doivent déjà lui faire confiance."
+  },
+  "license": {
+    "title": "TVBalance Pro",
+    "help": "L’offre Free supervise un téléviseur. Une licence Pro, achetée une seule fois pour tout le foyer, supprime cette limite. Elle est vérifiée sur cet appareil et n’a pas besoin d’internet.",
+    "plan": {
+      "free": "Offre Free",
+      "pro": "Pro"
+    },
+    "status": {
+      "none": "Aucune clé de licence saisie.",
+      "active": "Licence active.",
+      "expired": "La licence a expiré, l’offre Free s’applique donc.",
+      "invalid": "La clé de licence enregistrée n’est plus valide, l’offre Free s’applique donc."
+    },
+    "licensee": "Licence au nom de {{name}}",
+    "expires": "Valable jusqu’au {{date}}",
+    "perpetual": "Sans date d’expiration",
+    "tvLimit": "Téléviseurs supervisés : {{count}}",
+    "tvUnlimited": "Téléviseurs supervisés : illimité",
+    "keyLabel": "Clé de licence",
+    "activate": "Activer",
+    "activated": "Licence activée",
+    "remove": "Supprimer la licence",
+    "removeTitle": "Supprimer la licence ?",
+    "removeHelp": "Le foyer revient à l’offre Free. Vos réglages sont conservés, mais seul le plus ancien téléviseur activé est supervisé.",
+    "removeConfirm": "Supprimer",
+    "removed": "Licence supprimée",
+    "buy": "Acheter Pro"
   }
 }

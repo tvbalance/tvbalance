@@ -49,6 +49,7 @@ const NEW_TV = {
   host: "198.51.100.7",
   enabled: true,
   needs_pairing: false,
+  plan_limited: false,
   policy_id: null,
   created_at: "2026-01-01T00:00:00Z",
   status: null,
@@ -96,7 +97,20 @@ afterEach(() => {
   setCsrfToken(null);
 });
 
+const FREE = { status: "none", tier: "free", licensee: null, expires_at: null, max_tvs: 1, checkout_url: "" };
+
 describe("add a TV", () => {
+  it("warns that the Free plan supervises one TV when one is already added", async () => {
+    renderAt("#/tvs/add", { "GET tvs": [NEW_TV], "GET license": FREE });
+    expect(await screen.findByText(/Free plan supervises one TV/)).toBeInTheDocument();
+  });
+
+  it("does not warn on the first TV, or with a Pro license", async () => {
+    renderAt("#/tvs/add", { "GET license": FREE });
+    await screen.findByText("Living room TV");
+    expect(screen.queryByText(/Free plan supervises one TV/)).not.toBeInTheDocument();
+  });
+
   it("lists the TVs found and disables the ones already added", async () => {
     renderAt("#/tvs/add");
     expect(await screen.findByText("Living room TV")).toBeInTheDocument();

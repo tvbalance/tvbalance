@@ -40,6 +40,7 @@ function tv(overrides: Partial<Tv> = {}): Tv {
     host: "203.0.113.50",
     enabled: true,
     needs_pairing: false,
+    plan_limited: false,
     policy_id: 1,
     created_at: "2026-01-01T00:00:00Z",
     status: STATUS,
@@ -119,6 +120,12 @@ describe("dashboard", () => {
     expect(screen.getByText("Needs pairing")).toBeInTheDocument();
     expect(screen.getByText("Not monitored")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Pause/ })).toBeNull();
+  });
+
+  it("marks a TV the Free plan does not cover and shows no live state for it", async () => {
+    renderDashboard([tv({ id: "b", name: "B", plan_limited: true, status: null })]);
+    expect(await screen.findByText("Requires Pro")).toBeInTheDocument();
+    expect(screen.queryByText("Unreachable")).toBeNull();
   });
 
   it("explains the empty state and offers to add a TV", async () => {

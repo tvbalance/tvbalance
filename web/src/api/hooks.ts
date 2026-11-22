@@ -22,6 +22,7 @@ export type FoundTv = Schemas["FoundTvOut"];
 export type Pairing = Schemas["PairingOut"];
 export type Info = Schemas["InfoResponse"];
 export type TlsStatus = Schemas["TlsStatusOut"];
+export type License = Schemas["LicenseOut"];
 
 export const keys = {
   state: ["auth", "state"] as const,
@@ -34,6 +35,7 @@ export const keys = {
   settings: ["settings"] as const,
   info: ["info"] as const,
   tls: ["tls"] as const,
+  license: ["license"] as const,
   sessions: ["auth", "sessions"] as const,
   tokens: ["auth", "tokens"] as const,
   push: ["push"] as const,
@@ -114,6 +116,14 @@ export function useTls(enabled = true) {
   return useQuery({
     queryKey: keys.tls,
     queryFn: ({ signal }) => api.get<TlsStatus>("tls", signal),
+    enabled,
+  });
+}
+
+export function useLicense(enabled = true) {
+  return useQuery({
+    queryKey: keys.license,
+    queryFn: ({ signal }) => api.get<License>("license", signal),
     enabled,
   });
 }

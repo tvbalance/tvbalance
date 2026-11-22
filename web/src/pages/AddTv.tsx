@@ -8,6 +8,7 @@ import {
   keys,
   useAdapters,
   useDiscovery,
+  useLicense,
   useMe,
   usePairing,
   usePolicies,
@@ -296,6 +297,8 @@ export function AddTv() {
   const [chosen, setChosen] = useState<Target | null>(null);
   const [added, setAdded] = useState<{ tvId: string; name: string } | null>(null);
   const canAdmin = me.data?.scopes.includes("admin") ?? false;
+  const license = useLicense(canAdmin && !tvId);
+  const freeNotice = license.data?.tier === "free" && (tvs.data?.length ?? 0) > 0;
 
   const target: Target | null = tvId
     ? stored
@@ -335,6 +338,7 @@ export function AddTv() {
       <h1 id="add-tv-title" className="text-2xl font-bold">
         {tvId ? t("pairing.repairTitle") : t("pairing.title")}
       </h1>
+      {freeNotice && !added ? <p role="note" className="text-sm text-muted">{t("pairing.freeNotice")}</p> : null}
       {body}
     </section>
   );

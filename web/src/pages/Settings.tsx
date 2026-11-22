@@ -9,6 +9,7 @@ import { api, setCsrfToken } from "../api/http";
 import { browserTimezone, RegionFields } from "../components/RegionFields";
 import { Security } from "../components/settings/Security";
 import { Notifications } from "../components/settings/Notifications";
+import { License } from "../components/settings/License";
 import { SecureConnection } from "../components/settings/SecureConnection";
 import { Sessions } from "../components/settings/Sessions";
 import { Tokens } from "../components/settings/Tokens";
@@ -104,6 +105,7 @@ export function Settings() {
       <General canWrite={canWrite} />
       {fullAdmin ? (
         <>
+          <License />
           <SecureConnection />
           <Notifications />
           <Security />

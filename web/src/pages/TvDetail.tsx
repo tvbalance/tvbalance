@@ -155,6 +155,7 @@ export function TvDetail() {
           ) : null}
         </p>
       ) : null}
+      {tv.plan_limited ? <p role="status">{t("tvDetail.planLimited")}</p> : null}
       <Settings key={`${tv.id}-${tv.name}`} tv={tv} canWrite={canWrite} />
       <h2 className="text-lg font-semibold">{t("activity.usage")}</h2>
       {usage.data ? <UsageBars usage={usage.data} /> : null}

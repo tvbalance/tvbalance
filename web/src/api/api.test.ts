@@ -78,6 +78,7 @@ const TV = (id: string): Tv => ({
   host: "tv.local",
   enabled: true,
   needs_pairing: false,
+  plan_limited: false,
   policy_id: null,
   created_at: "2026-01-01T00:00:00Z",
   status: null,

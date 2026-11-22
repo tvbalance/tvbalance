@@ -82,7 +82,8 @@
     "tv_offline": "The TV is not reachable right now.",
     "unavailable": "The Engine is starting. Try again in a moment.",
     "tv_exists": "This TV is already added.",
-    "adapter_mismatch": "This TV was added with another brand."
+    "adapter_mismatch": "This TV was added with another brand.",
+    "invalid_license": "This license key is not valid."
   },
   "tv": {
     "power": {
@@ -115,7 +116,8 @@
       "window": "the allowed hours end",
       "budget": "the daily time is used up",
       "override": "the temporary permission ends"
-    }
+    },
+    "planLimited": "Requires Pro"
   },
   "actions": {
     "pause": "Pause {{minutes}} min",
@@ -258,7 +260,8 @@
       "tv_unreachable": "The TV can't be reached",
       "pairing_lost": "The TV needs to be paired again",
       "tv_added": "A TV was added",
-      "tv_paired": "The TV was paired again"
+      "tv_paired": "The TV was paired again",
+      "license_changed": "The license changed"
     }
   },
   "tvDetail": {
@@ -277,7 +280,8 @@
     "removeTitle": "Remove {{name}}?",
     "removeHelp": "The TV is no longer monitored.",
     "confirmRemove": "Remove TV",
-    "needsPairing": "This TV needs to be paired again before it can be monitored."
+    "needsPairing": "This TV needs to be paired again before it can be monitored.",
+    "planLimited": "This TV is set up but not supervised: the Free plan covers one TV. Add a Pro license in Settings, or turn off the other TVs."
   },
   "settings": {
     "title": "Settings",
@@ -385,7 +389,8 @@
       "wake": "Switch on",
       "push_updates": "Live updates"
     },
-    "pairAgain": "Pair again"
+    "pairAgain": "Pair again",
+    "freeNotice": "The Free plan supervises one TV. You can add this one, but it stays inactive until you add a Pro license in Settings."
   },
   "push": {
     "title": "Notifications",
@@ -460,5 +465,33 @@
     "rotateConfirm": "Create",
     "rotated": "A new certificate is ready",
     "customNote": "TVBalance is using your own certificate. Devices must already trust it."
+  },
+  "license": {
+    "title": "TVBalance Pro",
+    "help": "Free supervises one TV. A Pro license, bought once for the whole household, removes the limit. It is checked on this device and needs no internet.",
+    "plan": {
+      "free": "Free plan",
+      "pro": "Pro"
+    },
+    "status": {
+      "none": "No license key entered.",
+      "active": "License active.",
+      "expired": "The license has expired, so the Free plan applies.",
+      "invalid": "The stored license key is no longer valid, so the Free plan applies."
+    },
+    "licensee": "Licensed to {{name}}",
+    "expires": "Valid until {{date}}",
+    "perpetual": "No expiry date",
+    "tvLimit": "TVs supervised: {{count}}",
+    "tvUnlimited": "TVs supervised: unlimited",
+    "keyLabel": "License key",
+    "activate": "Activate",
+    "activated": "License activated",
+    "remove": "Remove license",
+    "removeTitle": "Remove the license?",
+    "removeHelp": "The household goes back to the Free plan. Your settings are kept, but only the oldest enabled TV is supervised.",
+    "removeConfirm": "Remove",
+    "removed": "License removed",
+    "buy": "Buy Pro"
   }
 }

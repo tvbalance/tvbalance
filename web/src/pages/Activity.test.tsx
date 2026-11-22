@@ -25,6 +25,7 @@ const TV = {
   host: "203.0.113.50",
   enabled: true,
   needs_pairing: false,
+  plan_limited: false,
   policy_id: 1,
   created_at: "2026-01-01T00:00:00Z",
   status: null,
