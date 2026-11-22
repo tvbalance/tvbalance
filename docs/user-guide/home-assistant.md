@@ -20,6 +20,11 @@ you; if you revoke it, restart the Add-on and Home Assistant picks up the new on
    folder. Restart Home Assistant.
 3. **Settings → Devices & services → Add integration → TVBalance**. Enter the Engine URL and the token.
 
+To use HTTPS, enter an `https://` address (port 8766 by default). When the certificate is not trusted yet, the setup
+shows the fingerprint of the Engine's local certificate authority: compare it with **Settings → Secure connection**
+in the TVBalance web UI and confirm. Home Assistant then accepts only that authority for this Engine. If the
+authority changes (a new certificate was created), Home Assistant asks you to confirm it again. See https.md.
+
 If the token is revoked or expires, Home Assistant asks you for a new one (a repair notice appears; choose
 **Reconfigure**). Nothing else needs to be set up again.
 

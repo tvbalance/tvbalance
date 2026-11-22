@@ -57,14 +57,20 @@ connection problems.
 
 Changing rules, TVs and settings needs the administrator password.
 
+When you open the web app through a plain `http://` address and the Engine serves HTTPS, a banner offers the
+secure address. You can dismiss it; the choice is remembered in this browser.
+
 ## Settings
 - **General:** language, time zone and light/dark appearance.
 - **Notifications:** get a push notification on this device when the TV needs pairing again, can't be reached,
   has content blocked, or is about to run out of time. Choose which of these you want, send a test, turn them off,
   and remove other devices. Only the administrator sees this card. Browsers allow push only on a secure
-  connection, so it works through Home Assistant over HTTPS (Ingress) or from `localhost`, not from a plain
-  `http://` address. On iPhone and iPad, add TVBalance to the Home Screen first. HTTPS for the local network is
-  planned (M18).
+  connection, so it works through Home Assistant over HTTPS (Ingress), from `localhost` or from the secure
+  address of your network (see https.md), not from a plain `http://` address. The card links to the secure
+  address when there is one. On iPhone and iPad, add TVBalance to the Home Screen first.
+- **Secure connection:** the HTTPS addresses, the certificate's expiry and fingerprint, downloads of the
+  certificate and of the iPhone and iPad profile, install steps per device, and a button to create a new
+  certificate. Only the administrator sees this card. See https.md.
 - **Security:** change the password; set or remove the parent PIN.
 - **Signed-in devices:** see every signed-in browser and sign out any of them, or all but this one.
 - **API tokens:** for other programs. A token's secret is shown once when you create it, so copy it right away.

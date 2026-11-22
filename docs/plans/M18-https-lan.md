@@ -1,6 +1,6 @@
 # M18: HTTPS on the LAN
 
-Status: in progress.
+Status: done. Real devices (phone, Home Assistant over HTTPS) still need a manual check.
 
 ## Goal
 Serve the web app and the API over HTTPS on the local network with a locally managed certificate, so the web app

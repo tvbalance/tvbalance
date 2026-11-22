@@ -35,4 +35,8 @@ push (image build, Add-on linter, client build with `twine check`, version consi
 
 ## Not covered yet
 
-Icons and logo (waiting for the brand and domain checks) and HTTPS on the LAN (M18).
+Icons and logo (waiting for the brand and domain checks).
+
+Before the first release that includes HTTPS (M18), also check by hand: install the CA on a phone and a computer,
+open the secure address without warnings, turn on notifications and send the test, and confirm the fingerprint
+in the Home Assistant integration setup over `https://`.
