@@ -67,6 +67,9 @@
       },
       "time_left": {
         "name": "Tiempo restante hoy"
+      },
+      "profile": {
+        "name": "Perfil activo"
       }
     },
     "event": {
@@ -84,7 +87,9 @@
               "tv_unreachable": "Televisor inaccesible",
               "tv_reachable": "Televisor accesible de nuevo",
               "pairing_lost": "Vinculación perdida",
-              "tv_paired": "Televisor vinculado"
+              "tv_paired": "Televisor vinculado",
+              "profile_started": "Perfil iniciado",
+              "profile_ended": "Perfil terminado"
             }
           }
         }
@@ -195,6 +200,33 @@
           "description": "Activa o desactiva la supervisión."
         }
       }
+    },
+    "activate_profile": {
+      "name": "Activar perfil",
+      "description": "Pone en vigor un conjunto de reglas para todos los televisores del hogar. Requiere un administrador de Home Assistant y el plan Pro.",
+      "fields": {
+        "policy_id": {
+          "name": "ID del conjunto de reglas",
+          "description": "El número del conjunto de reglas, visible en la dirección del Engine al editarlo."
+        },
+        "minutes": {
+          "name": "Minutos",
+          "description": "Cuánto tiempo, en minutos."
+        },
+        "until_midnight": {
+          "name": "Hasta medianoche",
+          "description": "Se mantiene hasta la medianoche del hogar."
+        },
+        "excluded_device_ids": {
+          "name": "Televisores a excluir",
+          "description": "Estos televisores siguen sus propias reglas."
+        }
+      }
+    },
+    "stop_profile": {
+      "name": "Terminar perfil",
+      "description": "Termina el perfil ahora. Requiere un administrador de Home Assistant.",
+      "fields": {}
     }
   },
   "exceptions": {

@@ -67,6 +67,9 @@
       },
       "time_left": {
         "name": "Verbleibende Zeit heute"
+      },
+      "profile": {
+        "name": "Aktives Profil"
       }
     },
     "event": {
@@ -84,7 +87,9 @@
               "tv_unreachable": "Fernseher nicht erreichbar",
               "tv_reachable": "Fernseher wieder erreichbar",
               "pairing_lost": "Kopplung verloren",
-              "tv_paired": "Fernseher gekoppelt"
+              "tv_paired": "Fernseher gekoppelt",
+              "profile_started": "Profil gestartet",
+              "profile_ended": "Profil beendet"
             }
           }
         }
@@ -195,6 +200,33 @@
           "description": "Überwachung ein- oder ausschalten."
         }
       }
+    },
+    "activate_profile": {
+      "name": "Profil aktivieren",
+      "description": "Setzt einen Regelsatz für alle Fernseher im Haushalt in Kraft. Erfordert einen Home-Assistant-Administrator und den Pro-Tarif.",
+      "fields": {
+        "policy_id": {
+          "name": "Regelsatz-ID",
+          "description": "Die Nummer des Regelsatzes, sichtbar in der Adresszeile der Engine beim Bearbeiten."
+        },
+        "minutes": {
+          "name": "Minuten",
+          "description": "Wie lange, in Minuten."
+        },
+        "until_midnight": {
+          "name": "Bis Mitternacht",
+          "description": "Bis zur Mitternacht des Haushalts aktiv lassen."
+        },
+        "excluded_device_ids": {
+          "name": "Auszunehmende Fernseher",
+          "description": "Diese Fernseher folgen weiter ihren eigenen Regeln."
+        }
+      }
+    },
+    "stop_profile": {
+      "name": "Profil beenden",
+      "description": "Beendet das Profil sofort. Erfordert einen Home-Assistant-Administrator.",
+      "fields": {}
     }
   },
   "exceptions": {

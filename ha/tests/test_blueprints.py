@@ -17,6 +17,7 @@ def test_blueprints_exist() -> None:
         "warning_light.yaml",
         "notify_parent.yaml",
         "button_bonus.yaml",
+        "calendar_profile.yaml",
     }
 
 

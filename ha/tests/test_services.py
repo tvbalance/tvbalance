@@ -172,3 +172,64 @@ async def test_the_pause_button_reports_a_refusal(
         await hass.services.async_call(
             "button", "press", {"entity_id": button.entity_id}, blocking=True
         )
+
+
+PROFILE = {
+    "policy_id": 2,
+    "name": "Holidays",
+    "starts_at": "2026-01-01T09:00:00+00:00",
+    "ends_at": "2026-01-01T11:00:00+00:00",
+    "excluded_tv_ids": [],
+    "source": "automation",
+}
+
+
+async def test_activate_profile_sends_the_household_request(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, device_id: str
+) -> None:
+    aioclient_mock.post(f"{URL}/api/v1/profiles/active", json=PROFILE)
+    await hass.services.async_call(
+        DOMAIN,
+        "activate_profile",
+        {"policy_id": 2, "minutes": 120, "excluded_device_ids": [device_id]},
+        blocking=True,
+    )
+    assert writes(aioclient_mock) == [
+        (
+            "POST",
+            f"{URL}/api/v1/profiles/active",
+            {
+                "policy_id": 2,
+                "until_midnight": False,
+                "excluded_tv_ids": ["tv1"],
+                "source": "automation",
+                "minutes": 120,
+            },
+        )
+    ]
+
+
+async def test_activate_profile_needs_exactly_one_duration(
+    hass: HomeAssistant, device_id: str
+) -> None:
+    with pytest.raises(ServiceValidationError):
+        await hass.services.async_call(DOMAIN, "activate_profile", {"policy_id": 2}, blocking=True)
+
+
+async def test_stop_profile_ends_it(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, device_id: str
+) -> None:
+    aioclient_mock.delete(f"{URL}/api/v1/profiles/active", status=204)
+    await hass.services.async_call(DOMAIN, "stop_profile", {}, blocking=True)
+    assert writes(aioclient_mock) == [("DELETE", f"{URL}/api/v1/profiles/active", None)]
+
+
+async def test_profile_services_are_for_administrators(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, device_id: str
+) -> None:
+    child = MockUser(name="child").add_to_hass(hass)
+    with pytest.raises(Unauthorized):
+        await hass.services.async_call(
+            DOMAIN, "stop_profile", {}, blocking=True, context=Context(user_id=child.id)
+        )
+    assert writes(aioclient_mock) == []

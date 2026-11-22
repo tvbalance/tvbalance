@@ -24,6 +24,8 @@ EVENT_TYPES = [
     "tv_reachable",
     "pairing_lost",
     "tv_paired",
+    "profile_started",
+    "profile_ended",
 ]
 
 

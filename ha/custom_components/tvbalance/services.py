@@ -53,6 +53,14 @@ def _resolve(hass: HomeAssistant, device_id: str) -> tuple[TVBalanceCoordinator,
     raise _invalid("entry_not_loaded")
 
 
+def _household(hass: HomeAssistant) -> TVBalanceCoordinator:
+    """The coordinator of the loaded Engine: profiles belong to the household, not to a TV."""
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        if entry.state is ConfigEntryState.LOADED:
+            return entry.runtime_data
+    raise _invalid("entry_not_loaded")
+
+
 def _duration(call: ServiceCall) -> dict[str, Any]:
     minutes, until_midnight = call.data.get("minutes"), call.data["until_midnight"]
     if (minutes is None) == (not until_midnight):
@@ -84,6 +92,15 @@ async def _set_monitoring(c: TVBalanceCoordinator, tv_id: str, call: ServiceCall
     return await engine_call(c.client.update_tv(tv_id, enabled=call.data["enabled"]))
 
 
+PROFILE_ACTIVATE = vol.Schema(
+    {
+        vol.Required("policy_id"): vol.All(vol.Coerce(int), vol.Range(min=1)),
+        vol.Optional("excluded_device_ids", default=list): [cv.string],
+        **DURATION,
+    }
+)
+
+
 SERVICES: dict[str, tuple[Handler, vol.Schema]] = {
     "bonus": (_bonus, vol.Schema({**DEVICE, vol.Required("minutes"): MINUTES})),
     "allow": (_allow, vol.Schema({**DEVICE, **DURATION})),
@@ -98,6 +115,26 @@ SERVICES: dict[str, tuple[Handler, vol.Schema]] = {
 
 
 def async_setup_services(hass: HomeAssistant) -> None:
+    async def activate_profile(call: ServiceCall) -> None:
+        coordinator = _household(hass)
+        excluded = [_resolve(hass, device_id)[1] for device_id in call.data["excluded_device_ids"]]
+        await engine_call(
+            coordinator.client.activate_profile(
+                call.data["policy_id"], excluded_tv_ids=excluded, **_duration(call)
+            )
+        )
+        await coordinator.async_request_refresh()
+
+    async def stop_profile(call: ServiceCall) -> None:
+        coordinator = _household(hass)
+        await engine_call(coordinator.client.stop_profile())
+        await coordinator.async_request_refresh()
+
+    async_register_admin_service(
+        hass, DOMAIN, "activate_profile", activate_profile, PROFILE_ACTIVATE
+    )
+    async_register_admin_service(hass, DOMAIN, "stop_profile", stop_profile, vol.Schema({}))
+
     for name, (handler, schema) in SERVICES.items():
 
         async def run(call: ServiceCall, handler: Handler = handler) -> None:

@@ -67,6 +67,9 @@
       },
       "time_left": {
         "name": "Temps restant aujourd'hui"
+      },
+      "profile": {
+        "name": "Profil actif"
       }
     },
     "event": {
@@ -84,7 +87,9 @@
               "tv_unreachable": "Télévision injoignable",
               "tv_reachable": "Télévision de nouveau joignable",
               "pairing_lost": "Association perdue",
-              "tv_paired": "Télévision associée"
+              "tv_paired": "Télévision associée",
+              "profile_started": "Profil démarré",
+              "profile_ended": "Profil terminé"
             }
           }
         }
@@ -195,6 +200,33 @@
           "description": "Active ou désactive la surveillance."
         }
       }
+    },
+    "activate_profile": {
+      "name": "Activer un profil",
+      "description": "Met un jeu de règles en vigueur pour tous les téléviseurs du foyer. Demande un administrateur Home Assistant et l'offre Pro.",
+      "fields": {
+        "policy_id": {
+          "name": "ID du jeu de règles",
+          "description": "Le numéro du jeu de règles, visible dans l'adresse de l'Engine quand vous le modifiez."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "Pendant combien de temps, en minutes."
+        },
+        "until_midnight": {
+          "name": "Jusqu'à minuit",
+          "description": "Reste actif jusqu'à minuit pour le foyer."
+        },
+        "excluded_device_ids": {
+          "name": "Téléviseurs à exclure",
+          "description": "Ces téléviseurs gardent leurs propres règles."
+        }
+      }
+    },
+    "stop_profile": {
+      "name": "Terminer le profil",
+      "description": "Termine le profil immédiatement. Demande un administrateur Home Assistant.",
+      "fields": {}
     }
   },
   "exceptions": {

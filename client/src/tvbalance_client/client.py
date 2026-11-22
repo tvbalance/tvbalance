@@ -62,6 +62,16 @@ class Decision:
 
 
 @dataclass(frozen=True, slots=True)
+class ActiveProfile:
+    """A rule set switched on for the household, by hand, by the calendar or by an automation."""
+
+    policy_id: int
+    name: str
+    until: datetime
+    source: str  # "manual", "automation" or "calendar"
+
+
+@dataclass(frozen=True, slots=True)
 class TvStatus:
     connected: bool
     pairing_required: bool
@@ -73,6 +83,7 @@ class TvStatus:
     input_id: str | None = None
     channel_id: str | None = None
     program_title: str | None = None
+    active_profile: ActiveProfile | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -136,6 +147,17 @@ async def fetch_ca_certificate(base_url: str, session: aiohttp.ClientSession | N
             await http.close()
 
 
+def _profile(raw: dict[str, Any] | None) -> ActiveProfile | None:
+    if raw is None:
+        return None
+    return ActiveProfile(
+        policy_id=raw["policy_id"],
+        name=raw["name"],
+        until=datetime.fromisoformat(raw["until"]),
+        source=raw["source"],
+    )
+
+
 def _status(raw: dict[str, Any] | None) -> TvStatus | None:
     if raw is None:
         return None
@@ -158,6 +180,7 @@ def _status(raw: dict[str, Any] | None) -> TvStatus | None:
         input_id=raw.get("input_id"),
         channel_id=raw.get("channel_id"),
         program_title=raw.get("program_title"),
+        active_profile=_profile(raw.get("active_profile")),
     )
 
 
@@ -311,6 +334,34 @@ class TVBalanceClient:
         return _override(
             await self._request("POST", f"/api/v1/tvs/{tv_id}/pause", {"minutes": minutes})
         )
+
+    async def activate_profile(
+        self,
+        policy_id: int,
+        *,
+        minutes: int | None = None,
+        until_midnight: bool = False,
+        excluded_tv_ids: list[str] | None = None,
+    ) -> ActiveProfile:
+        """Put a rule set in force for the household, except for the TVs left out (Pro)."""
+        body: dict[str, Any] = {
+            "policy_id": policy_id,
+            "until_midnight": until_midnight,
+            "excluded_tv_ids": excluded_tv_ids or [],
+            "source": "automation",
+        }
+        if minutes is not None:
+            body["minutes"] = minutes
+        raw = await self._request("POST", "/api/v1/profiles/active", body)
+        return ActiveProfile(
+            policy_id=raw["policy_id"],
+            name=raw["name"],
+            until=datetime.fromisoformat(raw["ends_at"]),
+            source=raw["source"],
+        )
+
+    async def stop_profile(self) -> None:
+        await self._request("DELETE", "/api/v1/profiles/active")
 
     async def events(self) -> AsyncIterator[Event]:
         """Live events: the status of every TV first, then each event as it happens.

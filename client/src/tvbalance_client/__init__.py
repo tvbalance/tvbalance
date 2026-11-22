@@ -1,6 +1,7 @@
 """Async client for the TVBalance Engine API."""
 
 from tvbalance_client.client import (
+    ActiveProfile,
     AdapterSummary,
     AuthenticationError,
     Caller,
@@ -21,6 +22,7 @@ from tvbalance_client.client import (
 )
 
 __all__ = [
+    "ActiveProfile",
     "AdapterSummary",
     "AuthenticationError",
     "Caller",

@@ -146,3 +146,23 @@ async def test_unreachable_engine_after_setup_makes_entities_unavailable(
     await hass.async_block_till_done()
     assert entry.state is ConfigEntryState.LOADED
     assert state_of(hass, "sensor", "status").state == "unavailable"
+
+
+async def test_the_profile_sensor_names_the_active_profile(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    profile = {
+        "policy_id": 2,
+        "name": "Holidays",
+        "until": "2026-01-01T12:00:00+00:00",
+        "source": "calendar",
+    }
+    await setup_engine(hass, aioclient_mock, [make_tv(status={"active_profile": profile})])
+    assert state_of(hass, "sensor", "profile").state == "Holidays"
+
+
+async def test_the_profile_sensor_is_unknown_without_a_profile(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    await setup_engine(hass, aioclient_mock, [make_tv()])
+    assert state_of(hass, "sensor", "profile").state == "unknown"

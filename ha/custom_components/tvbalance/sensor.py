@@ -78,6 +78,12 @@ SENSORS: tuple[TVBalanceSensorDescription, ...] = (
         key="program", value=lambda tv: tv.status.program_title if tv.status else None
     ),
     TVBalanceSensorDescription(
+        key="profile",
+        value=lambda tv: (
+            tv.status.active_profile.name if tv.status and tv.status.active_profile else None
+        ),
+    ),
+    TVBalanceSensorDescription(
         key="watched_today",
         device_class=SensorDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.MINUTES,

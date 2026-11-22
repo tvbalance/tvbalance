@@ -67,6 +67,9 @@
       },
       "time_left": {
         "name": "Tempo rimasto oggi"
+      },
+      "profile": {
+        "name": "Profilo attivo"
       }
     },
     "event": {
@@ -84,7 +87,9 @@
               "tv_unreachable": "TV non raggiungibile",
               "tv_reachable": "TV di nuovo raggiungibile",
               "pairing_lost": "Associazione persa",
-              "tv_paired": "TV associata"
+              "tv_paired": "TV associata",
+              "profile_started": "Profilo avviato",
+              "profile_ended": "Profilo terminato"
             }
           }
         }
@@ -195,6 +200,33 @@
           "description": "Attiva o disattiva il controllo."
         }
       }
+    },
+    "activate_profile": {
+      "name": "Attiva profilo",
+      "description": "Mette in vigore un set di regole per tutte le TV di casa. Richiede un amministratore di Home Assistant e il piano Pro.",
+      "fields": {
+        "policy_id": {
+          "name": "ID del set di regole",
+          "description": "Il numero del set di regole, visibile nell'indirizzo dell'Engine quando lo modifichi."
+        },
+        "minutes": {
+          "name": "Minuti",
+          "description": "Per quanto tempo, in minuti."
+        },
+        "until_midnight": {
+          "name": "Fino a mezzanotte",
+          "description": "Resta attivo fino alla mezzanotte di casa."
+        },
+        "excluded_device_ids": {
+          "name": "TV da escludere",
+          "description": "Queste TV continuano a seguire le proprie regole."
+        }
+      }
+    },
+    "stop_profile": {
+      "name": "Termina profilo",
+      "description": "Termina subito il profilo. Richiede un amministratore di Home Assistant.",
+      "fields": {}
     }
   },
   "exceptions": {

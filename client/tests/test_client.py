@@ -6,6 +6,7 @@ import pytest
 from cryptography import x509
 from fastapi import FastAPI
 
+from tvbalance.domain.models import Policy
 from tvbalance.infra import tls
 from tvbalance_client import (
     AuthenticationError,
@@ -135,6 +136,24 @@ async def test_override_bonus_and_pause(
         assert await client.bonus(tv_id, 5) == 20
         paused = await client.pause(tv_id, 5)
         assert paused.allow is False
+
+
+async def test_profiles_are_activated_and_stopped(
+    engine_url: str, engine_token: str, engine_app: FastAPI
+) -> None:
+    tv_id = await seed_tv(engine_app)
+    policy_id = await engine_app.state.storage.policies.create("Weekend", Policy())
+    async with TVBalanceClient(engine_url, engine_token) as client:
+        profile = await client.activate_profile(policy_id, minutes=30, excluded_tv_ids=[tv_id])
+        assert (profile.policy_id, profile.name, profile.source) == (
+            policy_id,
+            "Weekend",
+            "automation",
+        )
+        await client.stop_profile()
+        with pytest.raises(TVBalanceError) as missing:
+            await client.activate_profile(999, minutes=30)
+    assert missing.value.status == 404
 
 
 async def test_events_start_with_the_status_of_every_tv(
