@@ -1,6 +1,121 @@
 {
   "components": {
     "schemas": {
+      "ActivateRequest": {
+        "additionalProperties": false,
+        "description": "Put a rule set in force for the household: give ``minutes`` or ask for ``until_midnight``.",
+        "properties": {
+          "excluded_tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Tv Ids",
+            "type": "array"
+          },
+          "minutes": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "source": {
+            "default": "manual",
+            "enum": [
+              "manual",
+              "automation"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "until_midnight": {
+            "default": false,
+            "title": "Until Midnight",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "policy_id"
+        ],
+        "title": "ActivateRequest",
+        "type": "object"
+      },
+      "ActivationOut": {
+        "properties": {
+          "ends_at": {
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "excluded_tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Tv Ids",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ProfileSource"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id",
+          "name",
+          "starts_at",
+          "ends_at",
+          "excluded_tv_ids",
+          "source"
+        ],
+        "title": "ActivationOut",
+        "type": "object"
+      },
+      "ActiveProfileOut": {
+        "properties": {
+          "activation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ActivationOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effective": {
+            "title": "Effective",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "effective",
+          "activation"
+        ],
+        "title": "ActiveProfileOut",
+        "type": "object"
+      },
       "AdapterOut": {
         "properties": {
           "brand": {
@@ -107,6 +222,41 @@
         "title": "BonusRequest",
         "type": "object"
       },
+      "CalendarOut": {
+        "properties": {
+          "effective": {
+            "title": "Effective",
+            "type": "boolean"
+          },
+          "entries": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "dated": "#/components/schemas/DatedEntryOut",
+                  "weekly": "#/components/schemas/WeeklyEntryOut"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/WeeklyEntryOut"
+                },
+                {
+                  "$ref": "#/components/schemas/DatedEntryOut"
+                }
+              ]
+            },
+            "title": "Entries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "effective",
+          "entries"
+        ],
+        "title": "CalendarOut",
+        "type": "object"
+      },
       "Capability": {
         "enum": [
           "foreground_app",
@@ -154,6 +304,90 @@
           "number"
         ],
         "title": "ChannelOut",
+        "type": "object"
+      },
+      "DatedEntryDoc": {
+        "additionalProperties": false,
+        "description": "Whole days from ``start_date`` to ``end_date``, both included (a holiday).",
+        "properties": {
+          "end_date": {
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "excluded_tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Tv Ids",
+            "type": "array"
+          },
+          "kind": {
+            "const": "dated",
+            "title": "Kind",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id",
+          "kind",
+          "start_date",
+          "end_date"
+        ],
+        "title": "DatedEntryDoc",
+        "type": "object"
+      },
+      "DatedEntryOut": {
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "excluded_tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Tv Ids",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "const": "dated",
+            "title": "Kind",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id",
+          "kind",
+          "start_date",
+          "end_date",
+          "id"
+        ],
+        "title": "DatedEntryOut",
         "type": "object"
       },
       "DecisionOut": {
@@ -1129,6 +1363,44 @@
         "title": "Power",
         "type": "string"
       },
+      "ProfileInfoOut": {
+        "description": "The profile in force for one TV (from an activation or the calendar).",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ProfileSource"
+          },
+          "until": {
+            "format": "date-time",
+            "title": "Until",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id",
+          "name",
+          "until",
+          "source"
+        ],
+        "title": "ProfileInfoOut",
+        "type": "object"
+      },
+      "ProfileSource": {
+        "enum": [
+          "manual",
+          "automation",
+          "calendar"
+        ],
+        "title": "ProfileSource",
+        "type": "string"
+      },
       "PushKeyOut": {
         "properties": {
           "public_key": {
@@ -1831,6 +2103,16 @@
       },
       "TvStatusOut": {
         "properties": {
+          "active_profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProfileInfoOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "channel_id": {
             "anyOf": [
               {
@@ -2073,6 +2355,110 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "WeeklyEntryDoc": {
+        "additionalProperties": false,
+        "description": "Every listed weekday (0 = Monday); ``start > end`` crosses midnight, equal means 24 hours.",
+        "properties": {
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "excluded_tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Tv Ids",
+            "type": "array"
+          },
+          "kind": {
+            "const": "weekly",
+            "title": "Kind",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          },
+          "weekdays": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 7,
+            "minItems": 1,
+            "title": "Weekdays",
+            "type": "array"
+          }
+        },
+        "required": [
+          "policy_id",
+          "kind",
+          "weekdays",
+          "start",
+          "end"
+        ],
+        "title": "WeeklyEntryDoc",
+        "type": "object"
+      },
+      "WeeklyEntryOut": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "excluded_tv_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Tv Ids",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "const": "weekly",
+            "title": "Kind",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "integer"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          },
+          "weekdays": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 7,
+            "minItems": 1,
+            "title": "Weekdays",
+            "type": "array"
+          }
+        },
+        "required": [
+          "policy_id",
+          "kind",
+          "weekdays",
+          "start",
+          "end",
+          "id"
+        ],
+        "title": "WeeklyEntryOut",
         "type": "object"
       },
       "WindowDoc": {
@@ -2892,6 +3278,321 @@
         ]
       }
     },
+    "/api/v1/calendar": {
+      "get": {
+        "operationId": "list_entries_api_v1_calendar_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "List Entries",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "post": {
+        "operationId": "add_entry_api_v1_calendar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "discriminator": {
+                  "mapping": {
+                    "dated": "#/components/schemas/DatedEntryDoc",
+                    "weekly": "#/components/schemas/WeeklyEntryDoc"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/WeeklyEntryDoc"
+                  },
+                  {
+                    "$ref": "#/components/schemas/DatedEntryDoc"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "mapping": {
+                      "dated": "#/components/schemas/DatedEntryOut",
+                      "weekly": "#/components/schemas/WeeklyEntryOut"
+                    },
+                    "propertyName": "kind"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/WeeklyEntryOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/DatedEntryOut"
+                    }
+                  ],
+                  "title": "Response Add Entry Api V1 Calendar Post"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Entry",
+        "tags": [
+          "profiles"
+        ]
+      }
+    },
+    "/api/v1/calendar/{entry_id}": {
+      "delete": {
+        "operationId": "delete_entry_api_v1_calendar__entry_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "title": "Entry Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Entry",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "put": {
+        "operationId": "replace_entry_api_v1_calendar__entry_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "title": "Entry Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "discriminator": {
+                  "mapping": {
+                    "dated": "#/components/schemas/DatedEntryDoc",
+                    "weekly": "#/components/schemas/WeeklyEntryDoc"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/WeeklyEntryDoc"
+                  },
+                  {
+                    "$ref": "#/components/schemas/DatedEntryDoc"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "mapping": {
+                      "dated": "#/components/schemas/DatedEntryOut",
+                      "weekly": "#/components/schemas/WeeklyEntryOut"
+                    },
+                    "propertyName": "kind"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/WeeklyEntryOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/DatedEntryOut"
+                    }
+                  ],
+                  "title": "Response Replace Entry Api V1 Calendar  Entry Id  Put"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Replace Entry",
+        "tags": [
+          "profiles"
+        ]
+      }
+    },
     "/api/v1/discovery": {
       "get": {
         "description": "Search the network with every installed adapter; takes a few seconds.",
@@ -3685,6 +4386,148 @@
         "summary": "Save Policy",
         "tags": [
           "policies"
+        ]
+      }
+    },
+    "/api/v1/profiles/active": {
+      "delete": {
+        "operationId": "stop_api_v1_profiles_active_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Stop",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "get": {
+        "operationId": "get_active_api_v1_profiles_active_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveProfileOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Get Active",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "post": {
+        "operationId": "activate_api_v1_profiles_active_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Activate",
+        "tags": [
+          "profiles"
         ]
       }
     },

@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Response
 from tvbalance.api.deps import CanAdmin, CanRead, get_storage, get_supervisor
 from tvbalance.api.errors import not_found
 from tvbalance.api.schemas.errors import AUTH_ERRORS, NOT_FOUND_ERRORS
+from tvbalance.api.schemas.profiles import ProfileInfoOut
 from tvbalance.api.schemas.tvs import DecisionOut, TvOut, TvStatusOut, TvUpdate
 from tvbalance.app.status import TvStatus
 from tvbalance.app.supervisor import Supervisor
@@ -47,6 +48,16 @@ def status_out(status: TvStatus | None) -> TvStatusOut | None:
         watched_seconds=status.watched_seconds,
         remaining_seconds=status.remaining_seconds,
         updated_at=status.updated_at,
+        active_profile=(
+            None
+            if status.active_profile is None
+            else ProfileInfoOut(
+                policy_id=status.active_profile.policy_id,
+                name=status.active_profile.name,
+                until=status.active_profile.until,
+                source=status.active_profile.source,
+            )
+        ),
     )
 
 

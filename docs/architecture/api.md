@@ -69,6 +69,15 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
 - **Control** (`control` scope): `POST /tvs/{id}/override` (`allow`, then `minutes` or
   `until_midnight`), `DELETE /tvs/{id}/override`, `POST /tvs/{id}/bonus` (`minutes`),
   `POST /tvs/{id}/pause` (`minutes`, default 30). Times are returned in UTC.
+- **Profiles and calendar (Pro):** a profile is an existing policy put in force for the whole
+  household, except the TVs listed in `excluded_tv_ids`. `GET /profiles/active` (`read`),
+  `POST /profiles/active` (`control`: `policy_id`, then `minutes` or `until_midnight`, optional
+  `excluded_tv_ids` and `source` `manual`/`automation`; a new one replaces the one in force) and
+  `DELETE /profiles/active`. `GET /calendar` (`read`) and `POST`/`PUT`/`DELETE /calendar[/{id}]`
+  (`admin`) manage entries of `kind` `weekly` (`weekdays` 0 = Monday, `start`, `end`) or `dated`
+  (`start_date`, `end_date`, both included). Everything can be saved on any plan; `effective` is
+  false on Free, where profiles and the calendar are stored but not applied. A TV's `status`
+  carries `active_profile` while one is in force. Unknown policies or TVs answer 404.
 - **Activity** (`read`): `GET /tvs/{id}/usage?days=` and `GET /events?tv_id&since&limit`.
 - **Settings:** `GET /settings` (`read`), `PUT /settings` (`admin`): `language`, `timezone`.
 - **Auth management:** `GET /auth/me`, `POST /auth/logout`, `PUT /auth/password`,

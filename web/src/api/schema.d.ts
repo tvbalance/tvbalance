@@ -246,6 +246,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Entries */
+        get: operations["list_entries_api_v1_calendar_get"];
+        put?: never;
+        /** Add Entry */
+        post: operations["add_entry_api_v1_calendar_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/calendar/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace Entry */
+        put: operations["replace_entry_api_v1_calendar__entry_id__put"];
+        post?: never;
+        /** Delete Entry */
+        delete: operations["delete_entry_api_v1_calendar__entry_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/discovery": {
         parameters: {
             query?: never;
@@ -419,6 +455,25 @@ export interface paths {
         put: operations["save_policy_api_v1_policies__policy_id__put"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Active */
+        get: operations["get_active_api_v1_profiles_active_get"];
+        put?: never;
+        /** Activate */
+        post: operations["activate_api_v1_profiles_active_post"];
+        /** Stop */
+        delete: operations["stop_api_v1_profiles_active_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -744,6 +799,55 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * ActivateRequest
+         * @description Put a rule set in force for the household: give ``minutes`` or ask for ``until_midnight``.
+         */
+        ActivateRequest: {
+            /** Excluded Tv Ids */
+            excluded_tv_ids?: string[];
+            /** Minutes */
+            minutes?: number | null;
+            /** Policy Id */
+            policy_id: number;
+            /**
+             * Source
+             * @default manual
+             * @enum {string}
+             */
+            source: "manual" | "automation";
+            /**
+             * Until Midnight
+             * @default false
+             */
+            until_midnight: boolean;
+        };
+        /** ActivationOut */
+        ActivationOut: {
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Excluded Tv Ids */
+            excluded_tv_ids: string[];
+            /** Name */
+            name: string;
+            /** Policy Id */
+            policy_id: number;
+            source: components["schemas"]["ProfileSource"];
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+        };
+        /** ActiveProfileOut */
+        ActiveProfileOut: {
+            activation: components["schemas"]["ActivationOut"] | null;
+            /** Effective */
+            effective: boolean;
+        };
         /** AdapterOut */
         AdapterOut: {
             /** Brand */
@@ -785,6 +889,13 @@ export interface components {
             /** Minutes */
             minutes: number;
         };
+        /** CalendarOut */
+        CalendarOut: {
+            /** Effective */
+            effective: boolean;
+            /** Entries */
+            entries: (components["schemas"]["WeeklyEntryOut"] | components["schemas"]["DatedEntryOut"])[];
+        };
         /**
          * Capability
          * @enum {string}
@@ -798,6 +909,55 @@ export interface components {
             name: string;
             /** Number */
             number: string | null;
+        };
+        /**
+         * DatedEntryDoc
+         * @description Whole days from ``start_date`` to ``end_date``, both included (a holiday).
+         */
+        DatedEntryDoc: {
+            /**
+             * End Date
+             * Format: date
+             */
+            end_date: string;
+            /** Excluded Tv Ids */
+            excluded_tv_ids?: string[];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "dated";
+            /** Policy Id */
+            policy_id: number;
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
+        };
+        /** DatedEntryOut */
+        DatedEntryOut: {
+            /**
+             * End Date
+             * Format: date
+             */
+            end_date: string;
+            /** Excluded Tv Ids */
+            excluded_tv_ids?: string[];
+            /** Id */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "dated";
+            /** Policy Id */
+            policy_id: number;
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
         };
         /** DecisionOut */
         DecisionOut: {
@@ -1195,6 +1355,27 @@ export interface components {
          * @enum {string}
          */
         Power: "on" | "standby" | "off";
+        /**
+         * ProfileInfoOut
+         * @description The profile in force for one TV (from an activation or the calendar).
+         */
+        ProfileInfoOut: {
+            /** Name */
+            name: string;
+            /** Policy Id */
+            policy_id: number;
+            source: components["schemas"]["ProfileSource"];
+            /**
+             * Until
+             * Format: date-time
+             */
+            until: string;
+        };
+        /**
+         * ProfileSource
+         * @enum {string}
+         */
+        ProfileSource: "manual" | "automation" | "calendar";
         /** PushKeyOut */
         PushKeyOut: {
             /** Public Key */
@@ -1437,6 +1618,7 @@ export interface components {
         };
         /** TvStatusOut */
         TvStatusOut: {
+            active_profile?: components["schemas"]["ProfileInfoOut"] | null;
             /** Channel Id */
             channel_id: string | null;
             /** Connected */
@@ -1501,6 +1683,59 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /**
+         * WeeklyEntryDoc
+         * @description Every listed weekday (0 = Monday); ``start > end`` crosses midnight, equal means 24 hours.
+         */
+        WeeklyEntryDoc: {
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /** Excluded Tv Ids */
+            excluded_tv_ids?: string[];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "weekly";
+            /** Policy Id */
+            policy_id: number;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /** Weekdays */
+            weekdays: number[];
+        };
+        /** WeeklyEntryOut */
+        WeeklyEntryOut: {
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /** Excluded Tv Ids */
+            excluded_tv_ids?: string[];
+            /** Id */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "weekly";
+            /** Policy Id */
+            policy_id: number;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /** Weekdays */
+            weekdays: number[];
         };
         /** WindowDoc */
         WindowDoc: {
@@ -2220,6 +2455,222 @@ export interface operations {
             };
         };
     };
+    list_entries_api_v1_calendar_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalendarOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    add_entry_api_v1_calendar_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WeeklyEntryDoc"] | components["schemas"]["DatedEntryDoc"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyEntryOut"] | components["schemas"]["DatedEntryOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    replace_entry_api_v1_calendar__entry_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WeeklyEntryDoc"] | components["schemas"]["DatedEntryDoc"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyEntryOut"] | components["schemas"]["DatedEntryOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_entry_api_v1_calendar__entry_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     discovery_api_v1_discovery_get: {
         parameters: {
             query?: never;
@@ -2855,6 +3306,140 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_active_api_v1_profiles_active_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActiveProfileOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    activate_api_v1_profiles_active_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActivateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivationOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stop_api_v1_profiles_active_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

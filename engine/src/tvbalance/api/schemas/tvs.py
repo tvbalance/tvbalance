@@ -7,6 +7,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from tvbalance.api.schemas.profiles import ProfileInfoOut
 from tvbalance.domain.models import Power
 
 
@@ -29,6 +30,7 @@ class TvStatusOut(BaseModel):
     watched_seconds: int
     remaining_seconds: int | None
     updated_at: datetime | None
+    active_profile: ProfileInfoOut | None = None  # a profile in force replaces the TV's rules
 
 
 class TvOut(BaseModel):

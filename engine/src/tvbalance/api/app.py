@@ -20,6 +20,7 @@ from tvbalance.api.routes import (
     license,
     pairing,
     policies,
+    profiles,
     push,
     settings,
     system,
@@ -33,6 +34,7 @@ from tvbalance.app.ha_discovery import HomeAssistantDiscovery
 from tvbalance.app.licensing import LicenseService
 from tvbalance.app.notifications import PushNotifier, load_vapid_keys
 from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
+from tvbalance.app.profiles import ProfileService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.app.tls import TlsManager
@@ -93,6 +95,7 @@ def create_app(
         app.state.supervisor = Supervisor(
             storage, registered, app.state.events, clock_, supervisor_settings, license_
         )
+        app.state.profiles = ProfileService(storage, clock_, license_)
         app.state.pairing = PairingService(
             storage,
             registered,
@@ -147,6 +150,7 @@ def create_app(
     app.include_router(license.router)
     app.include_router(policies.router)
     app.include_router(control.router)
+    app.include_router(profiles.router)
     app.include_router(inventory.router)
     app.include_router(activity.router)
     app.include_router(settings.router)

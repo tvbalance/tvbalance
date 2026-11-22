@@ -17,6 +17,7 @@ from starlette.requests import HTTPConnection
 from tvbalance.api.errors import ApiError
 from tvbalance.app.auth import SCOPES, AuthService, Principal, csrf_token_for
 from tvbalance.app.pairing import PairingService
+from tvbalance.app.profiles import ProfileService
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.ports.services import Clock
 from tvbalance.ports.storage import Storage
@@ -57,6 +58,13 @@ def get_supervisor(conn: HTTPConnection) -> Supervisor:
     if supervisor is None:
         raise ApiError(503, "unavailable", "the engine is not ready")
     return supervisor
+
+
+def get_profiles(conn: HTTPConnection) -> ProfileService:
+    profiles: ProfileService | None = getattr(conn.app.state, "profiles", None)
+    if profiles is None:
+        raise ApiError(503, "unavailable", "the engine is not ready")
+    return profiles
 
 
 def get_pairing(conn: HTTPConnection) -> PairingService:
