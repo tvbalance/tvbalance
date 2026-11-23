@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useEvents, useTvs, useUsage } from "../api/hooks";
+import { ContentBars, WeeklyReport } from "../components/ContentUsage";
 import { EventList } from "../components/EventList";
 import { UsageBars } from "../components/UsageBars";
 import { Button } from "../components/ui/button";
@@ -9,15 +10,30 @@ import { Card } from "../components/ui/card";
 import { Field, Select } from "../components/ui/field";
 
 const PAGE = 50;
+const RANGES = [7, 30, 90, 365];
 
-function TvUsage({ tvId, name }: { tvId: string; name: string }) {
+function TvUsage({
+  tvId,
+  name,
+  days,
+}: {
+  tvId: string;
+  name: string;
+  days: number;
+}) {
   const { t } = useTranslation();
-  const usage = useUsage(tvId, 7);
+  const usage = useUsage(tvId, days);
   return (
     <Card className="space-y-3">
       <h2 className="text-lg font-semibold">{name}</h2>
       {usage.isPending ? <p role="status">{t("auth.loading")}</p> : null}
       {usage.data ? <UsageBars usage={usage.data} /> : null}
+      {usage.data?.limited ? (
+        <p role="status" className="text-sm text-warn">
+          {t("activity.requiresPro")}
+        </p>
+      ) : null}
+      <ContentBars tvId={tvId} days={days} />
     </Card>
   );
 }
@@ -27,6 +43,7 @@ export function Activity() {
   const tvs = useTvs();
   const [tvId, setTvId] = useState("");
   const [limit, setLimit] = useState(PAGE);
+  const [days, setDays] = useState(7);
   const events = useEvents(tvId || null, limit);
   const shown = (tvs.data ?? []).filter((tv) => !tvId || tv.id === tvId);
 
@@ -56,17 +73,40 @@ export function Activity() {
           )}
         </Field>
       ) : null}
-      <h2 className="text-lg font-semibold">{t("activity.usage")}</h2>
-      {shown.length === 0 && tvs.data ? <p className="text-muted">{t("activity.noTvs")}</p> : null}
+      <Field label={t("activity.range")}>
+        {(props) => (
+          <Select
+            {...props}
+            value={days}
+            onChange={(event) => setDays(Number(event.target.value))}
+          >
+            {RANGES.map((range) => (
+              <option key={range} value={range}>
+                {t("activity.rangeDays", { days: range })}
+              </option>
+            ))}
+          </Select>
+        )}
+      </Field>
+      <h2 className="text-lg font-semibold">
+        {t("activity.usageDays", { days })}
+      </h2>
+      {shown.length === 0 && tvs.data ? (
+        <p className="text-muted">{t("activity.noTvs")}</p>
+      ) : null}
       <div className="grid gap-3 md:grid-cols-2">
         {shown.map((tv) => (
-          <TvUsage key={tv.id} tvId={tv.id} name={tv.name} />
+          <TvUsage key={tv.id} tvId={tv.id} name={tv.name} days={days} />
         ))}
       </div>
+      <h2 className="text-lg font-semibold">{t("activity.report.title")}</h2>
+      <WeeklyReport />
       <h2 className="text-lg font-semibold">{t("activity.log")}</h2>
       {events.isPending ? <p role="status">{t("auth.loading")}</p> : null}
       {events.error ? <p role="alert">{t("auth.error")}</p> : null}
-      {events.data ? <EventList events={events.data} tvs={tvs.data ?? []} /> : null}
+      {events.data ? (
+        <EventList events={events.data} tvs={tvs.data ?? []} />
+      ) : null}
       {events.data && events.data.length >= limit ? (
         <Button variant="secondary" onClick={() => setLimit(limit + PAGE)}>
           {t("activity.more")}

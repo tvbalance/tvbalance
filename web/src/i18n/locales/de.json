@@ -290,6 +290,21 @@
       "tv_paired": "Der Fernseher wurde erneut gekoppelt",
       "license_changed": "Die Lizenz hat sich geändert",
       "weekly_report": "Der Wochenbericht ist da"
+    },
+    "range": "Zeitraum",
+    "rangeDays": "Letzte {{days}} Tage",
+    "usageDays": "Geschaute Minuten, letzte {{days}} Tage",
+    "requiresPro": "Ein längerer Verlauf braucht den Pro-Tarif. Gezeigt werden die letzten 7 Tage.",
+    "content": "Am meisten geschaut",
+    "noContent": "Noch nichts aufgezeichnet.",
+    "contentMinutes": "{{name}}: {{minutes}} Minuten",
+    "minutesShort": "{{minutes}} Min.",
+    "duration": "{{h}} Std. {{m}} Min.",
+    "report": {
+      "title": "Wochenbericht",
+      "total": "{{duration}} geschaut",
+      "blocks": "Sperrungen: {{blocks}}",
+      "requiresPro": "Der Wochenbericht braucht den Pro-Tarif."
     }
   },
   "tvDetail": {

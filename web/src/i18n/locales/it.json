@@ -290,6 +290,21 @@
       "tv_paired": "La TV è stata associata di nuovo",
       "license_changed": "La licenza è cambiata",
       "weekly_report": "Il report settimanale è pronto"
+    },
+    "range": "Periodo",
+    "rangeDays": "Ultimi {{days}} giorni",
+    "usageDays": "Minuti guardati, ultimi {{days}} giorni",
+    "requiresPro": "Uno storico più lungo richiede il piano Pro. Mostro gli ultimi 7 giorni.",
+    "content": "Più guardati",
+    "noContent": "Ancora niente di registrato.",
+    "contentMinutes": "{{name}}: {{minutes}} minuti",
+    "minutesShort": "{{minutes}} min",
+    "duration": "{{h}} h {{m}} min",
+    "report": {
+      "title": "Report settimanale",
+      "total": "{{duration}} guardate",
+      "blocks": "Volte bloccata: {{blocks}}",
+      "requiresPro": "Il report settimanale richiede il piano Pro."
     }
   },
   "tvDetail": {

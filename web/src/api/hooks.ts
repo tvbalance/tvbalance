@@ -10,6 +10,8 @@ export type Tv = Schemas["TvOut"];
 export type TvStatus = Schemas["TvStatusOut"];
 export type Policy = Schemas["PolicyOut"];
 export type Usage = Schemas["UsageOut"];
+export type ContentUsage = Schemas["ContentUsageOut"];
+export type WeeklyReport = Schemas["WeeklyReportOut"];
 export type EngineEvent = Schemas["EventOut"];
 export type Settings = Schemas["SettingsOut"];
 export type Session = Schemas["SessionOut"];
@@ -36,7 +38,11 @@ export const keys = {
   tvs: ["tvs"] as const,
   policies: ["policies"] as const,
   usage: (tvId: string, days: number) => ["usage", tvId, days] as const,
-  events: (tvId: string | null, limit: number) => ["events", tvId, limit] as const,
+  contentUsage: (tvId: string, first: string) =>
+    ["usage", tvId, "content", first] as const,
+  report: ["report"] as const,
+  events: (tvId: string | null, limit: number) =>
+    ["events", tvId, limit] as const,
   eventsAll: ["events"] as const,
   settings: ["settings"] as const,
   info: ["info"] as const,
@@ -45,7 +51,8 @@ export const keys = {
   sessions: ["auth", "sessions"] as const,
   tokens: ["auth", "tokens"] as const,
   push: ["push"] as const,
-  pushDevices: (endpoint: string | null) => ["push", "devices", endpoint] as const,
+  pushDevices: (endpoint: string | null) =>
+    ["push", "devices", endpoint] as const,
   inventory: (tvId: string) => ["inventory", tvId] as const,
   adapters: ["adapters"] as const,
   discovery: ["discovery"] as const,
@@ -55,7 +62,8 @@ export const keys = {
 export function useAuthState() {
   return useQuery({
     queryKey: keys.state,
-    queryFn: ({ signal }) => api.get<Schemas["AuthState"]>("auth/state", signal),
+    queryFn: ({ signal }) =>
+      api.get<Schemas["AuthState"]>("auth/state", signal),
   });
 }
 
@@ -96,7 +104,35 @@ export function usePolicies() {
 export function useUsage(tvId: string, days = 7) {
   return useQuery({
     queryKey: keys.usage(tvId, days),
-    queryFn: ({ signal }) => api.get<Usage>(`tvs/${tvId}/usage?days=${days}`, signal),
+    queryFn: ({ signal }) =>
+      api.get<Usage>(`tvs/${tvId}/usage?days=${days}`, signal),
+  });
+}
+
+/** Local calendar day ``count - 1`` days before today, as ``YYYY-MM-DD``. */
+function daysBack(count: number): string {
+  const day = new Date();
+  day.setDate(day.getDate() - (count - 1));
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`;
+}
+
+export function useContentUsage(tvId: string, days = 7) {
+  const first = daysBack(days);
+  return useQuery({
+    queryKey: keys.contentUsage(tvId, first),
+    queryFn: ({ signal }) =>
+      api.get<ContentUsage>(`tvs/${tvId}/usage/content?from=${first}`, signal),
+    retry: false,
+  });
+}
+
+/** The last complete week; the Engine answers 403 ``requires_pro`` on the Free plan. */
+export function useWeeklyReport() {
+  return useQuery({
+    queryKey: keys.report,
+    queryFn: ({ signal }) => api.get<WeeklyReport>("reports/weekly", signal),
+    retry: false,
   });
 }
 
@@ -175,7 +211,8 @@ export function useTokens(enabled = true) {
 export function useInventory(tvId: string | null) {
   return useQuery({
     queryKey: keys.inventory(tvId ?? ""),
-    queryFn: ({ signal }) => api.get<Inventory>(`tvs/${tvId}/inventory`, signal),
+    queryFn: ({ signal }) =>
+      api.get<Inventory>(`tvs/${tvId}/inventory`, signal),
     enabled: tvId !== null,
     retry: false,
   });
@@ -199,7 +236,8 @@ export function usePairing(id: string | null) {
     queryFn: ({ signal }) => api.get<Pairing>(`pairings/${id}`, signal),
     enabled: id !== null,
     retry: false,
-    refetchInterval: (query) => (query.state.data?.state === "waiting_for_user" ? 1000 : false),
+    refetchInterval: (query) =>
+      query.state.data?.state === "waiting_for_user" ? 1000 : false,
   });
 }
 

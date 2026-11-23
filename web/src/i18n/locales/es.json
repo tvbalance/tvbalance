@@ -290,6 +290,21 @@
       "tv_paired": "El televisor se emparejó de nuevo",
       "license_changed": "La licencia ha cambiado",
       "weekly_report": "El informe semanal está listo"
+    },
+    "range": "Periodo",
+    "rangeDays": "Últimos {{days}} días",
+    "usageDays": "Minutos vistos, últimos {{days}} días",
+    "requiresPro": "Un historial más largo requiere el plan Pro. Se muestran los últimos 7 días.",
+    "content": "Lo más visto",
+    "noContent": "Aún no hay nada registrado.",
+    "contentMinutes": "{{name}}: {{minutes}} minutos",
+    "minutesShort": "{{minutes}} min",
+    "duration": "{{h}} h {{m}} min",
+    "report": {
+      "title": "Informe semanal",
+      "total": "{{duration}} vistas",
+      "blocks": "Bloqueos: {{blocks}}",
+      "requiresPro": "El informe semanal requiere el plan Pro."
     }
   },
   "tvDetail": {

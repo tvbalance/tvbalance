@@ -290,6 +290,21 @@
       "tv_paired": "The TV was paired again",
       "license_changed": "The license changed",
       "weekly_report": "The weekly report is ready"
+    },
+    "range": "Period",
+    "rangeDays": "Last {{days}} days",
+    "usageDays": "Minutes watched, last {{days}} days",
+    "requiresPro": "A longer history needs the Pro plan. Showing the last 7 days.",
+    "content": "Most watched",
+    "noContent": "Nothing recorded yet.",
+    "contentMinutes": "{{name}}: {{minutes}} minutes",
+    "minutesShort": "{{minutes}} min",
+    "duration": "{{h}} h {{m}} min",
+    "report": {
+      "title": "Weekly report",
+      "total": "{{duration}} watched",
+      "blocks": "Times blocked: {{blocks}}",
+      "requiresPro": "The weekly report needs the Pro plan."
     }
   },
   "tvDetail": {
