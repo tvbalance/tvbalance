@@ -10,6 +10,7 @@
   "push_blocked_outside_window": "Außerhalb der erlaubten Zeiten.",
   "push_blocked_budget_exhausted": "Die heutige Fernsehzeit ist aufgebraucht.",
   "push_blocked_app_blocked": "Eine App wurde gesperrt.",
+  "push_blocked_app_budget_exhausted": "Die Zeit einer App-Gruppe ist aufgebraucht.",
   "push_blocked_input_blocked": "Ein Eingang wurde gesperrt.",
   "push_blocked_channel_blocked": "Ein Sender wurde gesperrt.",
   "push_blocked_override": "Durch eine vorübergehende Regel gesperrt.",

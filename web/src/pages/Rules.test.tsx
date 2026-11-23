@@ -136,6 +136,55 @@ describe("rule editor", () => {
     expect(lastCall(fetchMock, "policies/1", "PUT").body.policy.daily_budget_minutes).toBeNull();
   });
 
+  it("saves a weekday budget, an app group and the rollover", async () => {
+    const user = userEvent.setup();
+    const fetchMock = renderAt("#/rules/1", { "PUT policies/1": POLICY });
+    await user.click(await screen.findByRole("tab", { name: "Time" }));
+    await user.type(screen.getByLabelText("Saturday: minutes"), "180");
+    await user.click(screen.getByRole("button", { name: "Add group" }));
+    await user.clear(screen.getAllByLabelText("Minutes per day")[1]);
+    await user.type(screen.getAllByLabelText("Minutes per day")[1], "45");
+    await user.selectOptions(await screen.findByLabelText("Add to Apps in Group 1"), "youtube");
+    await user.click(screen.getByRole("switch", { name: "Carry over unused time" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    await screen.findByText("Rules saved");
+    const saved = lastCall(fetchMock, "policies/1", "PUT").body.policy;
+    expect(saved.weekday_budget_minutes).toEqual({ 5: 180 });
+    expect(saved.app_budgets).toEqual([{ name: "Group 1", apps: ["youtube"], minutes: 45 }]);
+    expect(saved.rollover_max_minutes).toBe(30);
+  });
+
+  it("removes an app group and a weekday budget", async () => {
+    const user = userEvent.setup();
+    const withAdvanced = {
+      ...POLICY,
+      policy: {
+        ...schoolPreset(),
+        weekday_budget_minutes: { 5: 180 },
+        app_budgets: [{ name: "Games", apps: ["youtube"], minutes: 45 }],
+      },
+    };
+    const fetchMock = renderAt("#/rules/1", {
+      "GET policies": [withAdvanced],
+      "PUT policies/1": withAdvanced,
+    });
+    await user.click(await screen.findByRole("tab", { name: "Time" }));
+    await user.clear(screen.getByLabelText("Saturday: minutes"));
+    await user.click(screen.getByRole("button", { name: "Remove group Games" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    await screen.findByText("Rules saved");
+    const saved = lastCall(fetchMock, "policies/1", "PUT").body.policy;
+    expect(saved.weekday_budget_minutes).toEqual({});
+    expect(saved.app_budgets).toEqual([]);
+  });
+
+  it("says the advanced budgets need Pro on the Free plan", async () => {
+    const user = userEvent.setup();
+    renderAt("#/rules/1", { "GET license": { tier: "free", status: "none" } });
+    await user.click(await screen.findByRole("tab", { name: "Time" }));
+    expect(await screen.findByText(/Advanced budgets need the Pro plan/)).toBeInTheDocument();
+  });
+
   it("adds a time window on a day", async () => {
     const user = userEvent.setup();
     renderAt("#/rules/1", { "GET policies": [{ ...POLICY, policy: emptyPolicy() }] });

@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import type { Tv } from "../../api/hooks";
 import type { PolicyDoc } from "../../presets";
 import { Button } from "../ui/button";
 import { Field, Input, Switch } from "../ui/field";
+import { AdvancedBudgets } from "./AdvancedBudgets";
 
 const DEFAULT_BUDGET = 120;
 const MAX_MINUTES = 24 * 60;
 
 export function TimeTab({
   policy,
+  tvs,
   onChange,
 }: {
   policy: PolicyDoc;
+  tvs: Tv[];
   onChange: (patch: Partial<PolicyDoc>) => void;
 }) {
   const { t } = useTranslation();
@@ -97,6 +101,8 @@ export function TimeTab({
           </Button>
         </div>
       </section>
+
+      <AdvancedBudgets policy={policy} tvs={tvs} onChange={onChange} />
     </div>
   );
 }

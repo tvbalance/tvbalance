@@ -10,6 +10,7 @@
   "push_blocked_outside_window": "En dehors des heures autorisées.",
   "push_blocked_budget_exhausted": "Le temps de télé du jour est épuisé.",
   "push_blocked_app_blocked": "Une application a été bloquée.",
+  "push_blocked_app_budget_exhausted": "Le temps d'un groupe d'applications est épuisé.",
   "push_blocked_input_blocked": "Une entrée a été bloquée.",
   "push_blocked_channel_blocked": "Une chaîne a été bloquée.",
   "push_blocked_override": "Bloqué par une règle temporaire.",

@@ -110,12 +110,14 @@
       "app_blocked": "app not allowed",
       "input_blocked": "input not allowed",
       "channel_blocked": "channel not allowed",
-      "override": "blocked by a parent"
+      "override": "blocked by a parent",
+      "app_budget_exhausted": "app group time used up"
     },
     "limit": {
       "window": "the allowed hours end",
       "budget": "the daily time is used up",
-      "override": "the temporary permission ends"
+      "override": "the temporary permission ends",
+      "app_budget": "the app group's time is used up"
     },
     "planLimited": "Requires Pro",
     "profile": "Profile: {{name}}"
@@ -169,7 +171,10 @@
       "conflicting_lists": "An item is both blocked and always allowed.",
       "invalid_warn_threshold": "A warning is longer than the daily budget.",
       "negative_budget": "The daily budget can't be negative.",
-      "overlapping_windows": "Two time windows overlap."
+      "overlapping_windows": "Two time windows overlap.",
+      "invalid_weekday": "A weekday must be between 0 (Monday) and 6 (Sunday).",
+      "duplicate_app_budget": "Two app groups have the same name.",
+      "empty_app_budget": "An app group has no apps."
     },
     "noWindows": "No time window: the TV is off limits all day.",
     "windowStart": "{{day}}, window {{n}}: from",
@@ -241,7 +246,25 @@
     },
     "activateProfile": "Activate as profile",
     "activateProfileFor": "Activate {{name}} as profile",
-    "calendar": "Calendar"
+    "calendar": "Calendar",
+    "advancedBudgets": "Advanced budgets",
+    "advancedBudgetsHelp": "A budget for each weekday, a shared allowance for groups of apps, and unused time carried over to the next day.",
+    "advancedBudgetsPro": "Advanced budgets need the Pro plan; until then they are saved but only the daily budget applies.",
+    "weekdayBudgets": "Budget by weekday",
+    "weekdayBudgetsHelp": "Leave a day empty to use the daily budget above.",
+    "weekdayBudget": "{{day}}: minutes",
+    "sameAsDaily": "Same as daily",
+    "appGroups": "App groups",
+    "appGroupsHelp": "Apps in a group share one daily allowance, such as 45 minutes for games.",
+    "groupName": "Group name",
+    "groupMinutes": "Minutes per day",
+    "groupApps": "Apps in {{name}}",
+    "removeGroup": "Remove group {{name}}",
+    "addGroup": "Add group",
+    "newGroupName": "Group {{n}}",
+    "rollover": "Carry over unused time",
+    "rolloverHelp": "Minutes not used today are added to tomorrow, up to a limit. They don't pile up from day to day.",
+    "rolloverMax": "Most minutes carried over"
   },
   "activity": {
     "title": "Activity",

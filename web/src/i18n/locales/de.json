@@ -110,12 +110,14 @@
       "app_blocked": "App nicht erlaubt",
       "input_blocked": "Eingang nicht erlaubt",
       "channel_blocked": "Sender nicht erlaubt",
-      "override": "von den Eltern gesperrt"
+      "override": "von den Eltern gesperrt",
+      "app_budget_exhausted": "Zeit der App-Gruppe aufgebraucht"
     },
     "limit": {
       "window": "die erlaubten Zeiten enden",
       "budget": "die Tageszeit aufgebraucht ist",
-      "override": "die vorübergehende Erlaubnis endet"
+      "override": "die vorübergehende Erlaubnis endet",
+      "app_budget": "die Zeit der App-Gruppe aufgebraucht ist"
     },
     "planLimited": "Benötigt Pro",
     "profile": "Profil: {{name}}"
@@ -169,7 +171,10 @@
       "conflicting_lists": "Ein Eintrag ist gesperrt und immer erlaubt.",
       "invalid_warn_threshold": "Eine Warnung ist länger als das Tagesbudget.",
       "negative_budget": "Das Tagesbudget darf nicht negativ sein.",
-      "overlapping_windows": "Zwei Zeitfenster überschneiden sich."
+      "overlapping_windows": "Zwei Zeitfenster überschneiden sich.",
+      "invalid_weekday": "Ein Wochentag muss zwischen 0 (Montag) und 6 (Sonntag) liegen.",
+      "duplicate_app_budget": "Zwei App-Gruppen haben denselben Namen.",
+      "empty_app_budget": "Eine App-Gruppe enthält keine Apps."
     },
     "noWindows": "Kein Zeitfenster: Der Fernseher ist den ganzen Tag gesperrt.",
     "windowStart": "{{day}}, Fenster {{n}}: von",
@@ -241,7 +246,25 @@
     },
     "activateProfile": "Als Profil aktivieren",
     "activateProfileFor": "{{name}} als Profil aktivieren",
-    "calendar": "Kalender"
+    "calendar": "Kalender",
+    "advancedBudgets": "Erweiterte Budgets",
+    "advancedBudgetsHelp": "Ein Budget für jeden Wochentag, eine gemeinsame Zeit für App-Gruppen und nicht genutzte Zeit, die auf den nächsten Tag übertragen wird.",
+    "advancedBudgetsPro": "Erweiterte Budgets brauchen den Pro-Tarif; bis dahin werden sie gespeichert, es gilt aber nur das Tagesbudget.",
+    "weekdayBudgets": "Budget nach Wochentag",
+    "weekdayBudgetsHelp": "Einen Tag leer lassen, um das Tagesbudget oben zu verwenden.",
+    "weekdayBudget": "{{day}}: Minuten",
+    "sameAsDaily": "Wie das Tagesbudget",
+    "appGroups": "App-Gruppen",
+    "appGroupsHelp": "Die Apps einer Gruppe teilen sich eine Tageszeit, zum Beispiel 45 Minuten für Spiele.",
+    "groupName": "Name der Gruppe",
+    "groupMinutes": "Minuten pro Tag",
+    "groupApps": "Apps in {{name}}",
+    "removeGroup": "Gruppe {{name}} entfernen",
+    "addGroup": "Gruppe hinzufügen",
+    "newGroupName": "Gruppe {{n}}",
+    "rollover": "Nicht genutzte Zeit übertragen",
+    "rolloverHelp": "Heute nicht genutzte Minuten kommen bis zu einer Grenze zu morgen dazu. Sie summieren sich nicht von Tag zu Tag.",
+    "rolloverMax": "Höchstens übertragene Minuten"
   },
   "activity": {
     "title": "Aktivität",

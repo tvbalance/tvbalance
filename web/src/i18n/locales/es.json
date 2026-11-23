@@ -110,12 +110,14 @@
       "app_blocked": "app no permitida",
       "input_blocked": "entrada no permitida",
       "channel_blocked": "canal no permitido",
-      "override": "bloqueada por un padre"
+      "override": "bloqueada por un padre",
+      "app_budget_exhausted": "tiempo del grupo de aplicaciones agotado"
     },
     "limit": {
       "window": "termine el horario permitido",
       "budget": "se agote el tiempo diario",
-      "override": "termine el permiso temporal"
+      "override": "termine el permiso temporal",
+      "app_budget": "el tiempo del grupo de aplicaciones se agota"
     },
     "planLimited": "Requiere Pro",
     "profile": "Perfil: {{name}}"
@@ -169,7 +171,10 @@
       "conflicting_lists": "Un elemento está bloqueado y siempre permitido a la vez.",
       "invalid_warn_threshold": "Un aviso supera el presupuesto diario.",
       "negative_budget": "El presupuesto diario no puede ser negativo.",
-      "overlapping_windows": "Dos franjas horarias se solapan."
+      "overlapping_windows": "Dos franjas horarias se solapan.",
+      "invalid_weekday": "El día de la semana debe ir de 0 (lunes) a 6 (domingo).",
+      "duplicate_app_budget": "Dos grupos de aplicaciones tienen el mismo nombre.",
+      "empty_app_budget": "Un grupo de aplicaciones no tiene aplicaciones."
     },
     "noWindows": "Sin franjas: el televisor está prohibido todo el día.",
     "windowStart": "{{day}}, franja {{n}}: desde",
@@ -241,7 +246,25 @@
     },
     "activateProfile": "Activar como perfil",
     "activateProfileFor": "Activar {{name}} como perfil",
-    "calendar": "Calendario"
+    "calendar": "Calendario",
+    "advancedBudgets": "Presupuestos avanzados",
+    "advancedBudgetsHelp": "Un presupuesto para cada día de la semana, un tiempo compartido para grupos de aplicaciones y el tiempo sin usar pasado al día siguiente.",
+    "advancedBudgetsPro": "Los presupuestos avanzados requieren el plan Pro; hasta entonces se guardan, pero solo se aplica el presupuesto diario.",
+    "weekdayBudgets": "Presupuesto por día de la semana",
+    "weekdayBudgetsHelp": "Deja un día vacío para usar el presupuesto diario de arriba.",
+    "weekdayBudget": "{{day}}: minutos",
+    "sameAsDaily": "Igual que el diario",
+    "appGroups": "Grupos de aplicaciones",
+    "appGroupsHelp": "Las aplicaciones de un grupo comparten un mismo tiempo diario, por ejemplo 45 minutos para juegos.",
+    "groupName": "Nombre del grupo",
+    "groupMinutes": "Minutos al día",
+    "groupApps": "Aplicaciones de {{name}}",
+    "removeGroup": "Quitar el grupo {{name}}",
+    "addGroup": "Añadir grupo",
+    "newGroupName": "Grupo {{n}}",
+    "rollover": "Pasar el tiempo sin usar",
+    "rolloverHelp": "Los minutos sin usar hoy se suman a mañana, hasta un límite. No se acumulan de un día a otro.",
+    "rolloverMax": "Máximo de minutos que pasan"
   },
   "activity": {
     "title": "Actividad",

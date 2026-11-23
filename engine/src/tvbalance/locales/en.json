@@ -10,6 +10,7 @@
   "push_blocked_outside_window": "Outside the allowed hours.",
   "push_blocked_budget_exhausted": "Today's TV time is used up.",
   "push_blocked_app_blocked": "An app was blocked.",
+  "push_blocked_app_budget_exhausted": "The time for an app group is used up.",
   "push_blocked_input_blocked": "An input was blocked.",
   "push_blocked_channel_blocked": "A channel was blocked.",
   "push_blocked_override": "Blocked by a temporary rule.",

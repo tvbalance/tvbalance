@@ -81,7 +81,7 @@ function Editor({ saved }: { saved: Policy }) {
               <ScheduleTab schedule={policy.schedule} onChange={(schedule) => edit({ schedule })} />
             ),
           },
-          { id: "time", label: t("rules.tabTime"), content: <TimeTab policy={policy} onChange={edit} /> },
+          { id: "time", label: t("rules.tabTime"), content: <TimeTab policy={policy} tvs={tvs.data ?? []} onChange={edit} /> },
           {
             id: "content",
             label: t("rules.tabContent"),

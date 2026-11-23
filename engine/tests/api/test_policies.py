@@ -83,6 +83,37 @@ def test_inconsistent_policies_say_what_is_wrong(client: TestClient) -> None:
     assert client.get("/api/v1/policies").json() == []  # nothing was saved
 
 
+def test_advanced_budgets_round_trip(client: TestClient) -> None:
+    advanced = {
+        **SCHOOL,
+        "weekday_budget_minutes": {"5": 180},
+        "app_budgets": [{"name": "Games", "apps": ["roblox"], "minutes": 45}],
+        "rollover_max_minutes": 30,
+    }
+    created = client.post("/api/v1/policies", json={"name": "Adv", "policy": advanced})
+    assert created.status_code == 201
+    stored = client.get(f"/api/v1/policies/{created.json()['id']}").json()["policy"]
+    assert stored["weekday_budget_minutes"] == {"5": 180}
+    assert stored["app_budgets"] == [{"name": "Games", "apps": ["roblox"], "minutes": 45}]
+    assert stored["rollover_max_minutes"] == 30
+
+
+def test_invalid_advanced_budgets_are_refused(client: TestClient) -> None:
+    bad = {
+        **SCHOOL,
+        "weekday_budget_minutes": {"9": 60},
+        "app_budgets": [
+            {"name": "Games", "apps": [], "minutes": 10},
+            {"name": "Games", "apps": ["a"], "minutes": 10},
+        ],
+        "rollover_max_minutes": -1,
+    }
+    response = client.post("/api/v1/policies", json={"name": "Bad", "policy": bad})
+    assert response.status_code == 422
+    expected = {"invalid_weekday", "duplicate_app_budget", "empty_app_budget", "negative_budget"}
+    assert issue_codes(response) >= expected
+
+
 def test_overlapping_windows_are_refused(client: TestClient) -> None:
     overlap = {"schedule": {"windows": {"0": [WEEKDAY, {"start": "18:00:00", "end": "20:00:00"}]}}}
     response = client.post("/api/v1/policies", json={"name": "Bad", "policy": overlap})
