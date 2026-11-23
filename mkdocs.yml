@@ -13,7 +13,6 @@ exclude_docs: |
   product/
   operations/
   hooks/
-  developers/openapi.json
 
 hooks:
   - docs/hooks/openapi.py
@@ -80,6 +79,8 @@ nav:
   - user-guide/troubleshooting.md
   - user-guide/faq.md
   - Developers:
+      - developers/adapters.md
+      - developers/api-reference.md
       - architecture/api.md
       - architecture/domain-rules.md
       - architecture/adr/0001-monorepo-uv-npm.md

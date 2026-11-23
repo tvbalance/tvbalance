@@ -19,3 +19,8 @@ and no telemetry.
 - [Home Assistant](user-guide/home-assistant.md)
 - [HTTPS on your network](user-guide/https.md)
 - [TVBalance Pro](user-guide/pro.md)
+
+## For developers
+
+- [Writing an adapter](developers/adapters.md)
+- [API reference](developers/api-reference.md)

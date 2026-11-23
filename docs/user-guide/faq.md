@@ -49,4 +49,4 @@ data and settings are kept and the database is upgraded on start.
 
 ## How do I report a problem or ask for a TV brand?
 Open an issue at <https://github.com/tvbalance/tvbalance/issues>. Attach the diagnostics download, and do not post
-tokens or license keys. Developers can add a brand themselves with an adapter package.
+tokens or license keys. Developers can add a brand themselves with an adapter package: see [Writing an adapter](../developers/adapters.md).
