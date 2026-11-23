@@ -1,14 +1,28 @@
 name: Docs
 
-# Skeleton: the MkDocs Material site (5 languages) arrives with module M17.
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  placeholder:
+  build:
+    name: Build the site
     runs-on: ubuntu-latest
     steps:
-      - run: echo "docs site not implemented yet"
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+      - run: uv sync --only-group docs --frozen
+      - run: python scripts/check_docs_i18n.py
+      - run: uv run --only-group docs --frozen mkdocs build --strict
+        env:
+          NO_MKDOCS_2_WARNING: "1"
