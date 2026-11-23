@@ -89,7 +89,8 @@
               "pairing_lost": "Pairing lost",
               "tv_paired": "TV paired",
               "profile_started": "Profile started",
-              "profile_ended": "Profile ended"
+              "profile_ended": "Profile ended",
+              "weekly_report": "Weekly report"
             }
           }
         }

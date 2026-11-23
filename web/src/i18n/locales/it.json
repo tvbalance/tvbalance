@@ -288,7 +288,8 @@
       "pairing_lost": "La TV va riaccoppiata",
       "tv_added": "È stata aggiunta una TV",
       "tv_paired": "La TV è stata associata di nuovo",
-      "license_changed": "La licenza è cambiata"
+      "license_changed": "La licenza è cambiata",
+      "weekly_report": "Il report settimanale è pronto"
     }
   },
   "tvDetail": {
@@ -446,7 +447,8 @@
       "pairing_lost": "La TV va associata di nuovo",
       "tv_unreachable": "La TV non è raggiungibile",
       "blocked": "Un contenuto è stato bloccato",
-      "time_warning": "Il tempo di TV sta per finire"
+      "time_warning": "Il tempo di TV sta per finire",
+      "weekly_report": "Un report settimanale il lunedì (Pro)"
     },
     "secureAddress": "Apri l'indirizzo sicuro per attivare le notifiche."
   },

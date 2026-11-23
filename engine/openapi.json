@@ -1569,7 +1569,8 @@
                 "pairing_lost",
                 "tv_unreachable",
                 "blocked",
-                "time_warning"
+                "time_warning",
+                "weekly_report"
               ],
               "type": "string"
             },
@@ -1612,7 +1613,8 @@
                 "pairing_lost",
                 "tv_unreachable",
                 "blocked",
-                "time_warning"
+                "time_warning",
+                "weekly_report"
               ],
               "type": "string"
             },
@@ -1663,7 +1665,8 @@
                 "pairing_lost",
                 "tv_unreachable",
                 "blocked",
-                "time_warning"
+                "time_warning",
+                "weekly_report"
               ],
               "type": "string"
             },
@@ -1693,6 +1696,48 @@
           "result"
         ],
         "title": "PushTestOut",
+        "type": "object"
+      },
+      "ReportContentOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "seconds": {
+            "title": "Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "seconds"
+        ],
+        "title": "ReportContentOut",
+        "type": "object"
+      },
+      "ReportDayOut": {
+        "properties": {
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          },
+          "seconds": {
+            "title": "Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "seconds"
+        ],
+        "title": "ReportDayOut",
         "type": "object"
       },
       "Revoked": {
@@ -2220,6 +2265,50 @@
         "title": "TvOut",
         "type": "object"
       },
+      "TvReportOut": {
+        "properties": {
+          "blocks": {
+            "title": "Blocks",
+            "type": "integer"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/ReportDayOut"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "top_content": {
+            "items": {
+              "$ref": "#/components/schemas/ReportContentOut"
+            },
+            "title": "Top Content",
+            "type": "array"
+          },
+          "total_seconds": {
+            "title": "Total Seconds",
+            "type": "integer"
+          },
+          "tv_id": {
+            "title": "Tv Id",
+            "type": "string"
+          },
+          "tv_name": {
+            "title": "Tv Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tv_id",
+          "tv_name",
+          "total_seconds",
+          "days",
+          "top_content",
+          "blocks"
+        ],
+        "title": "TvReportOut",
+        "type": "object"
+      },
       "TvStatusOut": {
         "properties": {
           "active_profile": {
@@ -2583,6 +2672,34 @@
           "id"
         ],
         "title": "WeeklyEntryOut",
+        "type": "object"
+      },
+      "WeeklyReportOut": {
+        "properties": {
+          "first": {
+            "format": "date",
+            "title": "First",
+            "type": "string"
+          },
+          "last": {
+            "format": "date",
+            "title": "Last",
+            "type": "string"
+          },
+          "tvs": {
+            "items": {
+              "$ref": "#/components/schemas/TvReportOut"
+            },
+            "title": "Tvs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "first",
+          "last",
+          "tvs"
+        ],
+        "title": "WeeklyReportOut",
         "type": "object"
       },
       "WindowDoc": {
@@ -5055,6 +5172,77 @@
         "summary": "Send Test",
         "tags": [
           "push"
+        ]
+      }
+    },
+    "/api/v1/reports/weekly": {
+      "get": {
+        "description": "The week containing ``week`` (Monday to Sunday); the last complete week by default.",
+        "operationId": "weekly_report_api_v1_reports_weekly_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "week",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Week"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeeklyReportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Weekly Report",
+        "tags": [
+          "reports"
         ]
       }
     },

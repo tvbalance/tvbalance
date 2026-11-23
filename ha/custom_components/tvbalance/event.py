@@ -26,6 +26,7 @@ EVENT_TYPES = [
     "tv_paired",
     "profile_started",
     "profile_ended",
+    "weekly_report",
 ]
 
 

@@ -17,6 +17,7 @@ const KNOWN = [
   "tv_added",
   "tv_paired",
   "license_changed",
+  "weekly_report",
 ];
 
 /** Turns a stored event into one readable sentence; unknown types fall back to the raw type. */

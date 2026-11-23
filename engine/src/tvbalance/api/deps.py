@@ -18,6 +18,7 @@ from tvbalance.api.errors import ApiError
 from tvbalance.app.auth import SCOPES, AuthService, Principal, csrf_token_for
 from tvbalance.app.pairing import PairingService
 from tvbalance.app.profiles import ProfileService
+from tvbalance.app.reports import ReportService
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.ports.services import Clock, Entitlements
 from tvbalance.ports.storage import Storage
@@ -72,6 +73,13 @@ def get_profiles(conn: HTTPConnection) -> ProfileService:
     if profiles is None:
         raise ApiError(503, "unavailable", "the engine is not ready")
     return profiles
+
+
+def get_reports(conn: HTTPConnection) -> ReportService:
+    reports: ReportService | None = getattr(conn.app.state, "reports", None)
+    if reports is None:
+        raise ApiError(503, "unavailable", "the engine is not ready")
+    return reports
 
 
 def get_pairing(conn: HTTPConnection) -> PairingService:

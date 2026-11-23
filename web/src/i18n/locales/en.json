@@ -288,7 +288,8 @@
       "pairing_lost": "The TV needs to be paired again",
       "tv_added": "A TV was added",
       "tv_paired": "The TV was paired again",
-      "license_changed": "The license changed"
+      "license_changed": "The license changed",
+      "weekly_report": "The weekly report is ready"
     }
   },
   "tvDetail": {
@@ -446,7 +447,8 @@
       "pairing_lost": "The TV needs to be paired again",
       "tv_unreachable": "The TV can't be reached",
       "blocked": "Content was blocked",
-      "time_warning": "TV time is almost over"
+      "time_warning": "TV time is almost over",
+      "weekly_report": "A weekly report on Monday (Pro)"
     },
     "secureAddress": "Open the secure address to turn notifications on."
   },

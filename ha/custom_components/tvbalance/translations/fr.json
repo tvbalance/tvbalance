@@ -89,7 +89,8 @@
               "pairing_lost": "Association perdue",
               "tv_paired": "Télévision associée",
               "profile_started": "Profil démarré",
-              "profile_ended": "Profil terminé"
+              "profile_ended": "Profil terminé",
+              "weekly_report": "Rapport hebdomadaire"
             }
           }
         }

@@ -16,5 +16,6 @@
   "push_blocked_override": "Blocked by a temporary rule.",
   "push_time_warning": "{minutes} minutes of TV time left.",
   "push_time_warning_one": "1 minute of TV time left.",
+  "push_weekly_report": "Last week: {duration} of TV. Times blocked: {blocks}.",
   "push_test": "Notifications are working."
 }

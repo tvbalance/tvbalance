@@ -16,5 +16,6 @@
   "push_blocked_override": "Bloqué par une règle temporaire.",
   "push_time_warning": "Il reste {minutes} minutes de télé.",
   "push_time_warning_one": "Il reste 1 minute de télé.",
+  "push_weekly_report": "Semaine dernière : {duration} de télé. Blocages : {blocks}.",
   "push_test": "Les notifications fonctionnent."
 }

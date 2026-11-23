@@ -80,6 +80,19 @@ async def test_an_engine_event_reaches_the_bus_and_the_event_entity(
     assert activity.attributes["minutes_left"] == 5
 
 
+async def test_the_weekly_report_is_an_event_of_the_entity(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, stream: EventStream
+) -> None:
+    await setup_engine(hass, aioclient_mock, [make_tv()])
+
+    stream.push("weekly_report", total_seconds=7200, blocks=3)
+    await hass.async_block_till_done()
+
+    activity = state_of(hass, "event", "activity")
+    assert activity.attributes["event_type"] == "weekly_report"
+    assert activity.attributes["blocks"] == 3
+
+
 async def test_events_the_entity_does_not_know_still_reach_the_bus(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, stream: EventStream
 ) -> None:

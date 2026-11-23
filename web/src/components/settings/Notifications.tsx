@@ -18,7 +18,7 @@ import { Button } from "../ui/button";
 import { Badge, Card } from "../ui/card";
 import { useToast } from "../ui/toast";
 
-const EVENTS: PushEvent[] = ["pairing_lost", "tv_unreachable", "blocked", "time_warning"];
+const EVENTS: PushEvent[] = ["pairing_lost", "tv_unreachable", "blocked", "time_warning", "weekly_report"];
 
 export function Notifications() {
   const { t } = useTranslation();

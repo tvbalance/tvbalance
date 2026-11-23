@@ -9,11 +9,11 @@ from urllib.parse import urlsplit
 from cryptography.hazmat.primitives.asymmetric import ec
 from pydantic import AfterValidator, BaseModel, Field
 
-from tvbalance.app.notifications import PUSH_EVENTS
+from tvbalance.app.notifications import OPT_IN_EVENTS, PUSH_EVENTS
 from tvbalance.infra.webpush import b64url_decode
 
-PushEvent = Literal["pairing_lost", "tv_unreachable", "blocked", "time_warning"]
-DEFAULT_EVENTS: frozenset[str] = PUSH_EVENTS
+PushEvent = Literal["pairing_lost", "tv_unreachable", "blocked", "time_warning", "weekly_report"]
+DEFAULT_EVENTS: frozenset[str] = PUSH_EVENTS - OPT_IN_EVENTS
 
 
 def _https(value: str) -> str:

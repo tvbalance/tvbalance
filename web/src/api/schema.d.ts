@@ -552,6 +552,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/reports/weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Weekly Report
+         * @description The week containing ``week`` (Monday to Sunday); the last complete week by default.
+         */
+        get: operations["weekly_report_api_v1_reports_weekly_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/settings": {
         parameters: {
             query?: never;
@@ -1477,7 +1497,7 @@ export interface components {
             /** Endpoint */
             endpoint: string;
             /** Events */
-            events?: ("pairing_lost" | "tv_unreachable" | "blocked" | "time_warning")[];
+            events?: ("pairing_lost" | "tv_unreachable" | "blocked" | "time_warning" | "weekly_report")[];
             keys: components["schemas"]["PushKeys"];
             /**
              * Language
@@ -1498,7 +1518,7 @@ export interface components {
              */
             current: boolean;
             /** Events */
-            events: ("pairing_lost" | "tv_unreachable" | "blocked" | "time_warning")[];
+            events: ("pairing_lost" | "tv_unreachable" | "blocked" | "time_warning" | "weekly_report")[];
             /** Id */
             id: string;
             /** Language */
@@ -1511,7 +1531,7 @@ export interface components {
         /** PushSubscriptionUpdate */
         PushSubscriptionUpdate: {
             /** Events */
-            events: ("pairing_lost" | "tv_unreachable" | "blocked" | "time_warning")[];
+            events: ("pairing_lost" | "tv_unreachable" | "blocked" | "time_warning" | "weekly_report")[];
         };
         /** PushTestOut */
         PushTestOut: {
@@ -1520,6 +1540,25 @@ export interface components {
              * @enum {string}
              */
             result: "delivered" | "gone" | "failed";
+        };
+        /** ReportContentOut */
+        ReportContentOut: {
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Seconds */
+            seconds: number;
+        };
+        /** ReportDayOut */
+        ReportDayOut: {
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Seconds */
+            seconds: number;
         };
         /** Revoked */
         Revoked: {
@@ -1698,6 +1737,21 @@ export interface components {
             policy_id: number | null;
             status: components["schemas"]["TvStatusOut"] | null;
         };
+        /** TvReportOut */
+        TvReportOut: {
+            /** Blocks */
+            blocks: number;
+            /** Days */
+            days: components["schemas"]["ReportDayOut"][];
+            /** Top Content */
+            top_content: components["schemas"]["ReportContentOut"][];
+            /** Total Seconds */
+            total_seconds: number;
+            /** Tv Id */
+            tv_id: string;
+            /** Tv Name */
+            tv_name: string;
+        };
         /** TvStatusOut */
         TvStatusOut: {
             active_profile?: components["schemas"]["ProfileInfoOut"] | null;
@@ -1823,6 +1877,21 @@ export interface components {
             start: string;
             /** Weekdays */
             weekdays: number[];
+        };
+        /** WeeklyReportOut */
+        WeeklyReportOut: {
+            /**
+             * First
+             * Format: date
+             */
+            first: string;
+            /**
+             * Last
+             * Format: date
+             */
+            last: string;
+            /** Tvs */
+            tvs: components["schemas"]["TvReportOut"][];
         };
         /** WindowDoc */
         WindowDoc: {
@@ -3837,6 +3906,55 @@ export interface operations {
             };
             /** @description Not Found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    weekly_report_api_v1_reports_weekly_get: {
+        parameters: {
+            query?: {
+                week?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyReportOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

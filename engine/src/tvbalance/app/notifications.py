@@ -17,7 +17,10 @@ from tvbalance.ports.storage import PushSubscriptionRecord, SecretSettingsStore,
 
 log = logging.getLogger(__name__)
 
-PUSH_EVENTS = frozenset({"pairing_lost", "tv_unreachable", "blocked", "time_warning"})
+PUSH_EVENTS = frozenset(
+    {"pairing_lost", "tv_unreachable", "blocked", "time_warning", "weekly_report"}
+)
+OPT_IN_EVENTS = frozenset({"weekly_report"})  # offered, but not on until the parent asks
 VAPID_SECRET = "push_vapid_key"
 MAX_FAILURES = 5
 DEDUP_WINDOW = timedelta(minutes=10)
@@ -161,4 +164,10 @@ def _body(event_type: str, payload: dict[str, Any], language: str) -> str:
         minutes = int(payload.get("minutes_left") or 0)
         template = texts["push_time_warning_one" if minutes == 1 else "push_time_warning"]
         return template.format(minutes=minutes)
+    if event_type == "weekly_report":
+        total = int(payload.get("total_seconds") or 0) // 60
+        duration = f"{total // 60} h {total % 60} min"
+        return texts["push_weekly_report"].format(
+            duration=duration, blocks=int(payload.get("blocks") or 0)
+        )
     return texts[f"push_{event_type}"]

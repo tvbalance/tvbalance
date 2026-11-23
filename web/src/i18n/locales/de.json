@@ -288,7 +288,8 @@
       "pairing_lost": "Der Fernseher muss neu gekoppelt werden",
       "tv_added": "Ein Fernseher wurde hinzugefügt",
       "tv_paired": "Der Fernseher wurde erneut gekoppelt",
-      "license_changed": "Die Lizenz hat sich geändert"
+      "license_changed": "Die Lizenz hat sich geändert",
+      "weekly_report": "Der Wochenbericht ist da"
     }
   },
   "tvDetail": {
@@ -446,7 +447,8 @@
       "pairing_lost": "Der Fernseher muss neu gekoppelt werden",
       "tv_unreachable": "Der Fernseher ist nicht erreichbar",
       "blocked": "Ein Inhalt wurde gesperrt",
-      "time_warning": "Die Fernsehzeit ist fast zu Ende"
+      "time_warning": "Die Fernsehzeit ist fast zu Ende",
+      "weekly_report": "Montags ein Wochenbericht (Pro)"
     },
     "secureAddress": "Öffne die sichere Adresse, um Benachrichtigungen einzuschalten."
   },

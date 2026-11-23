@@ -22,6 +22,7 @@ from tvbalance.api.routes import (
     policies,
     profiles,
     push,
+    reports,
     settings,
     system,
     tls,
@@ -35,6 +36,7 @@ from tvbalance.app.licensing import LicenseService
 from tvbalance.app.notifications import PushNotifier, load_vapid_keys
 from tvbalance.app.pairing import DISCOVERY_TIMEOUT, POLL_INTERVAL, PairingService
 from tvbalance.app.profiles import ProfileService
+from tvbalance.app.reports import CHECK_EVERY, ReportService
 from tvbalance.app.status import SupervisorSettings
 from tvbalance.app.supervisor import Supervisor
 from tvbalance.app.tls import TlsManager
@@ -58,6 +60,7 @@ def create_app(
     discovery_timeout: float = DISCOVERY_TIMEOUT,
     pairing_poll_interval: float = POLL_INTERVAL,
     license_public_keys: Iterable[str] = TRUSTED_PUBLIC_KEYS,
+    report_interval: float = CHECK_EVERY,
 ) -> FastAPI:
     """Build the app.
 
@@ -69,7 +72,8 @@ def create_app(
     (`app.state.auth`), the clock (`app.state.clock`), the event bus (`app.state.events`) and the
     supervisor that watches every paired TV (`app.state.supervisor`), within the limits of the
     license service (`app.state.license`). `clock` and `supervisor_settings` let tests control
-    time and pacing; `license_public_keys` are the keys whose licenses count. Without a config
+    time and pacing; `license_public_keys` are the keys whose licenses count; `report_interval`
+    is how often the weekly report is due-checked. Without a config
     the API serves only its public routes.
     """
 
@@ -96,6 +100,9 @@ def create_app(
             storage, registered, app.state.events, clock_, supervisor_settings, license_
         )
         app.state.profiles = ProfileService(storage, clock_, license_)
+        reports_ = app.state.reports = ReportService(
+            storage, app.state.events, clock_, license_, report_interval
+        )
         app.state.pairing = PairingService(
             storage,
             registered,
@@ -120,6 +127,7 @@ def create_app(
             tls_manager.start()
             await app.state.supervisor.start()
             license_.start()
+            reports_.start()
             if discovery:
                 discovery.start()
             yield
@@ -127,6 +135,7 @@ def create_app(
             if discovery:
                 await discovery.stop()
             await app.state.pairing.stop()
+            await reports_.stop()
             await license_.stop()
             await app.state.supervisor.stop()
             await tls_manager.stop()
@@ -153,6 +162,7 @@ def create_app(
     app.include_router(profiles.router)
     app.include_router(inventory.router)
     app.include_router(activity.router)
+    app.include_router(reports.router)
     app.include_router(settings.router)
     app.include_router(events_ws.router)
 

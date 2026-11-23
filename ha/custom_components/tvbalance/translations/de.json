@@ -89,7 +89,8 @@
               "pairing_lost": "Kopplung verloren",
               "tv_paired": "Fernseher gekoppelt",
               "profile_started": "Profil gestartet",
-              "profile_ended": "Profil beendet"
+              "profile_ended": "Profil beendet",
+              "weekly_report": "Wochenbericht"
             }
           }
         }

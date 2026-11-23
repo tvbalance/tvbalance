@@ -288,7 +288,8 @@
       "pairing_lost": "Hay que volver a emparejar el televisor",
       "tv_added": "Se añadió un televisor",
       "tv_paired": "El televisor se emparejó de nuevo",
-      "license_changed": "La licencia ha cambiado"
+      "license_changed": "La licencia ha cambiado",
+      "weekly_report": "El informe semanal está listo"
     }
   },
   "tvDetail": {
@@ -446,7 +447,8 @@
       "pairing_lost": "Hay que emparejar de nuevo la tele",
       "tv_unreachable": "No se puede conectar con la tele",
       "blocked": "Se bloqueó un contenido",
-      "time_warning": "El tiempo de tele casi se acaba"
+      "time_warning": "El tiempo de tele casi se acaba",
+      "weekly_report": "Un informe semanal el lunes (Pro)"
     },
     "secureAddress": "Abre la dirección segura para activar las notificaciones."
   },

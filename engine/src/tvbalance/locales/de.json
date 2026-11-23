@@ -16,5 +16,6 @@
   "push_blocked_override": "Durch eine vorübergehende Regel gesperrt.",
   "push_time_warning": "Noch {minutes} Minuten Fernsehzeit.",
   "push_time_warning_one": "Noch 1 Minute Fernsehzeit.",
+  "push_weekly_report": "Letzte Woche: {duration} Fernsehen. Sperrungen: {blocks}.",
   "push_test": "Benachrichtigungen funktionieren."
 }

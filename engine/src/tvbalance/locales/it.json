@@ -16,5 +16,6 @@
   "push_blocked_override": "Bloccata da una regola temporanea.",
   "push_time_warning": "Restano {minutes} minuti di TV.",
   "push_time_warning_one": "Resta 1 minuto di TV.",
+  "push_weekly_report": "Settimana scorsa: {duration} di TV. Volte bloccata: {blocks}.",
   "push_test": "Le notifiche funzionano."
 }

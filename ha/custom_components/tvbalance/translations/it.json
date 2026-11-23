@@ -89,7 +89,8 @@
               "pairing_lost": "Associazione persa",
               "tv_paired": "TV associata",
               "profile_started": "Profilo avviato",
-              "profile_ended": "Profilo terminato"
+              "profile_ended": "Profilo terminato",
+              "weekly_report": "Report settimanale"
             }
           }
         }
