@@ -81,7 +81,13 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
   (`start_date`, `end_date`, both included). Everything can be saved on any plan; `effective` is
   false on Free, where profiles and the calendar are stored but not applied. A TV's `status`
   carries `active_profile` while one is in force. Unknown policies or TVs answer 404.
-- **Activity** (`read`): `GET /tvs/{id}/usage?days=` and `GET /events?tv_id&since&limit`.
+- **Activity** (`read`): `GET /tvs/{id}/usage?days=` (up to 366; the Free plan is cut to 7 days and
+  `limited` is true), `GET /tvs/{id}/usage/content?from&to` (seconds per app, input and channel, most
+  viewed first, with the same `limited` rule) and `GET /events?tv_id&since&limit`.
+- **Reports** (`read`, Pro): `GET /reports/weekly?week=` returns the Monday-to-Sunday week that contains
+  `week` (the last complete week by default): per TV the total, the seven days, the top content and the
+  number of blocks. Without Pro it answers 403 `requires_pro`. On Monday at 8:00 household time the Engine
+  publishes one `weekly_report` event per TV.
 - **Settings:** `GET /settings` (`read`), `PUT /settings` (`admin`): `language`, `timezone`.
 - **Auth management:** `GET /auth/me`, `POST /auth/logout`, `PUT /auth/password`,
   `PUT`/`DELETE /auth/pin`, `GET`/`DELETE /auth/sessions[/{id}]`,
@@ -89,7 +95,7 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
 - **Web Push** (full admin only): `GET /push/key` (the VAPID public key a browser subscribes with),
   `GET`/`POST /push/subscriptions`, `PATCH`/`DELETE /push/subscriptions/{id}` and
   `POST /push/subscriptions/{id}/test`. A subscription lists the events it wants
-  (`pairing_lost`, `tv_unreachable`, `blocked`, `time_warning`); posting the same endpoint again
+  (`pairing_lost`, `tv_unreachable`, `blocked`, `time_warning`, and `weekly_report`, which is opt-in); posting the same endpoint again
   refreshes it. The endpoint itself is never returned.
 - **HTTPS** (full admin only): `GET /tls` (mode, certificate names and expiry, CA fingerprint, the HTTPS
   addresses) and `POST /tls/rotate` (a new CA and certificate; devices must install the new CA again,

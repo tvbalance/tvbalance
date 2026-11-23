@@ -61,7 +61,8 @@ Choose a TV's name on the dashboard to rename it, switch monitoring on or off, c
 days as bars, and read its latest events. Removing a TV asks for confirmation.
 
 **Activity** shows the same for all TVs, with a filter and the full event log: warnings, blocks, switch-offs and
-connection problems.
+connection problems. With Pro, choose a longer period (up to a year), see the most watched apps, and read last week's
+report. See [TVBalance Pro](pro.md).
 
 Changing rules, TVs and settings needs the administrator password.
 

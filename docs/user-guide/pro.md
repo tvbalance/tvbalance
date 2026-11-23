@@ -8,6 +8,7 @@ unlocks the advanced features as they arrive.
 | TVs supervised | 1 | Unlimited |
 | Profiles and calendar | No | Yes |
 | Advanced budgets (per weekday, app groups, rollover) | No | Yes |
+| History beyond 7 days, usage per app, weekly report | No | Yes |
 | Rules, time budgets, parent actions, notifications, Home Assistant | Yes | Yes |
 
 The license is a key you paste into the app. It is checked on your own device with a signature, so it needs no
@@ -46,6 +47,16 @@ A rule set's daily budget can be refined in **Rules > Time**:
 
 They can be set up on any plan and are saved either way, but they are only applied with a Pro license; on Free the
 plain daily budget applies. Nothing is lost if a license ends.
+
+## History and weekly report
+
+**Activity** can show the last 7, 30, 90 or 365 days, with a bar for each day and the most watched apps, inputs and
+channels of each TV. On the Free plan the history stops at 7 days and a notice says so.
+
+Every Monday at 8:00 (the household's time) the **weekly report** for the week before is ready: how long each TV was
+watched, on which days, the top apps and how many times content was blocked. It appears in Activity, and can also
+arrive as a notification: turn on "A weekly report on Monday" for a device in **Settings > Notifications** (it is off by
+default). Home Assistant gets a `weekly_report` event.
 
 ## Get and activate a license
 1. In **Settings → TVBalance Pro**, choose **Buy Pro** (shown when the purchase page is configured).

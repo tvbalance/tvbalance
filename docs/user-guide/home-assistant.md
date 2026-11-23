@@ -72,7 +72,7 @@ Profile services are for the whole household, not a TV, and need the Pro plan:
 Each Engine event is also fired on the Home Assistant bus as `tvbalance_event`, with `device_id`, `tv_id`, `type`
 and `payload`. Types: `time_warning` (`minutes_left`, `limit`), `blocked` (`reason`), `redirected` (`action`),
 `powered_off`, `enforcement_paused`, `enforcement_unavailable` (`reason`), `tv_unreachable`, `tv_reachable`,
-`pairing_lost`, `tv_paired`, `profile_started` (`name`, `until`, `source`), `profile_ended` (`name`).
+`pairing_lost`, `tv_paired`, `profile_started` (`name`, `until`, `source`), `profile_ended` (`name`), `weekly_report` (`first`, `last`, `total_seconds`, `blocks`, `top`).
 
 ## Blueprints
 
