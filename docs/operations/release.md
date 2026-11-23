@@ -23,7 +23,9 @@ push (image build, Add-on linter, client build with `twine check`, version consi
    `tvbalance-addon-aarch64` public (package settings, **Change visibility**) so the Supervisor can pull them.
 5. **Documentation site**: in the repository settings, **Pages**, set the source to **GitHub Actions**. The `Docs`
    workflow then publishes to `https://tvbalance.github.io/tvbalance/` on every `vX.Y.Z` tag, or by hand with
-   **Run workflow**. Pushes and pull requests only build the site.
+   **Run workflow**. Pushes and pull requests only build the site. GitHub creates the `github-pages` environment
+   allowing `main` only: add the tag rule `v*` under **Environments → github-pages → Deployment branches and
+   tags**, or tag deploys are rejected.
 
 ## Each release
 
