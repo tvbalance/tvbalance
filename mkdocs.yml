@@ -57,6 +57,9 @@ plugins:
         - locale: it
           name: Italiano
           build: true
+          nav_translations:
+            Home: Inizio
+            Developers: Sviluppatori
         - locale: de
           name: Deutsch
           build: true
