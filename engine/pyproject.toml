@@ -1,6 +1,6 @@
 [project]
 name = "tvbalance"
-version = "0.0.1"
+version = "0.1.0"
 description = "TVBalance Engine: local-first parental control for smart TVs"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
