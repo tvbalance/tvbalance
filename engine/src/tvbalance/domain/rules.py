@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Collection
+from collections.abc import Collection, Mapping
 from datetime import datetime
 
-from tvbalance.domain.budget import remaining_seconds
+from tvbalance.domain.budget import app_budget_left, remaining_seconds
 from tvbalance.domain.content import blocked_content_reason, is_always_allowed
 from tvbalance.domain.models import (
     Action,
@@ -53,6 +53,8 @@ def evaluate(
     policy: Policy,
     usage: Usage,
     overrides: tuple[Override, ...] = (),
+    rollover: int = 0,
+    app_seconds: Mapping[str, int] | None = None,
 ) -> Decision:
     """Decide whether the current observation is allowed. Pure function of its inputs.
 
@@ -77,12 +79,17 @@ def evaluate(
         span = allowed_span(policy.schedule, now)
         if span is None:
             return Block(BlockReason.OUTSIDE_WINDOW)
-        budget_left = remaining_seconds(policy, usage)
+        budget_left = remaining_seconds(policy, usage, rollover)
         if budget_left is not None:
             if budget_left <= 0:
                 return Block(BlockReason.BUDGET_EXHAUSTED)
             upcoming.append((budget_left, LimitKind.BUDGET))
         upcoming.append((seconds_until_end(span, now), LimitKind.WINDOW))
+        group_left = app_budget_left(policy, observation.foreground_app, app_seconds or {})
+        if group_left is not None:
+            if group_left <= 0:
+                return Block(BlockReason.APP_BUDGET_EXHAUSTED)
+            upcoming.append((group_left, LimitKind.APP_BUDGET))
 
     reason = blocked_content_reason(observation, policy)
     if reason is not None:

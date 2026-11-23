@@ -113,6 +113,7 @@ class Supervisor:
             self._clock,
             self._settings,
             ProfileService(self._storage, self._clock, self._entitlements),
+            self._entitlements,
         )
         task = asyncio.create_task(worker.run(), name=f"tv-{record.id}")
         self._workers[record.id] = worker

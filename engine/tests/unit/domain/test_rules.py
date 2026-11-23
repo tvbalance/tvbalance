@@ -4,6 +4,7 @@ from domain_helpers import DAY, always_open, at, tv, window
 
 from tvbalance.domain.models import (
     Allow,
+    AppBudget,
     Block,
     BlockReason,
     LimitKind,
@@ -155,3 +156,44 @@ def test_most_recent_active_override_wins() -> None:
     newer_block = Override(allow=False, until=at("19:00"), created_at=at("17:45"))
     result = evaluate(at("18:00"), tv(), OPEN, Usage(DAY), (newer_allow, newer_block))
     assert result == Block(BlockReason.OVERRIDE)
+
+
+GAMES = Policy(schedule=always_open(), app_budgets=(AppBudget("games", frozenset({"a", "b"}), 30),))
+
+
+def test_an_exhausted_app_group_blocks_its_apps_only() -> None:
+    used = {"a": 1000, "b": 800}
+    assert evaluate(
+        at("18:00"), tv(foreground_app="a"), GAMES, Usage(DAY), app_seconds=used
+    ) == Block(BlockReason.APP_BUDGET_EXHAUSTED)
+    assert (
+        evaluate(at("18:00"), tv(foreground_app="z"), GAMES, Usage(DAY), app_seconds=used)
+        == Allow()
+    )
+
+
+def test_an_app_group_warns_before_it_runs_out() -> None:
+    used = {"a": 25 * 60}
+    assert evaluate(
+        at("18:00"), tv(foreground_app="b"), GAMES, Usage(DAY), app_seconds=used
+    ) == Warn(5, LimitKind.APP_BUDGET)
+
+
+def test_an_allow_override_lifts_the_app_group_limit() -> None:
+    used = {"a": 99999}
+    decision = evaluate(
+        at("18:00"),
+        tv(foreground_app="a"),
+        GAMES,
+        Usage(DAY),
+        (allow_override("20:00"),),
+        app_seconds=used,
+    )
+    assert decision == Allow()
+
+
+def test_rollover_postpones_the_budget_block() -> None:
+    policy = Policy(schedule=always_open(), daily_budget_minutes=60)
+    spent = Usage(DAY, watched_seconds=3600)
+    assert evaluate(at("18:00"), tv(), policy, spent) == Block(BlockReason.BUDGET_EXHAUSTED)
+    assert evaluate(at("18:00"), tv(), policy, spent, rollover=20) == Allow()

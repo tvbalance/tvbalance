@@ -25,6 +25,10 @@ from tvbalance.app.profiles import ProfileService
 from tvbalance.app.worker import TvWorker
 from tvbalance.config import EngineConfig
 from tvbalance.domain.models import (
+    Allow,
+    AppBudget,
+    Block,
+    BlockReason,
     ContentKey,
     GoHome,
     MessageKind,
@@ -36,6 +40,7 @@ from tvbalance.domain.models import (
     ShowMessage,
 )
 from tvbalance.infra.db.repositories import open_storage
+from tvbalance.ports.services import Entitlements
 from tvbalance.ports.storage import Storage, TvRecord
 from tvbalance.sdk.errors import TVError, TVTimeoutError
 from tvbalance.sdk.types import Capability
@@ -54,6 +59,7 @@ class World:
         self,
         capabilities: frozenset[Capability] | None = None,
         profiles: ProfileService | None = None,
+        entitlements: Entitlements | None = None,
     ) -> TvWorker:
         return TvWorker(
             self.record,
@@ -63,6 +69,7 @@ class World:
             self.clock,
             FAST,
             profiles,
+            entitlements,
         )
 
     async def assign(self, policy: Policy) -> None:
@@ -458,3 +465,50 @@ async def test_a_tv_without_rules_gets_the_profile_too(world: World) -> None:
     world.clock.advance(seconds=3)
     await worker.tick()
     assert messages(world.tv)  # tiktok is blocked by the profile
+
+
+class FreePlan(Plan):
+    def is_pro(self) -> bool:
+        return False
+
+
+async def _exhausted_game_group(world: World, entitlements: Entitlements) -> TvWorker:
+    group = AppBudget("games", frozenset({"video"}), 1)
+    await world.assign(Policy(schedule=ALL_DAY, app_budgets=(group,)))
+    worker = world.worker(entitlements=entitlements)
+    assert await worker.connect()
+    await world.storage.content_usage.add(
+        world.record.id, T0.date(), ContentKey("app", "video"), 90
+    )
+    await worker.tick()
+    return worker
+
+
+async def test_an_exhausted_app_group_is_enforced_with_pro(world: World) -> None:
+    worker = await _exhausted_game_group(world, Plan())
+    assert worker.status.decision == Block(BlockReason.APP_BUDGET_EXHAUSTED)
+
+
+async def test_app_groups_are_ignored_without_pro(world: World) -> None:
+    worker = await _exhausted_game_group(world, FreePlan())
+    assert worker.status.decision == Allow()
+
+
+async def test_yesterdays_unused_time_carries_over_with_pro(world: World) -> None:
+    yesterday = T0.date() - timedelta(days=1)
+    await world.assign(Policy(schedule=ALL_DAY, daily_budget_minutes=10, rollover_max_minutes=5))
+    await world.storage.usage.add_watched(world.record.id, yesterday, 60)
+    worker = world.worker(entitlements=Plan())
+    assert await worker.connect()
+    await worker.tick()
+    assert worker.status.remaining_seconds == 15 * 60
+
+
+async def test_the_rollover_is_zero_without_pro(world: World) -> None:
+    yesterday = T0.date() - timedelta(days=1)
+    await world.assign(Policy(schedule=ALL_DAY, daily_budget_minutes=10, rollover_max_minutes=5))
+    await world.storage.usage.add_watched(world.record.id, yesterday, 60)
+    worker = world.worker(entitlements=FreePlan())
+    assert await worker.connect()
+    await worker.tick()
+    assert worker.status.remaining_seconds == 10 * 60

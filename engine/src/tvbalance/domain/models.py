@@ -143,6 +143,7 @@ class LimitKind(StrEnum):
     WINDOW = "window"
     BUDGET = "budget"
     OVERRIDE = "override"
+    APP_BUDGET = "app_budget"
 
 
 class BlockReason(StrEnum):
@@ -151,6 +152,7 @@ class BlockReason(StrEnum):
     APP_BLOCKED = "app_blocked"
     INPUT_BLOCKED = "input_blocked"
     CHANNEL_BLOCKED = "channel_blocked"
+    APP_BUDGET_EXHAUSTED = "app_budget_exhausted"
     OVERRIDE = "override"
 
     @property

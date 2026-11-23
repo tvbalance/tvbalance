@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, time, timedelta
+from collections.abc import Mapping
+from dataclasses import replace
+from datetime import UTC, date, datetime, time, timedelta
 
 from tvbalance.domain.content import is_always_allowed
 from tvbalance.domain.models import Observation, Policy, Power, Usage
@@ -10,12 +12,47 @@ from tvbalance.domain.models import Observation, Policy, Power, Usage
 MAX_ACCRUAL_GAP = timedelta(seconds=120)
 
 
-def remaining_seconds(policy: Policy, usage: Usage) -> int | None:
-    """Budget seconds left today, or ``None`` when the policy has no daily budget."""
-    if policy.daily_budget_minutes is None:
+def base_policy(policy: Policy) -> Policy:
+    """The policy without the advanced budgets: what applies when the plan does not include them."""
+    return replace(policy, weekday_budget_minutes={}, app_budgets=(), rollover_max_minutes=None)
+
+
+def daily_budget_minutes(policy: Policy, day: date) -> int | None:
+    """The budget of ``day``: its weekday's own one when set, else the general daily budget."""
+    return policy.weekday_budget_minutes.get(day.weekday(), policy.daily_budget_minutes)
+
+
+def rollover_minutes(policy: Policy, yesterday: Usage) -> int:
+    """Unused minutes of the previous day that carry over, capped. They never chain."""
+    if policy.rollover_max_minutes is None:
+        return 0
+    budget = daily_budget_minutes(policy, yesterday.day)
+    if budget is None:
+        return 0
+    unused = (budget + yesterday.bonus_minutes) * 60 - yesterday.watched_seconds
+    return min(max(0, unused) // 60, policy.rollover_max_minutes)
+
+
+def remaining_seconds(policy: Policy, usage: Usage, rollover: int = 0) -> int | None:
+    """Budget seconds left today, or ``None`` when there is no budget for the day."""
+    budget = daily_budget_minutes(policy, usage.day)
+    if budget is None:
         return None
-    allowed = (policy.daily_budget_minutes + usage.bonus_minutes) * 60
+    allowed = (budget + rollover + usage.bonus_minutes) * 60
     return max(0, allowed - usage.watched_seconds)
+
+
+def app_budget_left(
+    policy: Policy, app_id: str | None, app_seconds: Mapping[str, int]
+) -> int | None:
+    """Seconds left of the allowance of the group ``app_id`` belongs to, if it belongs to one."""
+    if app_id is None:
+        return None
+    for group in policy.app_budgets:
+        if app_id in group.apps:
+            used = sum(app_seconds.get(app, 0) for app in group.apps)
+            return max(0, group.minutes * 60 - used)
+    return None
 
 
 def accrue(

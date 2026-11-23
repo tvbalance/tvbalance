@@ -18,12 +18,12 @@ from tvbalance.app.messages import localize
 from tvbalance.app.profiles import ProfileService
 from tvbalance.app.session import TVSession
 from tvbalance.app.status import Inventory, ProfileInfo, SupervisorSettings, TvStatus
-from tvbalance.domain.budget import accrue, remaining_seconds
+from tvbalance.domain.budget import accrue, base_policy, remaining_seconds, rollover_minutes
 from tvbalance.domain.content import content_of
 from tvbalance.domain.enforcement import EnforcementState, step
 from tvbalance.domain.models import Decision, Observation, Policy, Power, Usage
 from tvbalance.domain.rules import evaluate
-from tvbalance.ports.services import Clock
+from tvbalance.ports.services import Clock, Entitlements
 from tvbalance.ports.storage import PolicyRecord, Storage, TvRecord
 from tvbalance.sdk.errors import TVError, TVPairingError, TVTimeoutError
 from tvbalance.sdk.plugin import AdapterPlugin
@@ -49,6 +49,7 @@ class TvWorker:
         clock: Clock,
         settings: SupervisorSettings | None = None,
         profiles: ProfileService | None = None,
+        entitlements: Entitlements | None = None,
     ) -> None:
         self._record = record
         self._plugin = plugin
@@ -57,6 +58,8 @@ class TvWorker:
         self._clock = clock
         self._settings = settings or SupervisorSettings()
         self._profiles = profiles
+        self._entitlements = entitlements  # ``None``: nothing is gated
+        self._rollover = 0
         self._profile: ProfileInfo | None = None
         self._session: TVSession | None = None
         self._unsubscribe: Callable[[], None] = _nothing
@@ -180,8 +183,16 @@ class TvWorker:
             self._record = record
         policy_record = await self._rules(now)
         policy = Policy() if policy_record is None else policy_record.policy
+        if self._entitlements is not None and not self._entitlements.is_pro():
+            policy = base_policy(policy)
 
         usage = await self._storage.usage.get(self._record.id, now.date())
+        self._rollover = 0
+        if policy.rollover_max_minutes is not None:
+            yesterday = await self._storage.usage.get(
+                self._record.id, now.date() - timedelta(days=1)
+            )
+            self._rollover = rollover_minutes(policy, yesterday)
         if self._last_tick is not None:
             billed = accrue(usage, self._last_tick, now, obs, policy)
             delta = billed.watched_seconds - usage.watched_seconds
@@ -202,7 +213,11 @@ class TvWorker:
             return
 
         overrides = await self._storage.overrides.active(self._record.id, now)
-        decision = evaluate(now, obs, policy, usage, overrides)
+        app_seconds: dict[str, int] = {}
+        if policy.app_budgets:
+            today = await self._storage.content_usage.day(self._record.id, now.date())
+            app_seconds = {key.id: secs for key, secs in today.items() if key.kind == "app"}
+        decision = evaluate(now, obs, policy, usage, overrides, self._rollover, app_seconds)
         if self._state is None:
             self._state = await self._storage.enforcement.load(self._record.id)
         result = step(self._state, now, decision, obs, self._plugin.info.capabilities, policy)
@@ -335,7 +350,7 @@ class TvWorker:
             remaining_seconds=(
                 old.remaining_seconds
                 if usage is None or policy is None
-                else remaining_seconds(policy, usage)
+                else remaining_seconds(policy, usage, self._rollover)
             ),
             updated_at=old.updated_at if at is None else at,
             active_profile=self._profile,
