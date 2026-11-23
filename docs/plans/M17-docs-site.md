@@ -1,6 +1,6 @@
 # M17: Documentation site and user guide in five languages
 
-Status: in progress.
+Status: done.
 
 ## Goal
 Spec: a multilingual user guide, per-brand guides, troubleshooting, FAQ and an adapter contributor guide, published

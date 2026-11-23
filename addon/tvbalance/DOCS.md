@@ -2,6 +2,8 @@
 
 Healthy screen-time rules for your family's smart TV.
 
+Full guide: <https://tvbalance.github.io/tvbalance/>
+
 ## Installation
 
 1. In Home Assistant, open **Settings → Add-ons → Add-on Store → ⋮ → Repositories**.

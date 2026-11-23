@@ -31,6 +31,7 @@ budgets and app/input/channel rules on the TV itself, and plugs natively into Ho
 
 ## Documentation
 
+- [User guide and documentation site](https://tvbalance.github.io/tvbalance/) in English, Italian, German, French and Spanish (sources in `docs/`, built with MkDocs)
 - [Product specification](docs/product/spec.md)
 - [Architecture decision records](docs/architecture/adr/)
 - [Discovery notes](docs/discovery/)

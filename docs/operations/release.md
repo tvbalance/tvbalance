@@ -21,6 +21,9 @@ push (image build, Add-on linter, client build with `twine check`, version consi
    it; store it as the repository secret `HACS_MIRROR_TOKEN`. Without the secret the mirror job is skipped.
 4. After the first release, make the ghcr packages `tvbalance`, `tvbalance-addon-amd64` and
    `tvbalance-addon-aarch64` public (package settings, **Change visibility**) so the Supervisor can pull them.
+5. **Documentation site**: in the repository settings, **Pages**, set the source to **GitHub Actions**. The `Docs`
+   workflow then publishes to `https://tvbalance.github.io/tvbalance/` on every `vX.Y.Z` tag, or by hand with
+   **Run workflow**. Pushes and pull requests only build the site.
 
 ## Each release
 
