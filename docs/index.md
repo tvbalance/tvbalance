@@ -11,6 +11,7 @@ and no telemetry.
 - [Install TVBalance](user-guide/install.md) as a Home Assistant Add-on or with Docker.
 - [Getting started](user-guide/getting-started.md): from first start to a working rule in five minutes.
 - [The web app](user-guide/web-ui.md) explains the dashboard, rules and settings.
+- [Troubleshooting](user-guide/troubleshooting.md) and the [FAQ](user-guide/faq.md) cover common questions.
 
 ## Your TV and your home
 

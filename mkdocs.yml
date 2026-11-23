@@ -77,6 +77,8 @@ nav:
   - user-guide/home-assistant.md
   - user-guide/https.md
   - user-guide/pro.md
+  - user-guide/troubleshooting.md
+  - user-guide/faq.md
   - Developers:
       - architecture/api.md
       - architecture/domain-rules.md
