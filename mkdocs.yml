@@ -1,0 +1,88 @@
+site_name: TVBalance
+site_description: Healthy screen-time rules for your family's smart TV.
+site_url: https://tvbalance.github.io/tvbalance/
+repo_url: https://github.com/tvbalance/tvbalance
+docs_dir: docs
+site_dir: site
+strict: true
+
+# Internal material stays out of the published site.
+exclude_docs: |
+  plans/
+  discovery/
+  product/
+  operations/
+  hooks/
+  developers/openapi.json
+
+hooks:
+  - docs/hooks/openapi.py
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - swagger-ui-tag
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: it
+          name: Italiano
+          build: true
+        - locale: de
+          name: Deutsch
+          build: true
+        - locale: fr
+          name: Français
+          build: true
+        - locale: es
+          name: Español
+          build: true
+
+nav:
+  - Home: index.md
+  - user-guide/web-ui.md
+  - user-guide/tv-lg-webos.md
+  - user-guide/home-assistant.md
+  - user-guide/https.md
+  - user-guide/pro.md
+  - Developers:
+      - architecture/api.md
+      - architecture/domain-rules.md
+      - architecture/adr/0001-monorepo-uv-npm.md
+      - architecture/adr/0002-engine-addon-thin-integration.md
+      - architecture/adr/0003-capability-model-adapter-sdk.md
+      - architecture/adr/0004-pure-domain-and-engine-timeouts.md
+      - architecture/adr/0005-authentication.md
+      - architecture/adr/0006-open-core.md
+      - architecture/adr/0007-sqlite-alembic.md
+      - architecture/adr/0008-internationalization.md
