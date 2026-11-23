@@ -115,6 +115,7 @@ A harness is a simulated TV of your protocol, started in-process. It is an async
 ```python
 class SimulatedTV(Protocol):
     config: AdapterConfig
+
     async def set_power(self, power: Power) -> None: ...
     async def drop_connection(self) -> None: ...
 ```
