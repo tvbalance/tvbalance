@@ -7,6 +7,7 @@ unlocks the advanced features as they arrive.
 | --- | --- | --- |
 | TVs supervised | 1 | Unlimited |
 | Profiles and calendar | No | Yes |
+| Advanced budgets (per weekday, app groups, rollover) | No | Yes |
 | Rules, time budgets, parent actions, notifications, Home Assistant | Yes | Yes |
 
 The license is a key you paste into the app. It is checked on your own device with a signature, so it needs no
@@ -30,6 +31,21 @@ TV's own rule set. Ending a profile or letting it expire returns every TV to its
 
 You can set profiles and the calendar up on any plan; they are saved but only applied with a Pro license, and the
 screens say so. Nothing is lost if a license ends.
+
+## Advanced budgets
+
+A rule set's daily budget can be refined in **Rules > Time**:
+
+- **Budget by weekday:** a different number of minutes for any day, for example more on Saturday. A day left empty
+  uses the daily budget.
+- **App groups:** a group of apps, such as "Games", that share one daily allowance. When the group's time is used
+  up its apps are blocked while everything else stays available, and a warning appears before it runs out. Pick the
+  apps from the list read from the TV.
+- **Carry over unused time:** minutes not used yesterday are added to today, up to a maximum you choose. Carried-over
+  minutes never pile up from one day to the next.
+
+They can be set up on any plan and are saved either way, but they are only applied with a Pro license; on Free the
+plain daily budget applies. Nothing is lost if a license ends.
 
 ## Get and activate a license
 1. In **Settings → TVBalance Pro**, choose **Buy Pro** (shown when the purchase page is configured).

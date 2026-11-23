@@ -39,7 +39,9 @@ Open **Rules**, pick a set (or create one), and edit it in four tabs:
 
 - **Schedule:** the time windows for each weekday. Add as many windows as you need, copy one day to others, and add
   special days for a single date such as a holiday. A window that ends before it starts runs past midnight.
-- **Time:** an optional daily budget in minutes, and the warnings shown when that many minutes are left.
+- **Time:** an optional daily budget in minutes, and the warnings shown when that many minutes are left. With Pro
+  you can also set a budget for each weekday, shared allowances for groups of apps, and carry unused time over to
+  the next day. See [TVBalance Pro](pro.md).
 - **Content:** apps, inputs and channels to block; an "only allow chosen apps" mode; things that are always allowed;
   and where the TV goes when something is blocked (home screen, an app, an input or a channel). Pick items from the
   list read from the TV, with app icons. If the TV is off or unreachable, type the ids by hand instead.

@@ -65,7 +65,10 @@ Codes: `not_authenticated` (401), `forbidden` (403), `setup_required`, `rate_lim
   - The TV and its key are stored when pairing completes. Events `tv_added` and `tv_paired` (a
     stored TV paired again) go through the log and the WebSocket.
 - **Policies:** `GET /policies`, `GET /policies/{id}`; `POST /policies` and `PUT /policies/{id}`
-  need `admin` and answer 422 with the domain's issue codes when the policy is invalid.
+  need `admin` and answer 422 with the domain's issue codes when the policy is invalid. A policy
+  may carry advanced budgets (Pro): `weekday_budget_minutes` (weekday 0-6 to minutes),
+  `app_budgets` (`name`, `apps`, `minutes`) and `rollover_max_minutes`. They are always saved and
+  only applied with a Pro license; the stored document is version 2 and version 1 stays readable.
 - **Control** (`control` scope): `POST /tvs/{id}/override` (`allow`, then `minutes` or
   `until_midnight`), `DELETE /tvs/{id}/override`, `POST /tvs/{id}/bonus` (`minutes`),
   `POST /tvs/{id}/pause` (`minutes`, default 30). Times are returned in UTC.
