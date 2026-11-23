@@ -17,7 +17,7 @@ from pathlib import Path
 
 LANGUAGES = ("it", "de", "fr", "es")
 # Languages whose translations are still being written; emptied when the last one lands.
-PENDING: frozenset[str] = frozenset({"de", "fr", "es"})
+PENDING: frozenset[str] = frozenset({"fr", "es"})
 
 _TRANSLATION = re.compile(r"^(?P<stem>.+)\.(?P<lang>[a-z]{2})\.md$")
 

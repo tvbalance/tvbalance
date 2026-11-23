@@ -63,6 +63,9 @@ plugins:
         - locale: de
           name: Deutsch
           build: true
+          nav_translations:
+            Home: Start
+            Developers: Entwickler
         - locale: fr
           name: Français
           build: true
