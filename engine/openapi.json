@@ -335,6 +335,67 @@
         "title": "ChannelOut",
         "type": "object"
       },
+      "ContentUsageItem": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "seconds": {
+            "title": "Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "seconds"
+        ],
+        "title": "ContentUsageItem",
+        "type": "object"
+      },
+      "ContentUsageOut": {
+        "properties": {
+          "first": {
+            "format": "date",
+            "title": "First",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ContentUsageItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "last": {
+            "format": "date",
+            "title": "Last",
+            "type": "string"
+          },
+          "limited": {
+            "default": false,
+            "title": "Limited",
+            "type": "boolean"
+          },
+          "tv_id": {
+            "title": "Tv Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tv_id",
+          "first",
+          "last",
+          "items"
+        ],
+        "title": "ContentUsageOut",
+        "type": "object"
+      },
       "DatedEntryDoc": {
         "additionalProperties": false,
         "description": "Whole days from ``start_date`` to ``end_date``, both included (a holiday).",
@@ -2362,6 +2423,11 @@
             },
             "title": "Days",
             "type": "array"
+          },
+          "limited": {
+            "default": false,
+            "title": "Limited",
+            "type": "boolean"
           },
           "tv_id": {
             "title": "Tv Id",
@@ -5998,6 +6064,7 @@
     },
     "/api/v1/tvs/{tv_id}/usage": {
       "get": {
+        "description": "Viewing time per day. The Free plan sees the last seven days; ``limited`` says it was cut.",
         "operationId": "usage_api_v1_tvs__tv_id__usage_get",
         "parameters": [
           {
@@ -6015,7 +6082,7 @@
             "required": false,
             "schema": {
               "default": 7,
-              "maximum": 90,
+              "maximum": 366,
               "minimum": 1,
               "title": "Days",
               "type": "integer"
@@ -6075,6 +6142,113 @@
           }
         },
         "summary": "Usage",
+        "tags": [
+          "activity"
+        ]
+      }
+    },
+    "/api/v1/tvs/{tv_id}/usage/content": {
+      "get": {
+        "description": "Seconds viewed per app, input and channel between two days, most viewed first.\n\nWithout ``from``/``to`` the last seven days are summed. The Free plan cannot go further back\nthan seven days: an earlier ``from`` is moved up and ``limited`` is set.",
+        "operationId": "content_usage_api_v1_tvs__tv_id__usage_content_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tv_id",
+            "required": true,
+            "schema": {
+              "title": "Tv Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Content Usage",
         "tags": [
           "activity"
         ]

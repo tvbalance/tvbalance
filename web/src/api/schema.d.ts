@@ -785,8 +785,34 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Usage */
+        /**
+         * Usage
+         * @description Viewing time per day. The Free plan sees the last seven days; ``limited`` says it was cut.
+         */
         get: operations["usage_api_v1_tvs__tv_id__usage_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tvs/{tv_id}/usage/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Content Usage
+         * @description Seconds viewed per app, input and channel between two days, most viewed first.
+         *
+         *     Without ``from``/``to`` the last seven days are summed. The Free plan cannot go further back
+         *     than seven days: an earlier ``from`` is moved up and ``limited`` is set.
+         */
+        get: operations["content_usage_api_v1_tvs__tv_id__usage_content_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -918,6 +944,37 @@ export interface components {
             name: string;
             /** Number */
             number: string | null;
+        };
+        /** ContentUsageItem */
+        ContentUsageItem: {
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Seconds */
+            seconds: number;
+        };
+        /** ContentUsageOut */
+        ContentUsageOut: {
+            /**
+             * First
+             * Format: date
+             */
+            first: string;
+            /** Items */
+            items: components["schemas"]["ContentUsageItem"][];
+            /**
+             * Last
+             * Format: date
+             */
+            last: string;
+            /**
+             * Limited
+             * @default false
+             */
+            limited: boolean;
+            /** Tv Id */
+            tv_id: string;
         };
         /**
          * DatedEntryDoc
@@ -1693,6 +1750,11 @@ export interface components {
         UsageOut: {
             /** Days */
             days: components["schemas"]["UsageDayOut"][];
+            /**
+             * Limited
+             * @default false
+             */
+            limited: boolean;
             /** Tv Id */
             tv_id: string;
         };
@@ -4645,6 +4707,67 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UsageOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    content_usage_api_v1_tvs__tv_id__usage_content_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+            };
+            header?: never;
+            path: {
+                tv_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentUsageOut"];
                 };
             };
             /** @description Unauthorized */

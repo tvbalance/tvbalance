@@ -19,7 +19,7 @@ from tvbalance.app.auth import SCOPES, AuthService, Principal, csrf_token_for
 from tvbalance.app.pairing import PairingService
 from tvbalance.app.profiles import ProfileService
 from tvbalance.app.supervisor import Supervisor
-from tvbalance.ports.services import Clock
+from tvbalance.ports.services import Clock, Entitlements
 from tvbalance.ports.storage import Storage
 
 SESSION_COOKIE = "tvb_session"
@@ -58,6 +58,13 @@ def get_supervisor(conn: HTTPConnection) -> Supervisor:
     if supervisor is None:
         raise ApiError(503, "unavailable", "the engine is not ready")
     return supervisor
+
+
+def get_entitlements(conn: HTTPConnection) -> Entitlements:
+    entitlements: Entitlements | None = getattr(conn.app.state, "license", None)
+    if entitlements is None:
+        raise ApiError(503, "unavailable", "the engine is not ready")
+    return entitlements
 
 
 def get_profiles(conn: HTTPConnection) -> ProfileService:
