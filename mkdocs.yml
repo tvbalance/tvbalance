@@ -70,6 +70,8 @@ plugins:
 
 nav:
   - Home: index.md
+  - user-guide/install.md
+  - user-guide/getting-started.md
   - user-guide/web-ui.md
   - user-guide/tv-lg-webos.md
   - user-guide/home-assistant.md
